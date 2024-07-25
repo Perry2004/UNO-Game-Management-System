@@ -1,4 +1,4 @@
-# UNO GAME SYSTEM 
+# UNO GAME SYSTEM MANAGER AND USER  
 
 The Game State Management encompasses the entire game state of an
 Uno Game. For example, the cards held by each player, the type of cards
@@ -17,3 +17,10 @@ have items (badges etc.) linked to their account. This addresses the issue
 of account management. Furthermore, this database could also be
 modified briefly to apply in any online card game environment such as
 “Exploding Kittens”.
+
+
+--- 
+We divided the backend (specificaly the database tables (relations)) such that all 3 of us have equivalent effort put in. <br>
+For the frontend, we divide the tasks in a similar manner so all members have equal contribution to the final Product. <br>
+
+---
