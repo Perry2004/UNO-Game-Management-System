@@ -9,7 +9,7 @@ For “Logistics for Game App Users’ information,” we keep track of
 virtual items that players have linked to their accounts e.g. badges, avatars,
 and virtual characters. We also track player transcations using Stores, and 
 we allow players to participate in "LuckyDraws" which grant them items on 
-a sporadic basis.
+a sporadic basis. 
 A real-life situation to which this can be
 assimilated, is an online platform for a card game where players have
 accounts with virtual characters that represent them inside the game, and
