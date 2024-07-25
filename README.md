@@ -23,4 +23,7 @@ modified briefly to apply in any online card game environment such as
 We divided the backend (specificaly the database tables (relations)) such that all 3 of us have equivalent effort put in. <br>
 For the frontend, we divide the tasks in a similar manner so all members have equal contribution to the final Product. <br>
 
+Yuchen, Muhammad, and Perry have an quivalent number of tables to design.
+We also divided the front-end (the React components) equally.
+
 ---
