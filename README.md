@@ -7,8 +7,8 @@ A real-life situation would of course be a group of individuals engaged in
 a (virtual) game of Uno.This addresses the issue of tracking game states.
 For “Logistics for Game App Users’ information,” we keep track of
 virtual items that players have linked to their accounts e.g. badges, avatars,
-and virtual characters. We also track player transcations using Stores, and 
-we allow players to participate in "LuckyDraws" which grant them items on 
+and virtual characters. We also track player transactions using Stores, and 
+we allow Players to participate in "LuckyDraws" which grant them items on 
 a sporadic basis. 
 A real-life situation to which this can be
 assimilated, is an online platform for a card game where players have
