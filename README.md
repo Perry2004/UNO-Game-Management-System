@@ -20,10 +20,24 @@ modified briefly to apply in any online card game environment such as
 
 
 --- 
-We divided the backend (specificaly the database tables (relations)) such that all 3 of us have equivalent effort put in. <br>
-For the frontend, we divide the tasks in a similar manner so all members have equal contribution to the final Product. <br>
+We divided the backend (specificaly the database tables (relations)) such that all 3 of us have equivalent effort put in. 
+For the frontend, we divide the tasks in a similar manner so all members have equal contribution to the final Product. 
 
-Yuchen, Muhammad, and Perry have an quivalent number of tables to design.
-We also divided the front-end (the React components) equally.
+To be more specific each contributor gets an appropirate amount of work. If this is not reflected herein, then it would be represented 
+inside below. The **main** idea is that all participants contribute equally. A decomposition into tasks was not required as each 
+page was assigned to a unique participant (one to many), and therefore the User Storu assigned indicate the tasks assigned, as well.
 
+We divided the front-end (the React components) equally (in the manner above; one to many). Sifficine ttime was expended to determine viable table, which may be inquired by our TA mentor.
+
+Yuchen, Muhammad, and Perry have an quivalent number of tables to design. This is intentionally left somewhat vague as we must confer with our mentor to reduce the amount of tables. But at present, the division is such that equity of particiaption is maintained.
+We also divided the front-end (the React components) equally (in the manner above; one to many).
+
+
+The login page and the user info page will be implemented by Muhammad. 
+One instance of the UNO game depiction will be implemented by Yuchen
+The other instance of the UNO game depiction will be implemented by Perry
+
+Plesse note tjat anuthing that is NOT included was decided to not be included herein.
+
+I hope this information is sufficient.
 ---
