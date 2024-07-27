@@ -32,12 +32,55 @@ We divided the front-end (the React components) equally (in the manner above; on
 Yuchen, Muhammad, and Perry have an quivalent number of tables to design. This is intentionally left somewhat vague as we must confer with our mentor to reduce the amount of tables. But at present, the division is such that equity of particiaption is maintained.
 We also divided the front-end (the React components) equally (in the manner above; one to many).
 
-
-The login page and the user info page will be implemented by Muhammad. 
-One instance of the UNO game depiction will be implemented by Yuchen
-The other instance of the UNO game depiction will be implemented by Perry
-
-Plesse note tjat anuthing that is NOT included was decided to not be included herein.
-
-I hope this information is sufficient.
 ---
+
+# Timeline 
+
+## Landing Page (front-end) (User Login): Assigned to Yuchen (due by July 29th) 
+
+- Allow for a User to login using their credentials. 
+- Ensure that a User is redirected to a page that renders information appropriate to them i.e. their characters, items, inventories et cetera. 
+
+## Match Page (front-end): Assigned to Muhammad (due by July 29th) 
+
+- Allow for upto four Users to interactively play a game of Uno. 
+- This entails keeping track of the Game State e.g. which player holds each card, what cards remain inside the deck, and the winner. 
+
+
+## Landing Page (back-end): Assigned to Perry (due by July 29th) 
+
+- Implement back-end NoSQL logic for keeping track of all the players who are part of the application. 
+- Implement the Database tables using appropriate commands and ensure that integrity constraints are upheld. 
+- Implement appropriate querying and insertion for the respective users for login. 
+
+## Match Page (back-end): (due by July 29th) 
+
+- Implement back-end NoSQL logic for keeping track of the Game State (abstracted from the front-end, for security and data integrity purposes). (Assigned to Yuchen)
+- Implement the Database tables using appropriate commands and ensure that integrity constraints are upheld as outlined in the Milestone 3 document. (Assigned to Muhammad)
+- Implement appropriate querying and insertion wrappers for each of the respective tables listed in the Milestone 3 document. (Assigned to Perry)
+
+## Unit Testing for respective components of the application: (due by July 30th) 
+ 
+- Unit Tests for the Tables (their creation and querying) (Muhammmad) 
+- Unit Tests for the front-end page (Landing Page) (Yuchen)
+- Unit Tests for the front-end page (Match Page) (Perry) 
+
+## Application Integration and Deployment: (due by July 31st)
+
+- Concerted Effort. Assigned to all and will be done synchronously after input from Project Mentor has been received. 
+
+---
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
