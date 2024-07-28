@@ -36,41 +36,71 @@ We also divided the front-end (the React components) equally (in the manner abov
 
 # Timeline 
 
-## Landing Page (front-end) (User Login): Assigned to Yuchen (due by July 29th) 
+## Landing Page (front-end) (User Login): Assigned to Yuchen (due by July 28th) 
 
-- Allow for a User to login using their credentials. 
-- Ensure that a User is redirected to a page that renders information appropriate to them i.e. their characters, items, inventories et cetera. 
+- Allow for a User to login using their credentials, entering them into rendered text fields. 
+- Ensure that a User is redirected to a page upon button click and authentication that renders their information appropriate to them i.e. their characters, items, inventories et cetera (in the form of images) This refers to the Dashboard Page.  
 
-## Match Page (front-end): Assigned to Muhammad (due by July 29th) 
-
-- Allow for upto four Users to interactively play a game of Uno. 
-- This entails keeping track of the Game State e.g. which player holds each card, what cards remain inside the deck, and the winner. 
-
-
-## Landing Page (back-end): Assigned to Perry (due by July 29th) 
+## Landing Page (back-end): Assigned to Yuchen (due by July 28th) 
 
 - Implement back-end NoSQL logic for keeping track of all the players who are part of the application. 
 - Implement the Database tables using appropriate commands and ensure that integrity constraints are upheld. 
 - Implement appropriate querying and insertion for the respective users for login. 
 
-## Match Page (back-end): (due by July 29th) 
+## Dashboard Page (front-end): Assigned to Perry (due by July 29th) 
 
-- Implement back-end NoSQL logic for keeping track of the Game State (abstracted from the front-end, for security and data integrity purposes). (Assigned to Yuchen)
-- Implement the Database tables using appropriate commands and ensure that integrity constraints are upheld as outlined in the Milestone 3 document. (Assigned to Muhammad)
-- Implement appropriate querying and insertion wrappers for each of the respective tables listed in the Milestone 3 document. (Assigned to Perry)
+= Allow for a User to see all information appropariate to them e.g. their statistics and their characters et cetera, using icons. 
+- Ensure that the images or text boxes do not display clutter when viewed on a standard Browser.
 
-## Unit Testing for respective components of the application: (due by July 30th) 
+## Dashboard Page (backend-end): Assigned to Perry (due by July 29th) 
+
+- Ensure that information appropriate to the user in question is displayed in a readable format and that they can only access information relevant to them. 
+
+## Membership Page (back-end and front-end): Assigned to Perry (due by July 30th)
+
+- Allow a User to keep track of their membership and their accumulated points (in a graphical-readable format).
+- Ensure that the User is matched to their appropriate information (on the back-end). 
+
+## Event Page (back-end and front-end): Assigned to Muhammad (due by July 30th)
+
+- Allow a User to view a list of available Events and sign up for them (in the form of Event Thumbnails).
+- Update the backend and the front end dynamically to keep track of the events that the User is registered in. 
+
+## Store Page (back-end and front-end): Assigned to Yuchen (due by July 31st)
+
+- Allow a User to view their specific store page (each user is assigned a specific instance of a page) which displays items (using icons) that they can purchase or have purchased. 
+- Ensure that a User is appropriately matched to their specific page and that the item list is is correctly kept track of.
+
+## Match Page (front-end): Assigned to Muhammad (due by July 31th) 
+
+- Allow for upto four Users to interactively play a game of Uno, using button clicks.
+- This entails keeping track of the Game State e.g. which player holds each card, what cards remain inside the deck, and the winner, and displaying the information to the User(s) in a Graphical Format: their avatars will be displayed, and a particluar user's hand will be rendered, and the player (whose turn it is) is indicated usingn an arrow icon next to their user-name (which is rendered in the form of a label). 
+
+## Match Page (back-end): Assigned to Muhammad (due by July 31st)  
+
+- Implement back-end NoSQL logic for keeping track of the Game State (abstracted from the front-end, for security and data integrity purposes). 
+- Implement the Database tables using appropriate commands and ensure that integrity constraints are upheld as outlined in the Milestone 3 document. 
+- Implement appropriate querying and insertion wrappers for each of the respective tables listed in the Milestone 3 document. 
+
+## Unit Testing for respective components of the application: (due by April 1st) 
  
 - Unit Tests for the Tables (their creation and querying) (Muhammmad) 
 - Unit Tests for the front-end page (Landing Page) (Yuchen)
 - Unit Tests for the front-end page (Match Page) (Perry) 
 
-## Application Integration and Deployment: (due by July 31st)
+## Application Integration and Deployment: (due by April 1st)
 
-- Concerted Effort. Assigned to all and will be done synchronously after input from Project Mentor has been received. 
+- Concerted Effort. Assigned to all and will be done synchronously after input from Project Mentor has been received, and previous elements have been realized.
 
 ---
 
+# Concerns/Limitations: 
+
+- Some of the Pages may not be completely realizable due to time constraints. In such a scenario, some of the pages may be pruned or some of the functionality may have to be eschewed.
+- It is possible that owing to the rather compressed nature of the Timeline some of the items may have to be pushed ahead.
+- Most Group members do not have sufficient experience developing a Web Application that integrates a Database. 
+- Group coordination is inherently hard and since we have not had sufficient time to interact with one another and discern our weaknesses and strengths it is expected that coordination may be an obstacle that should be taken into account. 
+- Some Group Members may find on-boarding more challenging than others and as such they may fall behind. In such a scenario it is expected that other group members will be of assistance in addition to the T.A. team. 
 
 
     
