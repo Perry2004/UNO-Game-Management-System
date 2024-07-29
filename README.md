@@ -102,15 +102,18 @@ We also divided the front-end (the React components) equally (in the manner abov
 - Group coordination is inherently hard and since we have not had sufficient time to interact with one another and discern our weaknesses and strengths it is expected that coordination may be an obstacle that should be taken into account. 
 - Some Group Members may find on-boarding more challenging than others and as such they may fall behind. In such a scenario it is expected that other group members will be of assistance in addition to the T.A. team. 
 
-
-    
-
-
-
-
-
-
-
-
-
-
+1. `.env` file: 
+   1. The `.env` file is used to store the environment variables for initializing the database connection.
+   2. Please create a `.env` file in the root directory of the project with the following content with appropriate values:
+      ```
+      LOGIN_USERNAME = admin
+      LOGIN_PASSWORD = admin123
+      DATABSE_HOST = localhost
+      DATABASE_USER = root
+      DATABASE_PASSWORD = ?
+      DATABASE = UNOGameSystem
+      SESSION_SECRET = uno
+      JWT_SECRET = uno
+      JWT_EXPIRES_IN = 90d    
+      JWT_COOKIE_EXPIRES = 90
+      ```

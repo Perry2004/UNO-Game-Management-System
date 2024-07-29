@@ -3,9 +3,17 @@ const dashboardModel = require("../models/dashboard");
 exports.loadDashboard = async (req, res) => {
   if (req.loginStatus === true) {
     try {
+      const activePlayers = await dashboardModel.getNumOfActivePlayers();
+      const activeEvents = await dashboardModel.getNumOfActiveEvents();
+      const activeMatches = await dashboardModel.getNumOfActiveMatches();
+      const revenue = await dashboardModel.getRevenue();
       const recentPlayers = await dashboardModel.getRecentPlayers();
 
       res.render("dashboard", {
+        activePlayers,
+        activeEvents,
+        activeMatches,
+        revenue,
         recentPlayers,
         messages: req.flash(),
       });
