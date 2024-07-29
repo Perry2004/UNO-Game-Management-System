@@ -1,15 +1,12 @@
 require("dotenv").config();
 const fs = require("fs");
 const mysql = require("mysql2");
-const { type } = require("os");
 
 const db = mysql.createConnection({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
-  // database: process.env.DATABASE,
 });
-
 
 db.connect((error) => {
   if (error) {
@@ -63,12 +60,12 @@ function initializeDB() {
 }
 
 function fileLog(content) {
-  content = content + '\n';
-  fs.appendFileSync("./log.txt", content, err => {
+  content = content + "\n";
+  fs.appendFileSync("./log.txt", content, (err) => {
     if (err) {
       console.log(err);
     }
-  })
+  });
 }
 
 module.exports = db;
