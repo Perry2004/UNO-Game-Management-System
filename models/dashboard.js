@@ -83,6 +83,33 @@ exports.getRecentPlayers = async () => {
   }
 };
 
+exports.getPlayerData = async (username) => {
+  try {
+    const myQuery = `
+      SELECT p.username, p.country, pue.email 
+      FROM Players p
+      JOIN PlayerUsernameAndEmail pue ON p.username = pue.username
+      WHERE p.username = ? 
+    `;
+    const [results] = await db.promise().query(myQuery, [username]);
+
+    return results[0];
+  } catch (error) {
+    console.error(`OH NO! Error fetching ${username} data:`, error);
+    throw error;
+  }
+};
+
+exports.deletePlayerByUsername = async (username) => {
+  try {
+    await db.promise().query("DELETE FROM PlayerUsernameAndEmail WHERE ?", { username: username });
+    console.log("Player deleted successfully.");
+  } catch (error) {
+    console.error(`OH NO! Error deleting ${username}:`, error);
+    throw error;
+  }
+};
+
 exports.registerPlayer = async (username, password, email, country) => {
   try {
     await insertPlayerUsernameAndEmail(username, email);

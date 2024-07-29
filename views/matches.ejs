@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Game System Admin</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="icon" href="/UNO.icon" type="image/x-icon">
+    <script defer src="/script.js"></script>
+</head>
+<body>
+    <div id="grid-container">
+
+        <!-- Header Section  -->
+        <%- include("partials/header") %>
+
+        <!-- Sidebar Section  -->
+        <%- include("partials/sidebar") %>
+
+        <!-- Main Section -->
+        <main class="grid-main">
+            <div class="main-body">
+                <div class="table-container-primary">
+                    <div class="main-body-header">
+                        <h2 class="main-title">RECENT MATCHES</h2>
+                        <div class="table-button-list">
+                            <button class="table-btn add-btn"><i class="bx bx-plus"></i>Create Match</button>
+                            <button class="table-btn">View All</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Match ID</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Winner</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% locals.recentMatches.forEach(element => { %>
+                            <tr>
+                                <td><%= element.matchId %></td>
+                                <td><%= element.matchStartTime %></td>
+                                <td><%= element.matchEndTime %></td>
+                                <td><%= element.matchWinner %></td>
+                                <td><%= element.matchStatus %></td>
+                                <td class="table-btn-td"><button class="table-btn">View Details</button></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Section -->
+        <%- include("partials/footer") %>
+    </div>
+</body>
+</html>
