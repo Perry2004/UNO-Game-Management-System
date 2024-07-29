@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Game System Admin</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="icon" href="/UNO.icon" type="image/x-icon">
+    <script defer src="/script.js"></script>
+</head>
+<body>
+    <div id="grid-container">
+
+        <!-- Header Section  -->
+        <%- include("partials/header") %>
+
+        <!-- Sidebar Section  -->
+        <%- include("partials/sidebar") %>
+
+        <!-- Main Section -->
+        <main class="grid-main">
+            <div class="main-body">
+                <div class="table-container-secondary">
+                    <div class="main-body-header">
+                        <h2 class="main-title">RECENT STORES</h2>
+                        <div class="table-button-list">
+                            <button class="table-btn">View All</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Store ID</th>
+                                <th>Number of Items</th>
+                                <th>Linked To</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% locals.recentStores.forEach(element => { %>
+                                <tr>
+                                    <td><%= element.storeID %></td>
+                                    <td><%= element.numOfItems %></td>
+                                    <td><%= element.username %></td>
+                                    <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <br><br>
+                <div class="table-container-secondary">
+                    <div class="main-body-header">
+                        <h2 class="main-title">RECENT ITEMS</h2>
+                        <div class="table-button-list">
+                            <select name="selector" id="selector" class="dropdown">
+                                <option value="Filter">Filter</option>
+                                <option value="Win Rate">Quality</option>
+                                <option value="Win Rate">Current Price</option>
+                                <option value="Win Rate">Original Price</option>
+                                <option value="Win Rate">Applied Promotion</option>
+                                <option value="Win Rate">Discount</option>
+                            </select>
+                            <button class="table-btn add-btn"><i class="bx bx-plus"></i>Create Item</button>
+                            <button class="table-btn">View All</button>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Quality</th>
+                                <th>Current Price</th>
+                                <th>Original Price</th>
+                                <th>Applied Promotion</th>
+                                <th>Discount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% locals.recentItems.forEach(element => { %>
+                                <tr>
+                                    <td><%= element.itemName %></td>
+                                    <td><%= element.itemQuality %></td>
+                                    <td><%= element.itemCurrentPrice %></td>
+                                    <td><%= element.itemOriginalPrice %></td>
+                                    <td><%= element.itemAppliedPromotion %></td>
+                                    <td><%= element.itemDiscount %></td>
+                                    <td>
+                                        <i class='bx bx-log-in add' aria-label="Add"></i>
+                                        <i class='bx bxs-edit edit' aria-label="Edit"></i>
+                                        <i class='bx bx-trash delete' aria-label="Delete"></i>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Section -->
+        <%- include("partials/footer") %>
+    </div>
+</body>
+</html>

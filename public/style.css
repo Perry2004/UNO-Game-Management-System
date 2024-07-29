@@ -21,6 +21,17 @@
     --login-purple: #2E0054; 
     --link-purple: #531dab; 
     --text-color: white;
+
+    --red1: #ffccc7;
+    --red2: #ff4d4f; 
+    --blue1: #91d5ff; 
+    --blue2: #1890ff; 
+    --green1: #61DDAA; 
+    --green2: #008A5D; 
+    --grey1: #f5f5f5; 
+    --grey2: #E2E2E2; 
+    --grey3: #ABABAB; 
+    --grey4: #595959; 
 }
 
 html {
@@ -48,6 +59,7 @@ body .btn {
     margin-top: 2rem;
     border-radius: 0.5rem;
     transition: all 0.3s ease;
+    border: 1px solid black;
     cursor: pointer;
 }
 
@@ -56,11 +68,11 @@ body .btn:hover {
 }
 
 body { 
-    background-color: #f5f5f5; 
+    background-color: var(--grey1); 
 }
 
 body.openedModal { 
-    background-color: #595959; 
+    background-color: var(--grey4)
 }
 
 #grid-container {
@@ -187,7 +199,7 @@ body.openedModal {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: flex-start; 
     position: relative;
 }
 
@@ -214,12 +226,14 @@ body.openedModal {
     padding: 0 1rem 0 1rem;  
     background-color: white; 
     border-radius: 0.5rem;
+    border: 1px solid black; 
     cursor: pointer;
 }
 
 .grid-main .table-btn.openedModal, 
 .grid-main .dropdown.openedModal {
     cursor: default;
+    pointer-events: none;
 }
 
 .grid-main .table-button-list .add-btn i {
@@ -241,6 +255,7 @@ body.openedModal {
 .grid-main .edit.openedModal,
 .grid-main .delete.openedModal {
     cursor: default;
+    pointer-events: none;
 }
 
 .grid-main .add {
@@ -249,12 +264,16 @@ body.openedModal {
 }
 
 .grid-main .edit {
-    color: #008A5D; 
+    color: var(--green2); 
     margin-right: 1rem; 
 }
 
 .grid-main .delete {
-    color: #f5222d; 
+    color: var(--red2); 
+}
+
+.grid-main .main-header {
+    margin-bottom: 5rem;
 }
 
 .grid-main .main-header,
@@ -325,15 +344,15 @@ body.openedModal {
 .grid-main .main-body .table-container-secondary {
     width: 100%;
     border-radius: 1rem;
-    background-color:#E2E2E2; 
+    background-color:var(--grey2); 
 }
 
 .grid-main .main-body .table-container-primary {
-    padding: 1.8rem 2rem 1.6rem 2rem; 
+    padding: 3rem 2rem 2.8rem 2rem;  
 }
 
 .grid-main .main-body .table-container-secondary {
-    padding: 3rem 2rem 3rem 2rem;  
+    padding: 1.8rem 2rem 1.6rem 2rem; 
 }
 
 .grid-main .main-body-header {
@@ -381,11 +400,14 @@ body.openedModal {
 
 
 
+
+
+
+
+/* ------------------------------------------------------------------------------------------------- */
+
 /* Modal Section  */
 .modal {
-    height: 80%; 
-    width: 50rem; 
-    max-width: 75%;
     background-color: white;
     border-radius: 1rem;
     display: flex;
@@ -394,16 +416,105 @@ body.openedModal {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 1rem; 
-    animation: Glowing 2.5s linear 0.75s infinite alternate;
+}
+
+.btn.modal-btn-delete {
+    background-color: var(--red2);
+    color: var(--text-color); 
+}
+
+.btn.modal-btn-delete:hover {
+    background: red;
+    color: var(--text-color); 
+}
+
+.btn.modal-btn-confirm {
+    background-color: var(--blue2);
+    color: var(--text-color); 
+}
+
+.btn.modal-btn-confirm:hover {
+    background: blue; 
+    color: var(--text-color); 
+}
+
+.btn.modal-btn-cancel {
+    background-color: var(--grey2);
+    color: black;
+}
+
+.btn.modal-btn-cancel:hover {
+    background: var(--grey3); 
+    color: var(--text-color); 
+}
+
+
+
+/* Delete Modal Section  */
+.modal.delete-item-modal { 
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem; 
+    animation: GlowingRed 2.5s linear 0.75s infinite alternate;
     display: none;
 }
 
-.modal.openedModal {
+.modal.delete-item-modal.openedModal {
     display: flex;
 }
 
-@keyframes Glowing {
+@keyframes GlowingRed {
+    0% {
+        box-shadow: 0px 0px 0px 0px red;
+    }
+
+    80% {
+        box-shadow: 0px 0.5rem 2rem 0.5rem white;
+    }
+
+    100% {
+        box-shadow: 0px 0.5rem 2rem 0.5rem white;
+    }
+}
+
+.delete-item-modal h1 {
+    width: 5rem;  
+    height: 5rem; 
+    font-size: 3.5rem;
+    text-align: center;
+    color: red; 
+    background-color: var(--red1);
+    margin-bottom: 2rem; 
+    border-radius: 50%;
+}
+
+.delete-item-modal h2 {
+    font-size: 1.7rem; 
+    margin-bottom: 2rem; 
+}
+
+.delete-item-modal p {
+    text-align: center;
+}
+
+
+
+/* Create Modal Section  */
+.modal.create-item-modal, 
+.modal.edit-item-modal {
+    width: 50rem; 
+    max-width: 75%;
+    padding: 1rem; 
+    animation: GlowingBlue 2.5s linear 0.75s infinite alternate;
+    display: none;
+}
+
+.modal.create-item-modal.openedModal, 
+.modal.edit-item-modal.openedModal {
+    display: flex;
+}
+
+@keyframes GlowingBlue {
     0% {
         box-shadow: 0px 0px 0px 0px blue;
     }
@@ -439,7 +550,7 @@ body.openedModal {
 .modal-body {
     flex-grow: 1;
     margin: 1rem; 
-    padding-bottom: 3rem; 
+    padding-bottom: 1rem; 
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -469,6 +580,15 @@ body.openedModal {
     transition: all 0.3s ease; 
 }
 
+.modal-body .modal-fields select {
+    height: 34px; 
+    width: 100%; 
+    border: 0.3rem solid black; 
+    border-radius: 0.5rem;
+    padding: 0.25rem 0; 
+    font-size: 1.5rem; 
+}
+
 .modal-body .modal-fields input:focus {
     border: 0.3rem solid var(--login-blue);  
 }
@@ -486,26 +606,6 @@ body.openedModal {
 
 .modal-footer .btn:last-child {
     margin-right: initial;
-}
-
-.modal-footer .modal-btn-primary {
-    background-color: #1890ff;
-    color: white;
-}
-
-.modal-footer .modal-btn-primary:hover {
-    background: blue; 
-    color: var(--text-color); 
-}
-
-.modal-footer .modal-btn-danger {
-    background-color: #E2E2E2; 
-    color: black;
-}
-
-.modal-footer .modal-btn-danger:hover {
-    background: red; 
-    color: var(--text-color); 
 }
 
 .modal-error-message {
