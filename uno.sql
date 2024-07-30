@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Players (
 ); 
 
 CREATE TABLE IF NOT EXISTS MembershipExpireDate (
-    issue_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    issue_time DATE NOT NULL,
     days_remaining INT NOT NULL,
     expire_time DATE NOT NULL,
     PRIMARY KEY (issue_time, days_remaining)
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS MembershipPrivilegeClass (
 CREATE TABLE IF NOT EXISTS MembershipInPlayer (
     membership_id INT AUTO_INCREMENT,
     player_id INT NOT NULL,
-    issue_time TIMESTAMP NOT NULL,
+    issue_time DATE NOT NULL,
     days_remaining INT NOT NULL,
     privilege_level INT NOT NULL,
     status VARCHAR(255) DEFAULT 'Active',
@@ -642,3 +642,26 @@ VALUES
 (3, 3, 3, 3, 3, 1),
 (4, 4, 4, 4, 4, 1),
 (5, 5, 5, 5, 5, 1); 
+
+-- for testing purpose
+INSERT INTO PlayerUsernameAndEmail (username, email)
+VALUES ('Test', 'Test@test');
+
+INSERT INTO Players (
+    username,
+    total_win,
+    total_game_count,
+    experience_point,
+    win_rate,
+    country,
+    password
+  )
+VALUES (
+    'Test',
+    0,
+    0,
+    0, 
+    0,
+    'Test',
+    "Test"
+  );

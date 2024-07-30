@@ -1,3 +1,4 @@
+const { compareSync } = require("bcryptjs");
 const membershipsModel = require("../models/memberships");
 
 exports.loadMemberships = async (req, res) => {
@@ -12,5 +13,22 @@ exports.loadMemberships = async (req, res) => {
     }
   } else {
     res.redirect("/login");
+  }
+};
+
+exports.registerMembership = async (req, res) => {
+  const { username, duration, level } = req.body;
+
+  try {
+    if (!username || !duration || !level) {
+      throw new Error("Form Incomplete... Please try again!");
+    }
+    await membershipsModel.registerMembership(username, duration, level);
+    console.log("Achieved");
+    return res.redirect("/memberships");
+  } catch (error) {
+    console.error("Error registering membership:", error);
+    req.flash("error", error.message);
+    return res.redirect("/memberships");
   }
 };

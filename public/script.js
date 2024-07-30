@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearFormData();
     hideModal();
     setTimeout(() => {
-      window.location.href = "/dashboard";
+      window.location.href = window.location.href.split("?")[0];
     }, 300);
   }
 
@@ -192,4 +192,52 @@ async function fetchPlayerData(username) {
     console.error("Error fetching player data:", error);
     return null;
   }
+}
+
+/* Membership Modal Seciont ------------------------------------------------------------------- */
+function showCreateMembershipModal() {
+  const createMembershipModal = document.querySelector("[data-create-membership-modal]");
+  createMembershipModal.classList.add("openedModal");
+
+  const modalErrorMessage = document.querySelector("[data-modal-error-message");
+  modalErrorMessage?.classList.add("openedModal");
+
+  showModal();
+  localStorage.setItem("modalState", "createMembershipModalOpened");
+}
+
+// Hide the Create Player Modal
+function hideCreateMembershipModal() {
+  const createMembershipModal = document.querySelector("[data-create-membership-modal]");
+  createMembershipModal.classList.remove("openedModal");
+
+  const modalErrorMessage = document.querySelector("[data-modal-error-message");
+  modalErrorMessage?.classList.remove("openedModal");
+
+  hideModal();
+}
+
+function updatePrivilegeClass() {
+  const privilegeLevel = document.getElementById("membershipLevel").value.toString();
+  console.log(privilegeLevel);
+  const privilegeClass = document.getElementById("privilegeClass");
+  console.log(privilegeClass);
+  let level = "";
+  switch (privilegeLevel) {
+    case "1":
+      level = "Bronze";
+      break;
+    case "2":
+      level = "Silver";
+      break;
+    case "3":
+      level = "Gold";
+      break;
+    case "4":
+      level = "Platinum";
+      break;
+    case "5":
+      level = "Diamond";
+  }
+  privilegeClass.innerHTML = level;
 }
