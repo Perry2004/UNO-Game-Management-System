@@ -194,7 +194,7 @@ body.openedModal {
 /* Main Section  */
 .grid-main {
     grid-area: main; 
-    overflow-y: auto;
+    /* overflow-y: auto; */
     padding: 40px 30px 40px 30px; 
     display: flex;
     flex-direction: column;
@@ -371,7 +371,7 @@ body.openedModal {
 .grid-main .main-body .table {
     width: 100%;
     text-align: left;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-collapse: collapse;
     font-size: 1.6rem;
 }
@@ -610,21 +610,16 @@ body.openedModal {
 
 .modal-error-message {
     width: 40rem; 
-    max-width: 50%;
-    margin: 1rem; 
     padding: 0.25rem 1rem; 
     font-size: 1.3rem; 
     background-color: red;
     color: yellow; 
     text-shadow: 0 0 0.75rem white;  
     position: absolute;
-    top: 2.5%; 
+    left: 50%;
+    transform: translate(-50%, -180%);
     border-radius: 5px; 
     display: none;
-}
-
-.modal-error-message.openedModal {
-    display: block;
 }
 
 

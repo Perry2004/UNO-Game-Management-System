@@ -27,7 +27,6 @@ exports.registerMembership = async (req, res) => {
     return res.redirect("/memberships");
   } catch (error) {
     console.error("Error registering membership:", error);
-    req.flash("error", error.message);
     return res.redirect("/memberships");
   }
 };
