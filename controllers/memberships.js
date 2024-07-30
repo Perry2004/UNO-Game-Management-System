@@ -24,11 +24,23 @@ exports.registerMembership = async (req, res) => {
       throw new Error("Form Incomplete... Please try again!");
     }
     await membershipsModel.registerMembership(username, duration, level);
-    console.log("Achieved");
     return res.redirect("/memberships");
   } catch (error) {
     console.error("Error registering membership:", error);
     req.flash("error", error.message);
     return res.redirect("/memberships");
+  }
+};
+
+exports.deleteMembership = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    await membershipsModel.deleteMembershipByUsername(username);
+
+    res.status(200).send(`${username} deleted successfully`);
+  } catch (error) {
+    console.error(`OH NO! Error Deleting ${username}:`, error);
+    res.status(500).send("OH NO! Internal Server Error with Delete Player");
   }
 };

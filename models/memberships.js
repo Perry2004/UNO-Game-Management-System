@@ -1,6 +1,6 @@
 const { formatInTimeZone } = require("date-fns-tz");
 const db = require("../config/db");
-const { format } = require("date-fns");
+const { format, differenceInCalendarMonths } = require("date-fns");
 const timeZone = "America/Vancouver";
 
 
@@ -41,11 +41,6 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
     expireDate = new Date(currentDate);
     expireDate.setDate(expireDate.getDate() + duration);
 
-    console.log("Current Date:", currentDate);
-    console.log("Duration:", duration);
-    console.log("Expire Date:", expireDate);
-
-
     [results, fields] = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
 
     playerID = results[0].player_id;
@@ -54,7 +49,6 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
     }
 
     // first insert into MembershipExpireDate because of foreign key constraint
-    console.log("expireDate:", expireDate);
     await db.promise().query("INSERT INTO MembershipExpireDate SET ?", { issue_time: currentDate, days_remaining: duration, expire_time: expireDate });
     if (results.affectedRows === 0) {
       throw new Error("Failed to insert into MembershipExpireDate");
@@ -69,3 +63,27 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
     throw error;
   }
 }
+
+exports.deleteMembershipByUsername = async (username) => {
+  try {
+    playerID = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
+    playerID = playerID[0][0].player_id;
+    if (!playerID) {
+      throw new Error("Player not found");
+    }
+    membershipID = await db.promise().query("SELECT membership_id FROM MembershipInPlayer WHERE player_id = ?", [playerID]);
+    membershipID = membershipID[0][0].membership_id;
+    issueTime = await db.promise().query("SELECT issue_time FROM MembershipInPlayer WHERE player_id = ?", [playerID]);
+    issueTime = issueTime[0][0].issue_time;
+    daysRemaining = await db.promise().query("SELECT days_remaining FROM MembershipInPlayer WHERE player_id = ?", [playerID]);
+    daysRemaining = daysRemaining[0][0].days_remaining;
+
+    await db.promise().query("DELETE FROM MembershipInPlayer WHERE player_id = ?", [playerID]);
+    await db.promise().query("DELETE FROM MembershipExpireDate WHERE issue_time = ? AND days_remaining = ?", [issueTime, daysRemaining]);
+
+    console.log("Membership deleted successfully.");
+  } catch (error) {
+    console.error(`OH NO! Error deleting membership for ${username}:`, error);
+    throw error;
+  }
+};

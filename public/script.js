@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteConfirmButton = document.querySelector("[data-conform-delete]");
   deleteConfirmButton.addEventListener("click", async () => {
     if (usernameToDelete) {
-      const response = await fetch("/dashboard", {
+      const response = await fetch(window.location.pathname, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: usernameToDelete }),
