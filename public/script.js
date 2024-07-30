@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearFormData();
     hideModal();
     setTimeout(() => {
-      window.location.href = "/dashboard";
+      window.location.href = window.location.href.split("?")[0];
     }, 300);
   }
 

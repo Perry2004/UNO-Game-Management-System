@@ -32,6 +32,7 @@ router.get("/dashboard/player-data", dashboardController.loadEditModal);
 router.get("/store-items", authController.isLoggedIn, storeItemsController.loadStoreItems);
 
 router.get("/memberships", authController.isLoggedIn, membershipsController.loadMemberships);
+router.post("/memberships", membershipsController.registerMembership);
 
 router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
 

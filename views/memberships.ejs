@@ -59,7 +59,7 @@
                           <%= element.username %>
                         </td>
                         <td>
-                          <%= element.membershipIssueDate %>
+                          <%= element.membershipIssueTime %>
                         </td>
                         <td>
                           <%= element.membershipDaysRemaining %>
@@ -81,7 +81,7 @@
                 </table>
               </div>
             </div>
-            <form class="modal create-item-modal" action="/dashboard" method="POST" data-create-membership-modal>
+            <form class="modal create-item-modal" action="/memberships" method="POST" data-create-membership-modal>
               <div class="modal-header">
                 <h2>Subscribe Membership</h2>
                 <button class="close-btn" type="button" onclick="hideCreateMembershipModal()">&times;</button>
@@ -119,12 +119,6 @@
               </div>
             </form>
           </main>
-
-          <div class="modal-footer">
-            <button class="btn modal-btn-confirm" type="submit">Register</button>
-            <button class="btn modal-btn-cancel" type="button" onclick="hideCreateMembershipModal()">Cancel</button>
-          </div>
-          </form>
           <% if (locals.messages.error) { %>
             <div class="modal-error-message" data-modal-error-message> &#9888 <%= locals.messages.error[0] %>
             </div>
