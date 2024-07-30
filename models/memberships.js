@@ -1,6 +1,7 @@
 const { formatInTimeZone } = require("date-fns-tz");
 const db = require("../config/db");
-const { format, differenceInCalendarMonths } = require("date-fns");
+const { format, differenceInCalendarMonths, longFormatters, constructFrom } = require("date-fns");
+const logError = (functionName) => `OH NO! Error with ${functionName} in Models:`;
 const timeZone = "America/Vancouver";
 
 
@@ -30,7 +31,7 @@ exports.getRecentMemberships = async () => {
       membershipStatus: element.membershipStatus,
     }));
   } catch (error) {
-    console.error("OH NO! Error fetching recent memberships:", error.message);
+    console.error(logError("getRecentMemberships"), error.message);
     throw error;
   }
 };
@@ -66,6 +67,8 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
 
 exports.deleteMembershipByUsername = async (username) => {
   try {
+    console.log("Username: ", username);
+
     playerID = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
     playerID = playerID[0][0].player_id;
     if (!playerID) {
@@ -83,7 +86,16 @@ exports.deleteMembershipByUsername = async (username) => {
 
     console.log("Membership deleted successfully.");
   } catch (error) {
-    console.error(`OH NO! Error deleting membership for ${username}:`, error);
+    console.error(logError("deleteMembershipByUsername"), error.message);
     throw error;
   }
 };
+
+exports.isUsernameRegistered = async (username) => {
+  playerID = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
+  if (!playerID) {
+    return false;
+  } else {
+    return true;
+  }
+}

@@ -92,7 +92,9 @@
               <p>This action cannot be undone. All values <br> associated with this field will be lost.</p>
               <button class="btn modal-btn-delete" type="button" data-conform-delete>Delete Player</button>
               <button class="btn modal-btn-cancel" type="button" onclick="hideDeleteItemModal()">Cancel</button>
+              <div class="modal-error-message" data-modal-error-message></div>
             </div>
+
             <form class="modal create-item-modal" action="/memberships" method="POST" data-create-membership-modal>
               <div class="modal-header">
                 <h2>Subscribe Membership</h2>
@@ -129,13 +131,14 @@
                     onclick="hideCreateMembershipModal()">Cancel</button>
                 </div>
               </div>
+              <div class="modal-error-message" data-modal-error-message></div>
             </form>
           </main>
 
-       
 
-              <!-- Footer Section -->
-              <%- include("partials/footer") %>
+
+          <!-- Footer Section -->
+          <%- include("partials/footer") %>
     </div>
   </body>
 
