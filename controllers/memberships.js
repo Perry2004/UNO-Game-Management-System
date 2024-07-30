@@ -32,7 +32,7 @@ exports.registerMembership = async (req, res) => {
 };
 
 exports.deleteMembership = async (req, res) => {
-  const { username } = req.body;
+  const { item: username } = req.body;
 
   try {
     await membershipsModel.deleteMembershipByUsername(username);
@@ -43,3 +43,14 @@ exports.deleteMembership = async (req, res) => {
     res.status(500).send("OH NO! Internal Server Error with Delete Player");
   }
 };
+
+exports.checkMembership = async (req, res) => {
+  const { username } = req.query;
+  console.log("Username: ", username);
+  console.log("isUsernameRegistered: ", membershipsModel.isUsernameRegistered(username));
+  if (membershipsModel.isUsernameRegistered(username)) {
+    res.status(200).send("Username does not have a membership");
+  } else {
+    res.status(409).send("Username already has a membership");
+  }
+}

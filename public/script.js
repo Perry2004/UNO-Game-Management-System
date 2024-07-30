@@ -303,6 +303,7 @@ function hideCreateMembershipModal() {
   modalErrorMessage?.classList.remove("openedModal");
 
   hideModal();
+  hideModalErrorMessage("[data-create-membership-modal]");
 }
 
 function updatePrivilegeClass() {
@@ -328,4 +329,27 @@ function updatePrivilegeClass() {
       level = "Diamond";
   }
   privilegeClass.innerHTML = level;
+}
+
+document.querySelector("[data-create-membership-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (await isUserHasMembership()) {
+    displayModalErrorMessage("[data-create-membership-modal]", "Invalid user, aborted.");
+    return;
+  }
+
+  clearFormData();
+  hideModalErrorMessage("[data-create-membership-modal]");
+  e.target.submit();
+});
+
+/**
+ * Check if the user has a membership. 
+ * If so, the new membership should not be created.
+ */
+async function isUserHasMembership() {
+  const username = document.getElementById("usernameCreate").value;
+  const response = await fetch(`/memberships/check-membership?username=${username}`);
+  return response.ok;
 }
