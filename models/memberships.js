@@ -30,9 +30,9 @@ exports.getRecentMemberships = async () => {
     return results.map((element) => ({
       username: element.username,
       playerID: element.playerID,
-      membershipIssueTime: formatInTimeZone(element.membershipIssueTime, timeZone, "yyyy-MM-dd HH:mm:ss zzz"),
-      membershipExpireTime: formatInTimeZone(element.membershipExpireTime, timeZone, "yyyy-MM-dd HH:mm:ss zzz"),
-      membershipDaysRemaining: dateDiffInDays(element.membershipIssueTime, element.membershipExpireTime),
+      membershipIssueTime: formatInTimeZone(element.membershipIssueTime, timeZone, "yyyy-MM-dd"),
+      membershipExpireTime: formatInTimeZone(element.membershipExpireTime, timeZone, "yyyy-MM-dd"),
+      membershipDaysRemaining: dateDiffInDays((new Date()).toISOString().split("T")[0], new Date(element.membershipExpireTime.toISOString().split("T")[0])),
       membershipPrivilegeClass: element.membershipPrivilegeClass,
       membershipPrivilegeLevel: element.membershipPrivilegeLevel,
       membershipStatus: element.membershipStatus,
@@ -46,6 +46,9 @@ exports.getRecentMemberships = async () => {
 function dateDiffInDays(a, b) {
   a = new Date(a);
   b = new Date(b);
+
+  console.log("Date A: ", a, "Date B: ", b);
+
   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   // Discard the time and time-zone information.
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
@@ -59,6 +62,7 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
     currentDate = new Date();
     // expire date = current date + duration
     expireDate = new Date(new Date().getTime() + (duration * 24 * 60 * 60 * 1000));
+    console.log("Current date: ", currentDate, "Expire date: ", expireDate, "Duration: ", duration);
 
     [results, fields] = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
 
@@ -70,6 +74,7 @@ exports.registerMembership = async (username, duration, privilegeLevel) => {
     // insert into MembershipInPlayer
     await db.promise().query("INSERT INTO MembershipInPlayer SET ?", { player_id: playerID, issue_time: currentDate, expire_time: expireDate, privilege_level: privilegeLevel, status: "Active" });
     console.log("Membership inserted");
+    console.log("Issue date: ", currentDate, "Expire date: ", expireDate);
 
   } catch (error) {
     console.error("OH NO! Error during register membership:", error.message);
@@ -132,7 +137,7 @@ exports.fetchMembershipByPlayerID = async (playerID) => {
         JOIN MembershipPrivilegeClass mpc ON mp.privilege_level = mpc.privilege_level
         WHERE mp.player_id = ?;
     `, [playerID]);
-    results[0].membershipDaysRemaining = dateDiffInDays(results[0].membershipIssueTime, results[0].membershipExpireTime);
+    results[0].membershipDaysRemaining = dateDiffInDays((new Date()).toISOString().split("T")[0], new Date(results[0].membershipExpireTime.toISOString().split("T")[0]));
     return results[0];
   } catch (error) {
     console.error(logError("fetchMembershipByPlayerID"), error.message);
@@ -142,13 +147,21 @@ exports.fetchMembershipByPlayerID = async (playerID) => {
 
 exports.updateMembership = async (username, playerID, issueTime, daysRemaining, privilegeLevel, status) => {
   try {
-    issueTime = new Date(issueTime);
     console.log("Trying to update: username: ", username, " playerID: ", playerID, " issueTime: ", issueTime, " daysRemaining: ", daysRemaining, " privilegeLevel: ", privilegeLevel, " status: ", status);
-    expireDate = new Date(issueTime.getTime() + (daysRemaining * 24 * 60 * 60 * 1000));
+
+    issueTime = new Date(issueTime);
+    expireDate = new Date(new Date().getTime() + (daysRemaining * 24 * 60 * 60 * 1000));
+
     console.log("Issue date: ", issueTime, "Expire date: ", expireDate, "Days remaining: ", daysRemaining, "Calculated diff: ", dateDiffInDays(issueTime, expireDate));
+
+    issueTime = issueTime.toISOString().split("T")[0];
+    expireDate = expireDate.toISOString().split("T")[0];
+    
+    console.log("Issue date: ", issueTime, "Expire date: ", expireDate);
     await db.promise().query("UPDATE MembershipInPlayer SET issue_time = ?, expire_time = ?, privilege_level = ?, status = ? WHERE player_id = ?", [issueTime, expireDate, privilegeLevel, status, playerID]);
   } catch (error) {
     console.error(logError("updateMembership"), error.message);
     throw error;
   }
 }
+

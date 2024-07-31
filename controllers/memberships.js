@@ -72,6 +72,7 @@ exports.fetchMembershipData = async (req, res) => {
 
 exports.updateMembership = async (req, res) => {
   const { username, playerID, issueDate, daysRemaining, level, status } = req.body;
+  console.log("Issude date: ", issueDate);
   if (!username || !playerID || !issueDate || !daysRemaining || !level || !status) {
     return res.status(400).send("Form Incomplete... Please try again!");
   } else {
