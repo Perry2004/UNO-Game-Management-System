@@ -1,0 +1,26 @@
+<div class="search-result" data-search-result>
+    <div class="search-result-header">
+        <h2>Your Search Result</h2>
+        <button class="close-btn" type="button" onclick="hideSearchResult()">&times;</button>
+    </div>
+    <div class="scrollable-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Total Wins</th>
+                    <th>Total Game</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% locals.recentPlayers.forEach(element => { %>
+                    <tr>
+                        <td><%= element.username %></td>
+                        <td><%= element.totalWin %></td>
+                        <td><%= element.totalGameCount %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
