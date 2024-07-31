@@ -75,10 +75,10 @@
                         </td>
                         <td>
                           <i class="bx bxs-edit edit" aria-label="Edit"
-                            onclick="showEditPlayerModal('<%= element.username %>')" data-edit
+                            onclick="showEditMembershipModal('<%= element.playerID %>')" data-edit
                             data-pointer-not-allowed></i>
                           <i class="bx bx-trash delete" aria-label="Delete"
-                            onclick="showDeleteItemModal('<%= element.username %>')" data-delete
+                            onclick="showDeleteItemModal('<%= element.playerID %>')" data-delete
                             data-pointer-not-allowed></i>
                       </tr>
                       <% }) %>
@@ -116,7 +116,7 @@
                 <div>
                   <label for="membershipLevel" class="modal-fields">Privilege Level: </label>
                   <select id="membershipLevel" name="level" class="dropdown" data-save-input
-                    onchange="updatePrivilegeClass()" default="1">
+                    onchange="updatePrivilegeClass('membershipLevel', 'privilegeClass')" default="1">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -132,6 +132,54 @@
                 </div>
               </div>
               <div class="modal-error-message" data-modal-error-message></div>
+            </form>
+
+            <form class="modal edit-item-modal" action="/memberships/update" method="POST" data-edit-membership-modal>
+              <div class="modal-header">
+                <h2>Edit Membership</h2>
+                <button class="close-btn" type="button" onclick="hideEditMembershipModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="modal-fields">
+                  <label for="usernameEdit">Username: </label>
+                  <input type="text" id="usernameEdit" name="username" autocomplete="username" aria-label="Username"
+                    data-username-edit readonly>
+                  <input type="hidden" id="playerIDEdit" name="playerID" data-player-id-edit>
+                </div>
+                <div class="modal-fields">
+                  <label for="issueDateEdit">Issue Date: </label>
+                  <input type="date" id="issueDateEdit" name="issueDate" aria-label="Issue Date" data-issue-date-edit>
+                  <input type="hidden" id="issueDateEditOriginal" name="issueDateOriginal">
+                </div>
+                <div class="modal-fields">
+                  <label for="daysRemainingEdit">Days Remaining: </label>
+                  <input type="number" id="daysRemainingEdit" name="daysRemaining" aria-label="Days Remaining" data-days-remaining-edit>
+                </div>
+                <div class="modal-fields">
+                  <label for="membershipLevelEdit">Privilege Level: </label>
+                  <select name="level" id="membershipLevelEdit" class="dropdown" default="1" data-level-edit onchange="updatePrivilegeClass('membershipLevelEdit', 'privilegeClassEdit')" data-privilege-level-edit>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                  <span id="privilegeClassEdit" class="modal-fields">Bronze</span>
+                </div>
+                <div class="modal-fields">
+                  <label for="statusEdit">Status: </label>
+                  <select id="statusEdit" name="status" class="dropdown" data-status-edit>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn modal-btn-confirm" type="submit">Update</button>
+                  <button class="btn modal-btn-cancel" type="button" onclick="hideEditMembershipModal()">Cancel</button>
+                </div>
+                <div class="modal-error-message" data-modal-error-message></div>
+              </div>
+
             </form>
           </main>
 

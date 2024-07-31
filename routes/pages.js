@@ -38,7 +38,8 @@ router.get("/store-items", authController.isLoggedIn, storeItemsController.loadS
 router.get("/memberships", authController.isLoggedIn, membershipsController.loadMemberships);
 router.post("/memberships", membershipsController.registerMembership);
 router.get("/memberships/check-membership", membershipsController.checkMembership);
-
+router.get("/memberships/fetch", membershipsController.fetchMembershipData);
+router.post("/memberships/update", membershipsController.updateMembership);
 router.delete("/memberships/delete", membershipsController.deleteMembership); 
 
 router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
