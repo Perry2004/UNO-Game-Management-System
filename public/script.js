@@ -306,10 +306,10 @@ function hideCreateMembershipModal() {
   hideModalErrorMessage("[data-create-membership-modal]");
 }
 
-function updatePrivilegeClass() {
-  const privilegeLevel = document.getElementById("membershipLevel").value.toString();
+function updatePrivilegeClass(levelElement, classElement) {
+  const privilegeLevel = document.getElementById(levelElement).value.toString();
   console.log(privilegeLevel);
-  const privilegeClass = document.getElementById("privilegeClass");
+  const privilegeClass = document.getElementById(classElement);
   console.log(privilegeClass);
   let level = "";
   switch (privilegeLevel) {
@@ -353,3 +353,78 @@ async function isUserHasMembership() {
   const response = await fetch(`/memberships/check-membership?username=${username}`);
   return response.ok;
 }
+
+async function fetchMembershipData(playerID) {
+  const response = await fetch(`/memberships/fetch?playerID=${playerID}`);
+  if (response.ok) {
+    return response.json();
+  } else {
+    return null;
+  }
+}
+
+async function showEditMembershipModal(playerID) {
+  // const playerIDInput = document.querySelector("[data-player-id]");
+  // const usernameInput = document.querySelector("[data-username-edit]");
+  // const emailInput = document.querySelector("[data-email-edit]");
+  // const countryInput = document.querySelector("[data-country-edit]");
+  const playerIDInput = document.getElementById("playerIDEdit");
+  const username = document.getElementById("usernameEdit");
+  const issueDate = document.getElementById("issueDateEdit");
+  const daysRemaining = document.getElementById("daysRemainingEdit");
+  const membershipLevel = document.getElementById("membershipLevelEdit");
+  const privilegeClass = document.getElementById("privilegeClassEdit");
+  const status = document.getElementById("statusEdit");
+
+  const membershipData = await fetchMembershipData(playerID);
+  if (membershipData) {
+    username.value = membershipData.username;
+    playerIDInput.value = membershipData.playerID;
+    daysRemaining.value = membershipData.membershipDaysRemaining;
+    membershipLevel.value = membershipData.membershipPrivilegeLevel;
+    privilegeClass.innerHTML = membershipData.membershipPrivilegeClass;
+    status.value = membershipData.membershipStatus;
+
+    // handle issue date issue
+    const issueDateValue = new Date(Date.parse(membershipData.membershipIssueTime));
+    const year = issueDateValue.getFullYear();
+    const month = (issueDateValue.getMonth() + 1).toString().padStart(2, '0');
+    const day = issueDateValue.getDate().toString().padStart(2, '0');
+    issueDate.value = `${year}-${month}-${day}`;
+  }
+
+
+  const editMembershipModal = document.querySelector("[data-edit-membership-modal]");
+  editMembershipModal.classList.add("openedModal");
+
+  showModal();
+  localStorage.setItem("modalState", "editMembershipModalOpened");
+}
+
+
+function hideEditMembershipModal() {
+  const editMembershipModal = document.querySelector("[data-edit-membership-modal]");
+  editMembershipModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-edit-membership-modal]");
+  hideModal();
+}
+
+document.querySelector("[data-edit-membership-modal")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  usernameEdit = document.getElementById("usernameEdit");
+  issueDateEdit = document.getElementById("issueDateEdit");
+  daysRemainingEdit = document.getElementById("daysRemainingEdit");
+  privilegeLevelEdit = document.getElementById("membershipLevelEdit");
+  statusEdit = document.getElementById("statusEdit");
+
+  // if any of the field is empty, display error message
+  if (usernameEdit.value === "" || issueDateEdit.value === "" || daysRemainingEdit.value === "" || privilegeLevelEdit.value === "" || statusEdit.value === "") {
+    console.log("Captured");
+    displayModalErrorMessage("[data-edit-membership-modal]", "Form Incomplete... Please try again!");
+    return;
+  }
+  console.log("Escaped");
+  hideModalErrorMessage("[data-edit-membership-modal]");
+  e.target.submit();
+});
