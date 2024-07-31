@@ -424,7 +424,6 @@ document.querySelector("[data-edit-membership-modal")?.addEventListener("submit"
     displayModalErrorMessage("[data-edit-membership-modal]", "Form Incomplete... Please try again!");
     return;
   }
-  console.log("Escaped");
   hideModalErrorMessage("[data-edit-membership-modal]");
   e.target.submit();
 });

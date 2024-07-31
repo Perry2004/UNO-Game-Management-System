@@ -30,8 +30,8 @@ exports.getRecentMemberships = async () => {
     return results.map((element) => ({
       username: element.username,
       playerID: element.playerID,
-      membershipIssueTime: formatInTimeZone(element.membershipIssueTime, timeZone, "yyyy-MM-dd HH:mm:ss zzz"),
-      membershipExpireTime: formatInTimeZone(element.membershipExpireTime, timeZone, "yyyy-MM-dd HH:mm:ss zzz"),
+      membershipIssueTime: formatInTimeZone(element.membershipIssueTime, timeZone, "yyyy-MM-dd"),
+      membershipExpireTime: formatInTimeZone(element.membershipExpireTime, timeZone, "yyyy-MM-dd"),
       membershipDaysRemaining: dateDiffInDays(element.membershipIssueTime, element.membershipExpireTime),
       membershipPrivilegeClass: element.membershipPrivilegeClass,
       membershipPrivilegeLevel: element.membershipPrivilegeLevel,
@@ -146,9 +146,13 @@ exports.updateMembership = async (username, playerID, issueTime, daysRemaining, 
     console.log("Trying to update: username: ", username, " playerID: ", playerID, " issueTime: ", issueTime, " daysRemaining: ", daysRemaining, " privilegeLevel: ", privilegeLevel, " status: ", status);
     expireDate = new Date(issueTime.getTime() + (daysRemaining * 24 * 60 * 60 * 1000));
     console.log("Issue date: ", issueTime, "Expire date: ", expireDate, "Days remaining: ", daysRemaining, "Calculated diff: ", dateDiffInDays(issueTime, expireDate));
+    issueTime = issueTime.toISOString().split("T")[0];
+    expireDate = expireDate.toISOString().split("T")[0];
+    console.log("Issue date: ", issueTime, "Expire date: ", expireDate);
     await db.promise().query("UPDATE MembershipInPlayer SET issue_time = ?, expire_time = ?, privilege_level = ?, status = ? WHERE player_id = ?", [issueTime, expireDate, privilegeLevel, status, playerID]);
   } catch (error) {
     console.error(logError("updateMembership"), error.message);
     throw error;
   }
 }
+
