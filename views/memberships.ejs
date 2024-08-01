@@ -27,17 +27,17 @@
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT MEMBERSHIPS</h2>
                   <div class="table-button-list">
-                    <select name="selector" id="selector" class="dropdown">
-                      <option value="Filter">Filter</option>
-                      <option value="Win Rate">Issue Date</option>
-                      <option value="Win Rate">Days Remaining</option>
-                      <option value="Win Rate">Privilege Class</option>
-                      <option value="Win Rate">Privilege Level</option>
-                      <option value="Win Rate">Status</option>
-                    </select>
+                    <div class="dropdown-container">
+                      <p class="dropdown-title">Sort By:</p>
+                      <select name="dropdown" class="dropdown" data-dropdown data-pointer-not-allowed>
+                        <option value="issueDate">Issue Date</option>
+                        <option value="daysRemaining">Days Remaining</option>
+                        <option value="privilegeLevel">Privilege Level</option>
+                        <option value="status">Status</option>
+                      </select>
+                    </div>
                     <button class="table-btn add-btn" onclick="showCreateMembershipModal()"><i
                         class="bx bx-plus"></i>Create Membership</button>
-                    <button class="table-btn">View All</button>
                   </div>
                 </div>
                 <table class="table">
@@ -80,6 +80,7 @@
                           <i class="bx bx-trash delete" aria-label="Delete"
                             onclick="showDeleteItemModal('<%= element.playerID %>')" data-delete
                             data-pointer-not-allowed></i>
+                        </td>
                       </tr>
                       <% }) %>
                   </tbody>
@@ -148,16 +149,24 @@
                 </div>
                 <div class="modal-fields">
                   <label for="issueDateEdit">Issue Date: </label>
-                  <input type="date" id="issueDateEdit" name="issueDate" aria-label="Issue Date" data-issue-date-edit>
+                  <input type="date" id="issueDateEdit" name="issueDate" aria-label="Issue Date" data-issue-date-edit
+                    readonly>
                   <input type="hidden" id="issueDateEditOriginal" name="issueDateOriginal">
                 </div>
-                <div class="modal-fields">
+                <!-- <div class="modal-fields">
                   <label for="daysRemainingEdit">Days Remaining: </label>
                   <input type="number" id="daysRemainingEdit" name="daysRemaining" aria-label="Days Remaining" data-days-remaining-edit>
+                </div> -->
+                <div class="modal-fields">
+                  <label for="expireDateEdit">Expire Date: </label>
+                  <input type="date" id="expireDateEdit" name="expireDate" aria-label="Expire Date"
+                    data-expire-date-edit>
                 </div>
                 <div class="modal-fields">
                   <label for="membershipLevelEdit">Privilege Level: </label>
-                  <select name="level" id="membershipLevelEdit" class="dropdown" default="1" data-level-edit onchange="updatePrivilegeClass('membershipLevelEdit', 'privilegeClassEdit')" data-privilege-level-edit>
+                  <select name="level" id="membershipLevelEdit" class="dropdown" default="1" data-level-edit
+                    onchange="updatePrivilegeClass('membershipLevelEdit', 'privilegeClassEdit')"
+                    data-privilege-level-edit>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -166,13 +175,13 @@
                   </select>
                   <span id="privilegeClassEdit" class="modal-fields">Bronze</span>
                 </div>
-                <div class="modal-fields">
+                <!-- <div class="modal-fields">
                   <label for="statusEdit">Status: </label>
                   <select id="statusEdit" name="status" class="dropdown" data-status-edit>
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                   </select>
-                </div>
+                </div> -->
                 <div class="modal-footer">
                   <button class="btn modal-btn-confirm" type="submit">Update</button>
                   <button class="btn modal-btn-cancel" type="button" onclick="hideEditMembershipModal()">Cancel</button>
@@ -191,4 +200,3 @@
   </body>
 
 </html>
-
