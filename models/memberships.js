@@ -4,9 +4,28 @@ const { format, differenceInCalendarMonths, longFormatters, constructFrom } = re
 const logError = (functionName) => `OH NO! Error with ${functionName} in Models:`;
 const timeZone = "America/Vancouver";
 
-exports.getRecentMemberships = async () => {
+exports.getRecentMemberships = async (order) => {
   try {
     await updateMembershipStatus();
+
+    let orderByClause;
+    switch (order) {
+      case "issueDate":
+        orderByClause = "mp.issue_time";
+        break;
+      case "daysRemaining":
+        orderByClause = "mp.expire_time";
+        break;
+      case "privilegeLevel":
+        orderByClause = "mpc.privilege_level";
+        break;
+      case "status":
+        orderByClause = "mp.status";
+        break;
+      default:
+        orderByClause = "mp.issue_time";
+    }
+
     const [results] = await db.promise().query(`
         SELECT 
             p.username AS username,
@@ -19,7 +38,7 @@ exports.getRecentMemberships = async () => {
         FROM MembershipInPlayer mp
         JOIN Players p ON mp.player_id = p.player_id
         JOIN MembershipPrivilegeClass mpc ON mp.privilege_level = mpc.privilege_level
-        ORDER BY mp.player_id DESC LIMIT 10; 
+        ORDER BY ${orderByClause} DESC LIMIT 10; 
     `);
 
     // if the list is empty, just return an empty list
@@ -207,8 +226,6 @@ async function updateMembershipStatus() {
       expireTime.setHours(0, 0, 0, 0);
       currentTime = new Date();
       currentTime.setHours(0, 0, 0, 0);
-      console.log("Current time: ", currentTime, "Expire time: ", expireTime);
-      console.log("Status: ", currentTime <= expireTime ? "Active" : "Expired");
       const status = currentTime <= expireTime ? "Active" : "Expired";
       await db.promise().query("UPDATE MembershipInPlayer SET status = ? WHERE player_id = ?", [status, membership.player_id]);
     }

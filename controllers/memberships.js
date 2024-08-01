@@ -3,8 +3,11 @@ const membershipsModel = require("../models/memberships");
 
 exports.loadMemberships = async (req, res) => {
   if (req.loginStatus === true) {
+
+    const { order } = req.query;
+
     try {
-      const recentMemberships = await membershipsModel.getRecentMemberships();
+      const recentMemberships = await membershipsModel.getRecentMemberships(order);
 
       res.render("memberships", { recentMemberships });
     } catch (error) {

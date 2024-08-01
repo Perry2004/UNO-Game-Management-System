@@ -40,12 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners to sort data on click
   document.querySelector("[data-dropdown]")?.addEventListener("change", async (e) => {
-    window.location.href = `/dashboard?order=${e.target.value}`;
+    window.location.href = `${window.location.pathname}?order=${e.target.value}`;
   });
 
   // Restore dropdown state
   const [key, value] = window.location.search.substring(1).split("=");
-  document.querySelector("[data-dropdown]").value = value || "recent";
+  if (window.location.pathname == "/dashboard") {
+    document.querySelector("[data-dropdown]").value = value || "recent";
+  } else if (window.location.pathname == "/memberships") {
+    document.querySelector("[data-dropdown]").value = value || "issueDate";
+  }
 });
 
 /* =================================================================================================== */
