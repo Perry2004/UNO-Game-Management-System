@@ -54,7 +54,7 @@ exports.getRecentMemberships = async (order) => {
       membershipDaysRemaining: dateDiffInDays(
         new Date().toISOString().split("T")[0],
         new Date(element.membershipExpireTime.toISOString().split("T")[0])
-      ),
+      ) > 0 ? dateDiffInDays(new Date().toISOString().split("T")[0], new Date(element.membershipExpireTime.toISOString().split("T")[0])) : 0,
       membershipPrivilegeClass: element.membershipPrivilegeClass,
       membershipPrivilegeLevel: element.membershipPrivilegeLevel,
       membershipStatus: element.membershipStatus,
