@@ -193,10 +193,10 @@ exports.updateMembership = async (username, playerID, issueTime, expireDate, pri
       privilegeLevel,
     );
 
-    issueTime = new Date(issueTime);
+    issueTime = new Date();
     expireTime = new Date(expireDate);
     // if the current time is before the expire time, the status is active
-    status = new Date() < expireTime ? "Active" : "Expired";
+    let status = new Date() < expireTime ? "Active" : "Expired";
 
     issueTime = issueTime.toISOString().split("T")[0];
     expireTime = expireTime.toISOString().split("T")[0];
