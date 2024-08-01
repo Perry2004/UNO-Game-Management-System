@@ -55,7 +55,7 @@ function dateDiffInDays(a, b) {
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY) + 1;
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
 
 exports.registerMembership = async (username, duration, privilegeLevel) => {
@@ -204,7 +204,12 @@ async function updateMembershipStatus() {
     for (let i = 0; i < results.length; i++) {
       const membership = results[i];
       const expireTime = new Date(membership.expire_time);
-      const status = new Date() < expireTime ? "Active" : "Expired";
+      expireTime.setHours(0, 0, 0, 0);
+      currentTime = new Date();
+      currentTime.setHours(0, 0, 0, 0);
+      console.log("Current time: ", currentTime, "Expire time: ", expireTime);
+      console.log("Status: ", currentTime <= expireTime ? "Active" : "Expired");
+      const status = currentTime <= expireTime ? "Active" : "Expired";
       await db.promise().query("UPDATE MembershipInPlayer SET status = ? WHERE player_id = ?", [status, membership.player_id]);
     }
   } catch (error) {
