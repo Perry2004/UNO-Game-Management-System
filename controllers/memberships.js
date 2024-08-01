@@ -18,13 +18,13 @@ exports.loadMemberships = async (req, res) => {
 
 exports.registerMembership = async (req, res) => {
   console.log("Entered registerMembership");
-  const { username, level } = req.body;
+  const { username, duration, level } = req.body;
 
   try {
     if (!username || !level) {
       throw new Error("Form Incomplete... Please try again!");
     }
-    await membershipsModel.registerMembership(username, level);
+    await membershipsModel.registerMembership(username, duration, level);
     return res.redirect("/memberships");
   } catch (error) {
     console.error("Error registering membership:", error);
@@ -50,14 +50,15 @@ exports.checkMembership = async (req, res) => {
   try {
     const { username } = req.query;
     console.log("Username: ", username);
-    if (membershipsModel.isUsernameRegistered(username)) {
-      console.log("Username has a membership");
+    if (await membershipsModel.isUsernameRegistered(username)) {
+      console.log("Username has a membership (in checkMembership)");
       res.status(409).send("Username has a membership");
     } else {
       console.log("Username has no membership");
       res.status(200).send("Username has no membership");
     }
   } catch (error) {
+    console.log("Username does not exist from checkMembership (in checkMembership catch)");
     res.status(409).send("Username does not exist");
   }
 };

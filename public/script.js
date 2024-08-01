@@ -281,8 +281,11 @@ document.querySelector("[data-create-membership-modal]")?.addEventListener("subm
     return;
   }
 
-  if (await isUserHasMembership()) {
-    displayModalErrorMessage("[data-create-membership-modal]", "Membership already exists... Please try again!");
+  console.log(await isUserHasMembership());
+
+  if (!(await isUserHasMembership())) {
+    console.log("Captured");
+    displayModalErrorMessage("[data-create-membership-modal]", "Invalid user, aborted.");
     return;
   }
 
@@ -507,8 +510,10 @@ function updatePrivilegeClass(levelElement, classElement) {
  * If so, the new membership should not be created.
  */
 async function isUserHasMembership() {
+  console.log("Entered isUserHasMembership");
   const username = document.getElementById("usernameCreate").value;
   const response = await fetch(`/memberships/check-membership?username=${username}`);
+  console.log("Response.ok: ", response.ok);
   return response.ok;
 }
 

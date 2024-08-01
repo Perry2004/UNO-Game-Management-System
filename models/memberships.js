@@ -110,18 +110,21 @@ exports.deleteMembershipByUsername = async (playerID) => {
  * Return true if invalid, false if valid
  */
 exports.isUsernameRegistered = async (username) => {
+  console.log("Entered isUsernameRegistered");
   playerID = await db.promise().query("SELECT player_id FROM Players WHERE username = ?", [username]);
   if (playerID[0].length === 0) {
     console.log("Username does not exist");
     return true;
   }
   playerID = playerID[0][0].player_id;
+  console.log("Player ID (in isUsernameRegistered): ", playerID);
   membershipID = await db.promise().query("SELECT membership_id FROM MembershipInPlayer WHERE player_id = ?", [playerID]);
   if (membershipID[0].length === 0) {
     console.log("Username does not have a membership");
     return false;
   } else {
     console.log("Username already has a membership");
+    console.log("Membership ID: ", membershipID[0][0].membership_id);
     return true;
   }
 };
