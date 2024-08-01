@@ -288,8 +288,15 @@ document.querySelector("[data-create-membership-modal]")?.addEventListener("subm
   console.log(await isUserHasMembership());
 
   if (!(await isUserHasMembership())) {
-    console.log("Captured");
     displayModalErrorMessage("[data-create-membership-modal]", "Invalid user, aborted.");
+    return;
+  }
+
+  currentDate = new Date();
+  expireDate = new Date(new Date().getTime() + document.getElementById("membershipDuration").value * 24 * 60 * 60 * 1000);
+  console.log("Calculated expire date: ", expireDate);
+  if (isNaN(expireDate)) {
+    displayModalErrorMessage("[data-create-membership-modal]", "Invalid date, aborted.");
     return;
   }
 
