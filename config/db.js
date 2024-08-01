@@ -23,6 +23,7 @@ db.connect((error) => {
                 console.error("Failed switching db: ", error.message);
               } else {
                 console.log("Switch successful.");
+                console.log("---------------------------------");
               }
             });
           } else {
@@ -38,6 +39,7 @@ db.connect((error) => {
               // initialize DB: create tables, insert dummy data
               initializeDB();
               console.log("Initialization successful.");
+              console.log("---------------------------------");
             }
           });
         }

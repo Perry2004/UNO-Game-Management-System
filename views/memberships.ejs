@@ -27,7 +27,7 @@
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT MEMBERSHIPS</h2>
                   <div class="table-button-list">
-                    <select name="selector" id="selector" class="dropdown">
+                    <select name="selector" id="selector" class="dropdown" data-dropdown>
                       <option value="Filter">Filter</option>
                       <option value="Win Rate">Issue Date</option>
                       <option value="Win Rate">Days Remaining</option>
@@ -148,12 +148,16 @@
                 </div>
                 <div class="modal-fields">
                   <label for="issueDateEdit">Issue Date: </label>
-                  <input type="date" id="issueDateEdit" name="issueDate" aria-label="Issue Date" data-issue-date-edit>
+                  <input type="date" id="issueDateEdit" name="issueDate" aria-label="Issue Date" data-issue-date-edit readonly>
                   <input type="hidden" id="issueDateEditOriginal" name="issueDateOriginal">
                 </div>
-                <div class="modal-fields">
+                <!-- <div class="modal-fields">
                   <label for="daysRemainingEdit">Days Remaining: </label>
                   <input type="number" id="daysRemainingEdit" name="daysRemaining" aria-label="Days Remaining" data-days-remaining-edit>
+                </div> -->
+                <div class="modal-fields">
+                  <label for="expireDateEdit">Expire Date: </label>
+                  <input type="date" id="expireDateEdit" name="expireDate" aria-label="Expire Date" data-expire-date-edit>
                 </div>
                 <div class="modal-fields">
                   <label for="membershipLevelEdit">Privilege Level: </label>
@@ -166,13 +170,13 @@
                   </select>
                   <span id="privilegeClassEdit" class="modal-fields">Bronze</span>
                 </div>
-                <div class="modal-fields">
+                <!-- <div class="modal-fields">
                   <label for="statusEdit">Status: </label>
                   <select id="statusEdit" name="status" class="dropdown" data-status-edit>
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
                   </select>
-                </div>
+                </div> -->
                 <div class="modal-footer">
                   <button class="btn modal-btn-confirm" type="submit">Update</button>
                   <button class="btn modal-btn-cancel" type="button" onclick="hideEditMembershipModal()">Cancel</button>
