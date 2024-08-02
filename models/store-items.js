@@ -49,3 +49,33 @@ exports.getRecentItems = async () => {
     throw error;
   }
 };
+
+exports.registerItem = async (name, quality, appliedPromotion) => {
+  // get the original price 
+  let originalPrice = await db.promise().query(`SELECT original_price FROM ItemOriginalPrice WHERE quality = ?`, [quality]);
+  originalPrice = originalPrice[0][0].original_price;
+
+
+  // get discount 
+  let discount = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
+  discount = discount[0][0].discount;
+  let currentPrice = originalPrice * (1 - discount / 100);
+
+
+  await db.promise().query(`
+    INSERT INTO Items (name, quality, current_price, applied_promotion) 
+    VALUES (?, ?, ?, ?)
+    `, [name, quality, currentPrice, appliedPromotion]);
+
+  console.log("Item registered successfully");
+}
+
+exports.isItemNameRegistered = async (name) => {
+  const [results] = await db.promise().query(`SELECT * FROM Items WHERE name = ?`, [name]);
+  return results.length > 0;
+}
+
+exports.fetchDiscountData = async (appliedPromotion) => {
+  const [results] = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
+  return results[0].discount;
+}

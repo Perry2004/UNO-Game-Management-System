@@ -607,3 +607,78 @@ document.querySelector("[data-edit-membership-modal")?.addEventListener("submit"
   hideModalErrorMessage("[data-edit-membership-modal]");
   e.target.submit();
 });
+
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Perrry Below: item ---------------------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+/**
+ * Validate the form data before submitting.
+ */
+document.querySelector("[data-create-item-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (document.getElementById("itemNameCreate").value === "" || document.getElementById("itemQuality").value === "" || document.getElementById("appliedPromotion").value === "") {
+    console.log("Form Incomplete... Please try again!");
+    displayModalErrorMessage("[data-create-item-modal]", "Form Incomplete... Please try again!");
+    return;
+  }
+
+
+  if (!(await checkItemName())) {
+    displayModalErrorMessage("[data-create-item-modal]", "Item already exists... Please try again!");
+    return;
+  }
+
+  // currentDate = new Date();
+  // expireDate = new Date(new Date().getTime() + document.getElementById("Duration").value * 24 * 60 * 60 * 1000);
+  // console.log("Calculated expire date: ", expireDate);
+  // if (isNaN(expireDate)) {
+  //   displayModalErrorMessage("[data-create-membership-modal]", "Invalid date, aborted.");
+  //   return;
+  // }
+
+  clearFormData();
+  hideModalErrorMessage("[data-create-item-modal]");
+  e.target.submit();
+});
+
+async function showCreateItemModal() {
+  const createItemModal = document.querySelector("[data-create-item-modal]");
+  createItemModal.classList.add("openedModal");
+
+  const discount = document.getElementById("discount");
+  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
+  discountValue = await discountValue.text();
+  discount.innerHTML = `${discountValue}% OFF`;
+
+  showModal();
+  localStorage.setItem("modalState", "createItemModalOpened");
+}
+
+function hideCreateItemModal() {
+  const createItemModal = document.querySelector("[data-create-item-modal]");
+  createItemModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-create-item-modal]");
+  hideModal();
+}
+
+/**
+ * Check if the item name is occupied.
+ */
+async function checkItemName() {
+  const itemName = document.getElementById("itemNameCreate").value;
+  const response = await fetch(`/store-items/check-item-name?itemName=${itemName}`);
+  return response.ok;
+}
+
+document.getElementById("appliedPromotion").addEventListener("change", async () =>{
+  const discount = document.getElementById("discount");
+  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
+  discountValue = await discountValue.text();
+  discount.innerHTML = `${discountValue}% OFF`;
+});

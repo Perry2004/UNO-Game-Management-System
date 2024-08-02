@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Game System Admin</title>
@@ -8,100 +9,161 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="icon" href="/UNO.icon" type="image/x-icon">
     <script defer src="/script.js"></script>
-</head>
-<body>
+  </head>
+
+  <body>
     <div id="grid-container">
 
-        <!-- Header Section  -->
-        <%- include("partials/header") %>
+      <!-- Header Section  -->
+      <%- include("partials/header") %>
 
         <!-- Sidebar Section  -->
         <%- include("partials/sidebar") %>
 
-        <!-- Main Section -->
-        <main class="grid-main">
-            <div class="main-body">
-                <div class="table-container-secondary">
-                    <div class="main-body-header">
-                        <h2 class="main-title">RECENT STORES</h2>
-                        <div class="table-button-list">
-                            <button class="table-btn">View All</button>
-                        </div>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Store ID</th>
-                                <th>Number of Items</th>
-                                <th>Linked To</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% locals.recentStores.forEach(element => { %>
-                                <tr>
-                                    <td><%= element.storeID %></td>
-                                    <td><%= element.numOfItems %></td>
-                                    <td><%= element.username %></td>
-                                    <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+          <!-- Main Section -->
+          <main class="grid-main">
+            <div class="main-body" data-main-body>
+              <div class="table-container-secondary">
+                <div class="main-body-header">
+                  <h2 class="main-title">RECENT STORES</h2>
+                  <div class="table-button-list">
+                    <button class="table-btn">View All</button>
+                  </div>
                 </div>
-                <br><br>
-                <div class="table-container-secondary">
-                    <div class="main-body-header">
-                        <h2 class="main-title">RECENT ITEMS</h2>
-                        <div class="table-button-list">
-                            <select name="selector" id="selector" class="dropdown">
-                                <option value="Filter">Filter</option>
-                                <option value="Win Rate">Quality</option>
-                                <option value="Win Rate">Current Price</option>
-                                <option value="Win Rate">Original Price</option>
-                                <option value="Win Rate">Applied Promotion</option>
-                                <option value="Win Rate">Discount</option>
-                            </select>
-                            <button class="table-btn add-btn"><i class="bx bx-plus"></i>Create Item</button>
-                            <button class="table-btn">View All</button>
-                        </div>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Quality</th>
-                                <th>Current Price</th>
-                                <th>Original Price</th>
-                                <th>Applied Promotion</th>
-                                <th>Discount</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% locals.recentItems.forEach(element => { %>
-                                <tr>
-                                    <td><%= element.itemName %></td>
-                                    <td><%= element.itemQuality %></td>
-                                    <td><%= element.itemCurrentPrice %></td>
-                                    <td><%= element.itemOriginalPrice %></td>
-                                    <td><%= element.itemAppliedPromotion %></td>
-                                    <td><%= element.itemDiscount %></td>
-                                    <td>
-                                        <i class='bx bx-log-in add' aria-label="Add"></i>
-                                        <i class='bx bxs-edit edit' aria-label="Edit"></i>
-                                        <i class='bx bx-trash delete' aria-label="Delete"></i>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Store ID</th>
+                      <th>Number of Items</th>
+                      <th>Linked To</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% locals.recentStores.forEach(element=> { %>
+                      <tr>
+                        <td>
+                          <%= element.storeID %>
+                        </td>
+                        <td>
+                          <%= element.numOfItems %>
+                        </td>
+                        <td>
+                          <%= element.username %>
+                        </td>
+                        <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
+                      </tr>
+                      <% }) %>
+                  </tbody>
+                </table>
+              </div>
+              <br><br>
+              <div class="table-container-secondary">
+                <div class="main-body-header">
+                  <h2 class="main-title">RECENT ITEMS</h2>
+                  <div class="table-button-list">
+                    <select name="selector" id="selector" class="dropdown">
+                      <option value="Filter">Filter</option>
+                      <option value="Win Rate">Quality</option>
+                      <option value="Win Rate">Current Price</option>
+                      <option value="Win Rate">Original Price</option>
+                      <option value="Win Rate">Applied Promotion</option>
+                      <option value="Win Rate">Discount</option>
+                    </select>
+                    <button class="table-btn add-btn" onclick="showCreateItemModal()"><i class="bx bx-plus"></i>Create
+                      Item</button>
+                    <button class="table-btn">View All</button>
+                  </div>
                 </div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Quality</th>
+                      <th>Current Price</th>
+                      <th>Original Price</th>
+                      <th>Applied Promotion</th>
+                      <th>Discount</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% locals.recentItems.forEach(element=> { %>
+                      <tr>
+                        <td>
+                          <%= element.itemName %>
+                        </td>
+                        <td>
+                          <%= element.itemQuality %>
+                        </td>
+                        <td>
+                          <%= element.itemCurrentPrice %>
+                        </td>
+                        <td>
+                          <%= element.itemOriginalPrice %>
+                        </td>
+                        <td>
+                          <%= element.itemAppliedPromotion %>
+                        </td>
+                        <td>
+                          <%= element.itemDiscount %>
+                        </td>
+                        <td>
+                          <i class='bx bx-log-in add' aria-label="Add"></i>
+                          <i class='bx bxs-edit edit' aria-label="Edit"></i>
+                          <i class='bx bx-trash delete' aria-label="Delete"></i>
+                        </td>
+                      </tr>
+                      <% }) %>
+                  </tbody>
+                </table>
+              </div>
             </div>
-        </main>
+            <form class="modal create-item-modal" action="/store-items" method="POST" data-create-item-modal>
+              <div class="modal-header">
+                <h2>Add Item</h2>
+                <button class="close-btn" type="button" onclick="hideCreateItemModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="modal-fields">
+                  <label for="itemNameCreate">Name: </label>
+                  <input type="text" id="itemNameCreate" name="name" aria-label="item name" data-save-input>
+                </div>
+                <div class="modal-fields">
+                  <label for="itemQuality">Quality: </label>
+                  <select id="itemQuality" name="quality" class="dropdown" data-save-input>
+                    <option value="Common">Common</option>
+                    <option value="Uncommon">Uncommon</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Epic">Epic</option>
+                    <option value="Legendary">Legendary</option>
+                  </select>
+                </div>
+                <div class="modal-fields">
+                  <label for="appliedPromotion">Applied Promotion: </label>
+                  <select id="appliedPromotion" name="appliedPromotion" class="dropdown" data-save-input>
+                    <option value="New Year Sale" selected>New Year Sale</option>
+                    <option value="Christmas Sale">Christmas Sale</option>
+                    <option value="Summer Sale">Summer Sale</option>
+                    <option value="Autumn Sale">Autumn Sale</option>
+                    <option value="Winter Sale">Winter Sale</option>
+                    <option value="Spring Sale">Spring Sale</option>
+                  </select>
+                  <span id="discount" data-save-input class="modal-fields">xxx percent off</span>
+                </div>
 
-        <!-- Footer Section -->
-        <%- include("partials/footer") %>
+                <div class="modal-footer">
+                  <button class="btn modal-btn-confirm" type="submit">Register</button>
+                  <button class="btn modal-btn-cancel" type="button" onclick="hideCreateItemModal()">Cancel</button>
+                </div>
+              </div>
+              <div class="modal-error-message" data-modal-error-message></div>
+            </form>
+          </main>
+
+          <!-- Footer Section -->
+          <%- include("partials/footer") %>
     </div>
-</body>
+  </body>
+
 </html>

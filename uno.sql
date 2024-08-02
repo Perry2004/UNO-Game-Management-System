@@ -447,6 +447,7 @@ VALUES
 INSERT IGNORE INTO ItemDiscount (applied_promotion, discount) 
 VALUES 
 ('New Year Sale', 35),
+('Christmas Sale', 80),
 ('Summer Sale', 20),
 ('Winter Sale', 15),
 ('Spring Sale', 25),
@@ -455,10 +456,10 @@ VALUES
 INSERT IGNORE INTO Items (current_price, name, quality, applied_promotion) 
 VALUES 
 (122, 'Red Card', 'Common', 'New Year Sale'),
-(187, 'Blue Card', 'Uncommon', 'New Year Sale'),
-(317, 'Green Card', 'Rare', 'New Year Sale'),
-(577, 'Yellow Card', 'Epic', 'New Year Sale'),
-(1097, 'Wild Card', 'Legendary', 'New Year Sale'); 
+(187, 'Blue Card', 'Uncommon', 'Summer Sale'),
+(317, 'Green Card', 'Rare', 'Winter Sale'),
+(577, 'Yellow Card', 'Epic', 'Spring Sale'),
+(1097, 'Wild Card', 'Legendary', 'Autumn Sale'); 
 
 INSERT IGNORE INTO StoreSellItems (store_id, item_id) 
 VALUES 
