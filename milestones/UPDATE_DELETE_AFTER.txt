@@ -1,0 +1,4 @@
+> serves as a reminder to document the updates made to Milestone 2 (the project)
+> Yuchen and Perry when you read this ping me and I'll tell you what this is about or I'll ping you eventually, whichever comes first.
+
+> As suggesteted by the name delete this file after UPDATE.md is populated with ALL updates made since M2, including the excisions et al.
