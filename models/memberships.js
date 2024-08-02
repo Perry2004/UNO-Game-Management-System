@@ -160,7 +160,7 @@ exports.registerMembership = async (playerID, duration, privilegeLevel) => {
 	}
 };
 
-exports.deleteMembershipByPlayerID = async (playerID) => {
+dexports.deleteMembershipByPlayerID = async (playerID) => {
 	try {
 		await db.promise().query("DELETE FROM Memberships WHERE player_id = ?", [playerID]);
 
