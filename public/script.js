@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners to delete data on click
   document.querySelector("[data-conform-delete]")?.addEventListener("click", async () => {
+    // DEBUG
+    console.log("Deleting item: ", itemToDelete);
     if (itemToDelete) {
       const response = await fetch(`${pathname}/delete`, {
         method: "DELETE",

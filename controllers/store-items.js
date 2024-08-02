@@ -54,3 +54,14 @@ exports.fetchDiscountData = async (req, res) => {
     res.status(500).send("OH NO! Internal Server Error with Fetching Discount Data");
   }
 }
+
+exports.deleteItem = async (req, res) => {
+  const { item: itemID } = req.body;
+  try {
+    await storeItemsModel.deleteItemByID(itemID);
+    res.status(200).send(`${itemID} deleted successfully`);
+  } catch (error) {
+    console.error(`OH NO! Error Deleting ${itemID}:`, error);
+    res.status(500).send("OH NO! Internal Server Error with Deleting Item");
+  }
+}

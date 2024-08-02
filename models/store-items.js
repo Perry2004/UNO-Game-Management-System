@@ -25,6 +25,7 @@ exports.getRecentItems = async () => {
     const [results] = await db.promise().query(`
         SELECT 
             i.name AS itemName, 
+            i.item_id AS itemID,
             i.quality AS itemQuality, 
             i.current_price AS itemCurrentPrice, 
             iop.original_price AS itemOriginalPrice, 
@@ -38,6 +39,7 @@ exports.getRecentItems = async () => {
 
     return results.map((element) => ({
       itemName: element.itemName,
+      itemID: element.itemID,
       itemQuality: element.itemQuality,
       itemCurrentPrice: "$" + element.itemCurrentPrice,
       itemOriginalPrice: "$" + element.itemOriginalPrice,
@@ -78,4 +80,9 @@ exports.isItemNameRegistered = async (name) => {
 exports.fetchDiscountData = async (appliedPromotion) => {
   const [results] = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
   return results[0].discount;
+}
+
+exports.deleteItemByID = async (itemID) => {
+  await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
+  console.log(`Item ${itemID} deleted successfully`);
 }
