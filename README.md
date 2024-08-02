@@ -127,7 +127,7 @@ We also divided the front-end (the React components) equally (in the manner abov
       JWT_COOKIE_EXPIRES = 90
       ```
 
-n.b. for `DATABASE_PASSWORD` use the same password you set up during the MySQL installation or configuration process on your computer.
+Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL installation or configuration process on your computer.
 
 2. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
 
