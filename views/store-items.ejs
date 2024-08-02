@@ -62,14 +62,15 @@
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT ITEMS</h2>
                   <div class="table-button-list">
-                    <select name="selector" id="selector" class="dropdown">
-                      <option value="Filter">Filter</option>
-                      <option value="Win Rate">Quality</option>
-                      <option value="Win Rate">Current Price</option>
-                      <option value="Win Rate">Original Price</option>
-                      <option value="Win Rate">Applied Promotion</option>
-                      <option value="Win Rate">Discount</option>
-                    </select>
+                    <div class="dropdown-container">
+                      <p class="dropdown-title">Sort By:</p>
+                      <select name="dropdown" class="dropdown" data-dropdown data-pointer-not-allowed>
+                        <option value="recent">Recent</option>
+                        <option value="quality">Quality</option>
+                        <option value="currentPrice">Current Price</option>
+                        <option value="discount">Discount</option>
+                      </select>
+                    </div>
                     <button class="table-btn add-btn" onclick="showCreateItemModal()"><i class="bx bx-plus"></i>Create
                       Item</button>
                     <button class="table-btn">View All</button>

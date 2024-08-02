@@ -3,8 +3,11 @@ const storeItemsModel = require("../models/store-items");
 exports.loadStoreItems = async (req, res) => {
   if (req.loginStatus === true) {
     try {
+      
+      const { order } = req.query;
+
       const recentStores = await storeItemsModel.getRecentStores();
-      const recentItems = await storeItemsModel.getRecentItems();
+      const recentItems = await storeItemsModel.getRecentItems(order);
 
       res.render("store-items", { recentStores, recentItems });
     } catch (error) {

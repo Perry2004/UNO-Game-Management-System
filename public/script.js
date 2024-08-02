@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("[data-dropdown]").value = value || "recent";
   } else if (window.location.pathname == "/memberships") {
     document.querySelector("[data-dropdown]").value = value || "issueDate";
+  } else if (window.location.pathname == "/store-items") {
+    document.querySelector("[data-dropdown]").value = value || "recent";
   }
 });
 

@@ -20,7 +20,26 @@ exports.getRecentStores = async () => {
   }
 };
 
-exports.getRecentItems = async () => {
+exports.getRecentItems = async (order) => {
+  let orderByClause;
+  
+  switch (order) {
+    case "recent":
+      orderByClause = "i.item_id";
+      break;
+    case "quality":
+      orderByClause = "iop.original_price";
+      break;
+    case "currentPrice":
+      orderByClause = "i.current_price";
+      break;
+    case "discount":
+      orderByClause = "id.discount";
+      break;
+    default:
+      orderByClause = "i.item_id";
+  }
+
   try {
     const [results] = await db.promise().query(`
         SELECT 
@@ -34,7 +53,7 @@ exports.getRecentItems = async () => {
         FROM Items i
         JOIN ItemOriginalPrice iop ON i.quality = iop.quality
         JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
-        ORDER BY item_id DESC LIMIT 4; 
+        ORDER BY ${orderByClause} DESC LIMIT 4; 
     `);
 
     return results.map((element) => ({
