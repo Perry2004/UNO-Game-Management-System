@@ -113,7 +113,8 @@ We also divided the front-end (the React components) equally (in the manner abov
 
    1. The `.env` file is used to store the environment variables for initializing the database connection.
    2. Please create a `.env` file in the root directory of the project with the following content with appropriate values:
-      `      LOGIN_USERNAME = admin
+      ```
+      LOGIN_USERNAME = admin
       LOGIN_PASSWORD = admin123
       DATABSE_HOST = localhost
       DATABASE_USER = root
@@ -123,8 +124,9 @@ We also divided the front-end (the React components) equally (in the manner abov
       JWT_SECRET = uno
       JWT_EXPIRES_IN = 90d
       JWT_COOKIE_EXPIRES = 90
-     `
-      n.b. for `DATABASE_PASSWORD` use the same password you set up during the MySQL installation or configuration process on your computer.
+      ```
+
+n.b. for `DATABASE_PASSWORD` use the same password you set up during the MySQL installation or configuration process on your computer.
 
 2. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
 
