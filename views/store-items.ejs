@@ -26,9 +26,6 @@
               <div class="table-container-secondary">
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT STORES</h2>
-                  <div class="table-button-list">
-                    <button class="table-btn">View All</button>
-                  </div>
                 </div>
                 <table class="table">
                   <thead>
@@ -75,51 +72,54 @@
                       Item</button>
                   </div>
                 </div>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Quality</th>
-                      <th>Current Price</th>
-                      <th>Original Price</th>
-                      <th>Applied Promotion</th>
-                      <th>Discount</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% locals.recentItems.forEach(element=> { %>
+                <div class="scrollable-table">
+                  <table class="table">
+                    <thead>
                       <tr>
-                        <td>
-                          <%= element.itemName %>
-                        </td>
-                        <td>
-                          <%= element.itemQuality %>
-                        </td>
-                        <td>
-                          <%= element.itemCurrentPrice %>
-                        </td>
-                        <td>
-                          <%= element.itemOriginalPrice %>
-                        </td>
-                        <td>
-                          <%= element.itemAppliedPromotion %>
-                        </td>
-                        <td>
-                          <%= element.itemDiscount %>
-                        </td>
-                        <td>
-                          <i class='bx bx-log-in add' aria-label="Add"></i>
-                          <i class='bx bxs-edit edit' aria-label="Edit" onclick="showEditItemModal('<%= element.itemID %>')"
-                            data-edit data-pointer-not-allowed></i>
-                          <i class='bx bx-trash delete' aria-label="Delete"
-                            onclick="showDeleteItemModal('<%= element.itemID %>')" data-delete
-                            data-pointer-not-allowed></i>
-                        </td>
+                        <th>Name</th>
+                        <th>Quality</th>
+                        <th>Current Price</th>
+                        <th>Original Price</th>
+                        <th>Applied Promotion</th>
+                        <th>Discount</th>
+                        <th>Actions</th>
                       </tr>
-                      <% }) %>
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      <% locals.recentItems.forEach(element=> { %>
+                        <tr>
+                          <td>
+                            <%= element.itemName %>
+                          </td>
+                          <td>
+                            <%= element.itemQuality %>
+                          </td>
+                          <td>
+                            <%= element.itemCurrentPrice %>
+                          </td>
+                          <td>
+                            <%= element.itemOriginalPrice %>
+                          </td>
+                          <td>
+                            <%= element.itemAppliedPromotion %>
+                          </td>
+                          <td>
+                            <%= element.itemDiscount %>
+                          </td>
+                          <td>
+                            <i class='bx bx-log-in add' aria-label="Add"></i>
+                            <i class='bx bxs-edit edit' aria-label="Edit"
+                              onclick="showEditItemModal('<%= element.itemID %>')" data-edit
+                              data-pointer-not-allowed></i>
+                            <i class='bx bx-trash delete' aria-label="Delete"
+                              onclick="showDeleteItemModal('<%= element.itemID %>')" data-delete
+                              data-pointer-not-allowed></i>
+                          </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
             <form class="modal create-item-modal" action="/store-items" method="POST" data-create-item-modal>

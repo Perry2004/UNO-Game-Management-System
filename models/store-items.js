@@ -10,7 +10,7 @@ exports.getRecentStores = async () => {
             p.player_id AS playerID
         FROM Stores s
         JOIN Players p ON s.player_id = p.player_id
-        ORDER BY s.player_id DESC LIMIT 3; 
+        ORDER BY s.player_id DESC;
     `);
 
     return results;
@@ -53,7 +53,7 @@ exports.getRecentItems = async (order) => {
         FROM Items i
         JOIN ItemOriginalPrice iop ON i.quality = iop.quality
         JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
-        ORDER BY ${orderByClause} DESC LIMIT 4; 
+        ORDER BY ${orderByClause} DESC;
     `);
 
     return results.map((element) => ({
