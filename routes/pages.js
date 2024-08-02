@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controllers/auth");
+const searchResultsController = require("../controllers/search-results");
 const dashboardController = require("../controllers/dashboard");
 const eventsController = require("../controllers/events");
 const matchesController = require("../controllers/matches");
@@ -24,8 +25,10 @@ router.get("/login", authController.isLoggedIn, (req, res) => {
   }
 });
 
-router.get("/dashboard", authController.isLoggedIn, dashboardController.loadDashboard);
+router.get("/search-results", searchResultsController.getSearchResults);
 
+router.get("/dashboard", authController.isLoggedIn, dashboardController.loadDashboard);
+router.get("/dashboard/fetch-playerID", dashboardController.fetchPlayerID); 
 router.get("/dashboard/edit-modal/fetch-data", dashboardController.fetchPlayerData); 
 router.get("/dashboard/create-modal/check-input", dashboardController.checkFormInput); 
 
@@ -46,10 +49,11 @@ router.post("/store-items/update", storeItemsController.updateItem);
 
 
 router.get("/memberships", authController.isLoggedIn, membershipsController.loadMemberships);
-router.post("/memberships", membershipsController.registerMembership);
-router.get("/memberships/check-membership", membershipsController.checkMembership);
-router.get("/memberships/fetch", membershipsController.fetchMembershipData);
+router.get("/memberships/edit-modal/fetch-data", membershipsController.fetchMembershipData);
+router.get("/memberships/create-modal/check-membership", membershipsController.checkMembershipExistence);
+
 router.post("/memberships/update", membershipsController.updateMembership);
+router.post("/memberships/register", membershipsController.registerMembership);
 router.delete("/memberships/delete", membershipsController.deleteMembership); 
 
 

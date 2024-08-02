@@ -1,96 +1,103 @@
-const { compareSync } = require("bcryptjs");
+const dashboardModel = require("../models/dashboard");
 const membershipsModel = require("../models/memberships");
 
+const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
+
 exports.loadMemberships = async (req, res) => {
-  if (req.loginStatus === true) {
+	if (!req.loginStatus) {
+		return res.redirect("/login");
+	}
 
-    const { order } = req.query;
+	const { order } = req.query;
 
-    try {
-      const recentMemberships = await membershipsModel.getRecentMemberships(order);
-
-      res.render("memberships", { recentMemberships });
-    } catch (error) {
-      console.error("OH NO! Error Loading Memberships:", error);
-      res.status(500).send("OH NO! Internal Server Error with Loading Memberships");
-    }
-  } else {
-    res.redirect("/login");
-  }
-};
-
-exports.registerMembership = async (req, res) => {
-  console.log("Entered registerMembership");
-  const { username, duration, level } = req.body;
-
-  try {
-    if (!username || !level) {
-      throw new Error("Form Incomplete... Please try again!");
-    }
-    await membershipsModel.registerMembership(username, duration, level);
-    return res.redirect("/memberships");
-  } catch (error) {
-    console.error("Error registering membership:", error);
-    return res.redirect("/memberships");
-  }
-};
-
-exports.deleteMembership = async (req, res) => {
-  const { item: playerID } = req.body;
-
-  try {
-    await membershipsModel.deleteMembershipByUsername(playerID);
-
-    res.status(200).send(`${playerID} deleted successfully`);
-  } catch (error) {
-    console.error(`OH NO! Error Deleting ${playerID}:`, error);
-    res.status(500).send("OH NO! Internal Server Error with deleteMembership in model");
-  }
-};
-
-exports.checkMembership = async (req, res) => {
-  console.log("Entered checkMembership");
-  try {
-    const { username } = req.query;
-    console.log("Username: ", username);
-    if (await membershipsModel.isUsernameRegistered(username)) {
-      console.log("Username has a membership (in checkMembership)");
-      res.status(409).send("Username has a membership");
-    } else {
-      console.log("Username has no membership");
-      res.status(200).send("Username has no membership");
-    }
-  } catch (error) {
-    console.log("Username does not exist from checkMembership (in checkMembership catch)");
-    res.status(409).send("Username does not exist");
-  }
+	try {
+		const recentMemberships = await membershipsModel.getAllMemberships(order);
+		res.render("memberships", { recentMemberships });
+	} catch (error) {
+		console.error(logError("loadMemberships"), error);
+		res.status(500).send(resError("loadMemberships"));
+	}
 };
 
 exports.fetchMembershipData = async (req, res) => {
-  const { playerID } = req.query;
+	const { playerID } = req.query;
 
-  try {
-    const membershipData = await membershipsModel.fetchMembershipByPlayerID(playerID);
-    res.status(200).json(membershipData);
-  } catch (error) {
-    console.error("OH NO! Error Fetching Membership Data:", error);
-    res.status(500).send("OH NO! Internal Server Error with Fetch Membership Data");
-  }
+	try {
+		const results = await membershipsModel.getMembershipDataByPlayerID(playerID);
+		res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchMembershipData"), error);
+		res.status(500).send(resError("fetchMembershipData"));
+	}
+};
+
+exports.checkMembershipExistence = async (req, res) => {
+	const { username } = req.query;
+
+	try {
+		const playerID = await dashboardModel.getPlayerID(username);
+		const membershipExistence = await membershipsModel.isPlayerMembershipRegistered(playerID);
+
+		if (!membershipExistence) {
+			return res.status(200).send(`OH YES! ${username} does not have a membership yet!`);
+		}
+
+		return res.status(400).send(`OH NO! ${username} already has a membership!`);
+	} catch (error) {
+		console.error(logError("checkMembershipExistence"), error);
+		res.status(500).send(resError("checkMembershipExistence"));
+	}
 };
 
 exports.updateMembership = async (req, res) => {
-  const { username, playerID, issueDate, expireDate, level } = req.body;
-  console.log("Issude date: ", issueDate);
-  console.log("Expire date: ", expireDate);
-  if (!username || !playerID || !issueDate || !expireDate || !level) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  } else {
-    try {
-      await membershipsModel.updateMembership(username, playerID, issueDate, expireDate, level);
-      return res.redirect("/memberships");
-    } catch (error) {
-      console.error("OH NO! Error Updating Membership:", error);
-      return res.redirect("/memberships");
-    }
-  }
+	const { playerID, expireDate, privilegeLevel } = req.body;
+
+	try {
+		const results = await membershipsModel.getMembershipDataByPlayerID(playerID);
+		const updates = {};
+
+		if (expireDate !== results.membershipExpireDate) {
+			updates.expire_date = expireDate;
+		}
+
+		if (privilegeLevel !== results.membershipPrivilegeLevel) {
+			updates.privilege_level = privilegeLevel;
+		}
+
+		if (Object.keys(updates).length > 0) {
+			await membershipsModel.updateMembershipByPlayerID(playerID, updates);
+		}
+
+		res.redirect("/memberships");
+	} catch (error) {
+		console.error(logError("updateMembership"), error);
+		res.status(500).send(resError("updateMembership"));
+	}
+};
+
+exports.registerMembership = async (req, res) => {
+	const { username, duration, privilegeLevel } = req.body;
+
+	try {
+		const playerID = await dashboardModel.getPlayerID(username);
+		await membershipsModel.registerMembership(playerID, duration, privilegeLevel);
+
+		res.redirect("/memberships");
+	} catch (error) {
+		console.error(logError("registerMembership"), error);
+		res.status(500).send(resError("registerMembership"));
+	}
+};
+
+exports.deleteMembership = async (req, res) => {
+	const { item: playerID } = req.body;
+
+	try {
+		await membershipsModel.deleteMembershipByPlayerID(playerID);
+		res.status(200).send("OH YES! Membership Deleted Successfully");
+	} catch (error) {
+		console.error(logError("deleteMembership"), error);
+		res.status(500).send(resError("deleteMembership"));
+	}
 };
