@@ -40,6 +40,8 @@ router.post("/store-items", storeItemsController.registerItem);
 router.get("/store-items/check-item-name", storeItemsController.checkItemName);
 router.get("/store-items/fetch-discount", storeItemsController.fetchDiscountData);
 router.delete("/store-items/delete", storeItemsController.deleteItem);
+router.get("/store-items/fetch", storeItemsController.fetchItemData);
+router.post("/store-items/update", storeItemsController.updateItem);
 
 
 

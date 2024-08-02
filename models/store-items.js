@@ -105,3 +105,19 @@ exports.deleteItemByID = async (itemID) => {
   await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
   console.log(`Item ${itemID} deleted successfully`);
 }
+
+exports.fetchItemData = async (itemID) => {
+  const [results] = await db.promise().query(`
+    SELECT *
+    FROM Items
+    WHERE item_id = ?
+  `, [itemID]);
+  return results[0];
+}
+
+exports.updateItemByID = async (itemID, name, quality, appliedPromotion) => {
+  const originalPrice = await db.promise().query(`SELECT original_price FROM ItemOriginalPrice WHERE quality = ?`, [quality]);
+  const discount = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
+  const currentPrice = originalPrice[0][0].original_price * (1 - discount[0][0].discount / 100);
+  await db.promise().query(`UPDATE Items SET name = ?, quality = ?, current_price = ?, applied_promotion = ? WHERE item_id = ?`, [name, quality, currentPrice, appliedPromotion, itemID]);
+}

@@ -23,8 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listeners to delete data on click
   document.querySelector("[data-conform-delete]")?.addEventListener("click", async () => {
-    // DEBUG
-    console.log("Deleting item: ", itemToDelete);
     if (itemToDelete) {
       const response = await fetch(`${pathname}/delete`, {
         method: "DELETE",
@@ -680,9 +678,71 @@ async function checkItemName() {
   return response.ok;
 }
 
-document.getElementById("appliedPromotion").addEventListener("change", async () =>{
+document.getElementById("appliedPromotion").addEventListener("change", async () => {
   const discount = document.getElementById("discount");
   let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
   discountValue = await discountValue.text();
   discount.innerHTML = `${discountValue}% OFF`;
+});
+
+document.getElementById("appliedPromotionEdit").addEventListener("change", async () => {
+  const discount = document.getElementById("discountEdit");
+  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
+  discountValue = await discountValue.text();
+  discount.innerHTML = `${discountValue}% OFF`;
+});
+
+
+async function showEditItemModal(itemID) {
+  const editItemModal = document.querySelector("[data-edit-item-modal]");
+
+
+  // load data to edit modal
+  itemData = await fetch(`/store-items/fetch?itemID=${itemID}`);
+  if (itemData.ok) {
+    itemData = await itemData.json();
+
+    const itemName = document.getElementById("itemNameEdit");
+    const itemIDInput = document.getElementById("itemIDEdit");
+    const itemQuality = document.getElementById("itemQualityEdit");
+    const appliedPromotion = document.getElementById("appliedPromotionEdit");
+
+    itemName.value = itemData.name;
+    itemIDInput.value = itemData.item_id;
+    itemQuality.value = itemData.quality;
+    appliedPromotion.value = itemData.applied_promotion;
+  } else {
+    console.error("Failed to fetch item data");
+    return;
+  }
+
+  const discount = document.getElementById("discountEdit");
+  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotionEdit").value}`);
+  discountValue = await discountValue.text();
+  discount.innerHTML = `${discountValue}% OFF`;
+
+  editItemModal.classList.add("openedModal");
+  showModal();
+}
+
+async function hideEditItemModal() {
+  const editItemModal = document.querySelector("[data-edit-item-modal]");
+  editItemModal.classList.remove("openedModal");
+  hideModal();
+}
+
+document.querySelector("[data-edit-item-modal")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  
+  const itemName = document.getElementById("itemNameEdit");
+  const itemQuality = document.getElementById("itemQualityEdit");
+  const appliedPromotion = document.getElementById("appliedPromotionEdit");
+
+  if (itemName.value === "" || itemQuality.value === "" || appliedPromotion.value === "") {
+    displayModalErrorMessage("[data-edit-item-modal]", "Form Incomplete... Please try again!");
+    return;
+  }
+
+  hideModalErrorMessage("[data-edit-item-modal]");
+  e.target.submit();
 });

@@ -68,3 +68,26 @@ exports.deleteItem = async (req, res) => {
     res.status(500).send("OH NO! Internal Server Error with Deleting Item");
   }
 }
+
+exports.fetchItemData = async (req, res) => {
+  try {
+    const { itemID } = req.query;
+    const itemData = await storeItemsModel.fetchItemData(itemID);
+    res.status(200).json(itemData);
+  } catch (error) {
+    console.error("OH NO! Error Fetching Item Data:", error);
+    res.status(500).send("OH NO! Internal Server Error with Fetching Item Data");
+  }
+}
+
+exports.updateItem = async (req, res) => {
+  try {
+    const { itemID, name, quality, appliedPromotion } = req.body;
+    await storeItemsModel.updateItemByID(itemID, name, quality, appliedPromotion);
+    console.log(`Item ${itemID} updated successfully`);
+    res.status(200).redirect("/store-items");
+  } catch (error) {
+    console.error("OH NO! Error Updating Item:", error);
+    res.status(500).redirect("/store-items");
+  }
+}
