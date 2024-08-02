@@ -106,6 +106,7 @@ We also divided the front-end (the React components) equally (in the manner abov
 - Some Group Members may find on-boarding more challenging than others and as such they may fall behind. In such a scenario it is expected that other group members will be of assistance in addition to the T.A. team.
 
 ---
+# Setup: 
 
 ### Local Setup:
 
