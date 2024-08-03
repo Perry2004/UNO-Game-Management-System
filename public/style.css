@@ -979,3 +979,83 @@ footer #laptop span:hover {
 footer #phone {
 	display: none;
 }
+
+
+/* ------------------------Show store items styles below------------------------------------------------------------------- */
+.store-items {
+	min-width: 30%; 
+	border-radius: 1rem;
+	background-color: white; 
+	padding: 2rem 2rem 1.8rem 2rem;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: GlowingBlue 2.5s linear 0.75s infinite alternate;
+	display: none;
+}
+
+@keyframes GlowingBlue {
+	0% {
+		box-shadow: 0px 0px 0px 0px blue;
+	}
+
+	80% {
+		box-shadow: 0px 0.5rem 2rem 0.5rem white;
+	}
+
+	100% {
+		box-shadow: 0px 0.5rem 2rem 0.5rem white;
+	}
+}
+
+.store-items.openedModal {
+	display: flex;
+	flex-direction: column;
+}
+
+.store-items-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem; 
+	padding-bottom: 0.75rem;
+	border-bottom: 1px solid var(--modal-border); 
+	font-size: 1.1rem; 
+}
+
+.store-items .close-btn {
+	background: none;
+	font-size: 1.7rem;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.store-items .scrollable-table {
+	width: 100%;
+	height: 300; 
+	overflow-y: auto;
+	scroll-snap-type: y mandatory;
+}
+
+.store-items .table {
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	font-size: 1.3rem; 
+}
+
+.store-items .table th {
+	background-color: white; 
+	padding: 1rem 0.75rem;
+	position: sticky;
+	top: 0;
+}
+
+.store-items .table tr {
+	scroll-snap-align: start;
+}
+
+.store-items .table td {
+	padding: 0 0.75rem;
+}

@@ -49,7 +49,11 @@
                           <td>
                             <%= element.username %>
                           </td>
-                          <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
+                          <td class="table-btn-td">
+                            <button class="table-btn" onclick="showStoreItemsModal('<%= element.storeID %>')">
+                              View Available Store Items
+                            </button>
+                          </td>
                         </tr>
                         <% }) %>
                     </tbody>
@@ -234,6 +238,31 @@
                 <button class="btn modal-btn-cancel" type="button" onclick="hideInsertItemModal()">Cancel</button>
               </div>
             </form>
+
+            <div class="store-items" data-store-items-modal>
+              <div class="store-items-header">
+                <h2 id="storeItemsModalHeader">Items in Store</h2>
+                <button class="close-btn" type="button" onclick="hideStoreItemsModal()">&times;</button>
+              </div>
+              <div class="scrollable-table">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Item ID</th>
+                      <th>Item Name</th>
+                      <th>Item Quality</th>
+                      <th>Item Current Price</th>
+                      <th>Item Original Price</th>
+                      <th>Item Applied Promotion</th>
+                      <th>Item Discount</th>
+                    </tr>
+                  </thead>
+                  <tbody id="storeItemsTable">
+                    <!-- filled by js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </main>
 
           <!-- Footer Section -->

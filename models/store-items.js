@@ -107,7 +107,8 @@ exports.deleteItemByID = async (itemID) => {
   if (storeID[0].length !== 0) {
     storeID = storeID[0][0].store_id;
     await db.promise().query(`DELETE FROM StoreSellItems WHERE item_id = ?`, [itemID]);
-    await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE store_id = ?`, [storeID]);
+    // use WHERE EXISTS to decrease num_of_items for all stores that have the item
+    await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE EXISTS (SELECT * FROM StoreSellItems WHERE store_id = ?)`, [storeID]);
   }
 
   await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
@@ -132,13 +133,9 @@ exports.updateItemByID = async (itemID, name, quality, appliedPromotion) => {
 
 exports.insertItem = async (itemID, username) => {
   let playerID = await db.promise().query(`SELECT player_id FROM Players WHERE username = ?`, [username]);
-  // DEBUG
-  console.log(playerID);
   playerID = playerID[0][0].player_id;
 
   let storeID = await db.promise().query(`SELECT store_id FROM Stores WHERE player_id = ?`, [playerID]);
-  // DEBUG
-  console.log(storeID);
   storeID = storeID[0][0].store_id;
   // update StoreSellItems
   await db.promise().query(`INSERT INTO StoreSellItems (store_id, item_id) VALUES (?, ?)`, [storeID, itemID]);
@@ -153,4 +150,28 @@ exports.isItemInStore = async (itemID, playerID) => {
 
   const [results] = await db.promise().query(`SELECT * FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
   return results.length > 0;
+}
+
+exports.getStoreItems = async (storeID) => {
+  const [results] = await db.promise().query(`
+    SELECT i.item_id, i.name, i.quality, i.current_price, i.applied_promotion, iop.original_price, id.discount
+    FROM Items i
+    JOIN ItemOriginalPrice iop ON i.quality = iop.quality
+    JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
+    JOIN StoreSellItems ssi ON i.item_id = ssi.item_id
+    WHERE ssi.store_id = ?
+  `, [storeID]);
+  return results;
+}
+
+exports.deleteStoreItem = async (itemID, storeID) => {
+  // DEBUG
+  console.log("In deleteStoreItem in model, storeID: ", storeID, "itemID: ", itemID);
+  await db.promise().query(`DELETE FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
+  // DEBUG
+  console.log(`DELETE FROM StoreSellItems WHERE store_id = ${storeID} AND item_id = ${itemID}`);
+  console.log("Deleted from StoreSellItems");
+  await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE store_id = ?`, [storeID]);
+  // DEBUG
+  console.log("Decreased num_of_items in Stores");
 }
