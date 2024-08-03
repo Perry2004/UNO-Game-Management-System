@@ -671,7 +671,7 @@ body.openedModal {
 }
 
 .modal.create-item-modal.openedModal,
-.modal.edit-item-modal.openedModal,
+.modal.edit-item-modal.openedModal, 
 .modal.insert-item-modal.openedModal {
 	display: flex;
 }
