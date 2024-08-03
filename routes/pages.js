@@ -45,6 +45,8 @@ router.get("/store-items/fetch-discount", storeItemsController.fetchDiscountData
 router.delete("/store-items/delete", storeItemsController.deleteItem);
 router.get("/store-items/fetch", storeItemsController.fetchItemData);
 router.post("/store-items/update", storeItemsController.updateItem);
+router.post("/store-items/insert", storeItemsController.insertItem);
+router.get("/store-items/check-item-in-store", storeItemsController.checkItemInStore);
 
 
 

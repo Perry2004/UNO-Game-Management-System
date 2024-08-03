@@ -661,7 +661,8 @@ body.openedModal {
 
 /* Create Modal Section  */
 .modal.create-item-modal,
-.modal.edit-item-modal {
+.modal.edit-item-modal,
+.modal.insert-item-modal {
 	width: 50rem;
 	max-width: 75%;
 	padding: 1rem;
@@ -670,7 +671,8 @@ body.openedModal {
 }
 
 .modal.create-item-modal.openedModal,
-.modal.edit-item-modal.openedModal {
+.modal.edit-item-modal.openedModal,
+.modal.insert-item-modal.openedModal {
 	display: flex;
 }
 

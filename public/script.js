@@ -685,3 +685,54 @@ document.querySelector("[data-edit-item-modal")?.addEventListener("submit", asyn
   hideModalErrorMessage("[data-edit-item-modal]");
   e.target.submit();
 });
+
+/* -----------Insert item codes below----------------- */
+function showInsertItemModal(itemID) {
+  const itemIDInsert = document.getElementById("itemIDInsert");
+  itemIDInsert.value = itemID;
+  const insertItemModal = document.querySelector("[data-insert-item-modal]");
+  insertItemModal.classList.add("openedModal");
+  showModal();
+}
+
+function hideInsertItemModal() {
+  const insertItemModal = document.querySelector("[data-insert-item-modal]");
+  insertItemModal.classList.remove("openedModal");
+  hideModal();
+}
+
+document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const insertUsername = document.getElementById("insertUsername");
+  const username = insertUsername.value;
+  const itemID  = document.getElementById("itemIDInsert").value;
+
+  // validation form completion
+  if (insertUsername.value === "") {
+    displayModalErrorMessage("[data-insert-item-modal]", "Form Incomplete... Please try again!");
+    return;
+  }
+
+  // validate if the username exists
+  const insertItemCheck = await fetch(`/dashboard/fetch-playerID?username=${insertUsername.value}`);
+  if (!insertItemCheck.ok) {
+    displayModalErrorMessage("[data-insert-item-modal]", "Username doesn't exist... Please try again!");
+    return;
+  }
+
+  const playerID = await insertItemCheck.json();
+
+  // validate if the item is alreay in the store
+  const isItemInStore = await fetch(`/store-items/check-item-in-store?itemID=${itemID}&playerID=${playerID}`);
+  // DEBUG
+  console.log("isItemInStore: ", isItemInStore);
+  if (isItemInStore.ok) {
+    displayModalErrorMessage("[data-insert-item-modal]", "Item already in the store... Please insert another item!");
+    return;
+  }
+
+  clearFormData();
+  hideModalErrorMessage("[data-insert-item-modal]");
+  e.target.submit();
+});

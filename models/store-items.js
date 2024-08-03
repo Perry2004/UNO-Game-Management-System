@@ -102,6 +102,14 @@ exports.fetchDiscountData = async (appliedPromotion) => {
 }
 
 exports.deleteItemByID = async (itemID) => {
+  // first delete from StoreSellItems and decrease num_of_items in Stores
+  let storeID = await db.promise().query(`SELECT store_id FROM StoreSellItems WHERE item_id = ?`, [itemID]);
+  if (storeID[0].length !== 0) {
+    storeID = storeID[0][0].store_id;
+    await db.promise().query(`DELETE FROM StoreSellItems WHERE item_id = ?`, [itemID]);
+    await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE store_id = ?`, [storeID]);
+  }
+
   await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
   console.log(`Item ${itemID} deleted successfully`);
 }
@@ -120,4 +128,29 @@ exports.updateItemByID = async (itemID, name, quality, appliedPromotion) => {
   const discount = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
   const currentPrice = originalPrice[0][0].original_price * (1 - discount[0][0].discount / 100);
   await db.promise().query(`UPDATE Items SET name = ?, quality = ?, current_price = ?, applied_promotion = ? WHERE item_id = ?`, [name, quality, currentPrice, appliedPromotion, itemID]);
+}
+
+exports.insertItem = async (itemID, username) => {
+  let playerID = await db.promise().query(`SELECT player_id FROM Players WHERE username = ?`, [username]);
+  // DEBUG
+  console.log(playerID);
+  playerID = playerID[0][0].player_id;
+
+  let storeID = await db.promise().query(`SELECT store_id FROM Stores WHERE player_id = ?`, [playerID]);
+  // DEBUG
+  console.log(storeID);
+  storeID = storeID[0][0].store_id;
+  // update StoreSellItems
+  await db.promise().query(`INSERT INTO StoreSellItems (store_id, item_id) VALUES (?, ?)`, [storeID, itemID]);
+
+  // update Store.num_of_items
+  await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items + 1 WHERE store_id = ?`, [storeID]);
+}
+
+exports.isItemInStore = async (itemID, playerID) => {
+  let storeID = await db.promise().query(`SELECT store_id FROM Stores WHERE player_id = ?`, [playerID]);
+  storeID = storeID[0][0].store_id;
+
+  const [results] = await db.promise().query(`SELECT * FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
+  return results.length > 0;
 }
