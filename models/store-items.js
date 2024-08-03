@@ -160,6 +160,7 @@ exports.getStoreItems = async (storeID) => {
     JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
     JOIN StoreSellItems ssi ON i.item_id = ssi.item_id
     WHERE ssi.store_id = ?
+    ORDER BY i.item_id
   `, [storeID]);
   return results;
 }
