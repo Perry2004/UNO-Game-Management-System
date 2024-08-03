@@ -51,6 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Restore dropdown state
   const [key, value] = window.location.search.substring(1).split("=");
   document.querySelector("[data-dropdown]").value = value || "recent";
+
+  // Restore modal state for Store-Items page
+  if (window.location.pathname === "/store-items") {
+    const modalState = localStorage.getItem("storeItemsModalState");
+    if (modalState !== null) {
+      showStoreItemsModal(modalState);
+    }
+    localStorage.removeItem("storeItemsModalState");
+  }
 });
 
 /* =================================================================================================== */
@@ -706,7 +715,7 @@ document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", a
 
   const insertUsername = document.getElementById("insertUsername");
   const username = insertUsername.value;
-  const itemID  = document.getElementById("itemIDInsert").value;
+  const itemID = document.getElementById("itemIDInsert").value;
 
   // validation form completion
   if (insertUsername.value === "") {
@@ -725,8 +734,6 @@ document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", a
 
   // validate if the item is alreay in the store
   const isItemInStore = await fetch(`/store-items/check-item-in-store?itemID=${itemID}&playerID=${playerID}`);
-  // DEBUG
-  console.log("isItemInStore: ", isItemInStore);
   if (isItemInStore.ok) {
     displayModalErrorMessage("[data-insert-item-modal]", "Item already in the store... Please insert another item!");
     return;
@@ -736,3 +743,69 @@ document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", a
   hideModalErrorMessage("[data-insert-item-modal]");
   e.target.submit();
 });
+
+/* ----------------Show Store Items ----------------- */
+async function showStoreItemsModal(storeID) {
+  const storeItemsModal = document.querySelector("[data-store-items-modal]");
+  storeItemsModal.classList.add("openedModal");
+
+  const storeItemsModalHeader = document.getElementById("storeItemsModalHeader");
+  storeItemsModalHeader.innerHTML = `Items in Store ${storeID}`;
+
+  // load data here 
+  let storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
+  storeItems = await storeItems.json();
+  console.log("JSON storeItems: ", storeItems);
+  if (storeItems.length > 0) {
+    const storeItemsTable = document.getElementById("storeItemsTable");
+    storeItemsTable.innerHTML = "";
+    storeItems.forEach((item) => {
+      storeItemsTable.innerHTML += `
+        <tr>
+          <td>${item.item_id}</td>
+          <td>${item.name}</td>
+          <td>${item.quality}</td>
+          <td>${item.current_price}</td>
+          <td>${item.original_price}</td>
+          <td>${item.applied_promotion}</td>
+          <td>${item.discount}</td>
+          <td>
+            <i class="bx bx-trash delete" aria-label="Delete" onclick="removeItemFromStore(${item.item_id}, ${storeID})"></i>
+          </td>
+        </tr>
+      `;
+    });
+  } else {
+    console.error("Failed to fetch store items data");
+    return;
+  }
+
+  showModal();
+}
+
+function hideStoreItemsModal() {
+  const storeItemsModal = document.querySelector("[data-store-items-modal]");
+  storeItemsModal.classList.remove("openedModal");
+  localStorage.removeItem("storeItemsModalState");
+  hideModal();
+}
+
+async function removeItemFromStore(itemID, storeID) {
+  const response = await fetch(`/store-items/delete-store-item?itemID=${itemID}&storeID=${storeID}`, {
+    method: "DELETE",
+  });
+  if (response.ok) {
+    // if there is no item in the store, hide the modal
+    const storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
+    if (storeItems.ok) {
+      const storeItemsData = await storeItems.json();
+      if (storeItemsData.length !== 0) {
+        // set local storage to restore the modal state after reload
+        localStorage.setItem("storeItemsModalState", storeID);
+      }
+    }
+    window.location.reload();
+  } else {
+    console.error(`Failed to delete item ${itemID}`);
+  }
+}

@@ -28,13 +28,13 @@ router.get("/login", authController.isLoggedIn, (req, res) => {
 router.get("/search-results", searchResultsController.getSearchResults);
 
 router.get("/dashboard", authController.isLoggedIn, dashboardController.loadDashboard);
-router.get("/dashboard/fetch-playerID", dashboardController.fetchPlayerID); 
-router.get("/dashboard/edit-modal/fetch-data", dashboardController.fetchPlayerData); 
-router.get("/dashboard/create-modal/check-input", dashboardController.checkFormInput); 
+router.get("/dashboard/fetch-playerID", dashboardController.fetchPlayerID);
+router.get("/dashboard/edit-modal/fetch-data", dashboardController.fetchPlayerData);
+router.get("/dashboard/create-modal/check-input", dashboardController.checkFormInput);
 
-router.post("/dashboard/update", dashboardController.updatePlayer); 
+router.post("/dashboard/update", dashboardController.updatePlayer);
 router.post("/dashboard/register", dashboardController.registerPlayer);
-router.delete("/dashboard/delete", dashboardController.deletePlayer); 
+router.delete("/dashboard/delete", dashboardController.deletePlayer);
 
 
 
@@ -47,6 +47,8 @@ router.get("/store-items/fetch", storeItemsController.fetchItemData);
 router.post("/store-items/update", storeItemsController.updateItem);
 router.post("/store-items/insert", storeItemsController.insertItem);
 router.get("/store-items/check-item-in-store", storeItemsController.checkItemInStore);
+router.get("/store-items/fetch-store-items", storeItemsController.fetchStoreItems);
+router.delete("/store-items/delete-store-item", storeItemsController.deleteStoreItem);
 
 
 
@@ -56,7 +58,7 @@ router.get("/memberships/create-modal/check-membership", membershipsController.c
 
 router.post("/memberships/update", membershipsController.updateMembership);
 router.post("/memberships/register", membershipsController.registerMembership);
-router.delete("/memberships/delete", membershipsController.deleteMembership); 
+router.delete("/memberships/delete", membershipsController.deleteMembership);
 
 
 

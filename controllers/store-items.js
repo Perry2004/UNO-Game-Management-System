@@ -3,7 +3,7 @@ const storeItemsModel = require("../models/store-items");
 exports.loadStoreItems = async (req, res) => {
   if (req.loginStatus === true) {
     try {
-      
+
       const { order } = req.query;
 
       const recentStores = await storeItemsModel.getRecentStores();
@@ -95,8 +95,6 @@ exports.updateItem = async (req, res) => {
 exports.insertItem = async (req, res) => {
   try {
     const { itemID, username } = req.body;
-    // DEBUG
-    console.log("In insertItem in controller: ", "itemID: ", itemID, "username: ", username);
     await storeItemsModel.insertItem(itemID, username);
     res.status(200).redirect("/store-items");
   } catch (error) {
@@ -113,4 +111,27 @@ exports.checkItemInStore = async (req, res) => {
     res.status(404).send("Item is not in store");
   }
 
+}
+
+exports.fetchStoreItems = async (req, res) => {
+  const { storeID } = req.query;
+  try {
+    const storeItems = await storeItemsModel.getStoreItems(storeID);
+    res.status(200).json(storeItems);
+  } catch (error) {
+    console.error("OH NO! Error Fetching Store Items:", error);
+    res.status(500).send("OH NO! Internal Server Error with Fetching Store Items");
+  }
+}
+
+exports.deleteStoreItem = async (req, res) => {
+  const { itemID, storeID } = req.query;
+  try {
+    await storeItemsModel.deleteStoreItem(itemID, storeID);
+    console.log(`Item ${itemID} deleted successfully from Store ${storeID}`);
+    res.status(200).send(`${itemID} deleted successfully`);
+  } catch (error) {
+    console.error(`OH NO! Error Deleting ${itemID} from Store ${storeID}:`, error);
+    res.status(500).send("OH NO! Internal Server Error with Deleting Store Item");
+  }
 }
