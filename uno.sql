@@ -459,11 +459,46 @@ VALUES
 
 INSERT IGNORE INTO Stores (player_id, num_of_items) 
 VALUES 
-(1, 10),
-(2, 15),
-(3, 8),
-(4, 12),
-(5, 20); 
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0),
+(6, 0),
+(7, 0),
+(8, 0),
+(9, 0),
+(10, 0),
+(11, 0),
+(12, 0),
+(13, 0),
+(14, 0),
+(15, 0),
+(16, 0),
+(17, 0),
+(18, 0),
+(19, 0),
+(20, 0);
+-- (1, 10),
+-- (2, 15),
+-- (3, 8),
+-- (4, 12),
+-- (5, 20),
+-- (6, 5),
+-- (7, 7),
+-- (8, 9),
+-- (9, 11),
+-- (10, 13),
+-- (11, 6),
+-- (12, 4),
+-- (13, 3),
+-- (14, 2),
+-- (15, 1),
+-- (16, 10),
+-- (17, 15),
+-- (18, 8),
+-- (19, 12),
+-- (20, 20);
 
 INSERT IGNORE INTO ItemOriginalPrice (quality, original_price) 
 VALUES 
@@ -488,15 +523,20 @@ VALUES
 (187, 'Blue Card', 'Uncommon', 'Summer Sale'),
 (317, 'Green Card', 'Rare', 'Winter Sale'),
 (577, 'Yellow Card', 'Epic', 'Spring Sale'),
-(1097, 'Wild Card', 'Legendary', 'Autumn Sale'); 
+(1097, 'Wild Card', 'Legendary', 'Autumn Sale'),
+(122, 'Dummy Item 1', 'Common', 'New Year Sale'),
+(187, 'Dummy Item 2', 'Uncommon', 'Summer Sale'),
+(317, 'Dummy Item 3', 'Rare', 'Winter Sale'),
+(577, 'Dummy Item 4', 'Epic', 'Spring Sale'),
+(1097, 'Dummy Item 5', 'Legendary', 'Autumn Sale');
 
-INSERT IGNORE INTO StoreSellItems (store_id, item_id) 
-VALUES 
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(1, 5); 
+-- INSERT IGNORE INTO StoreSellItems (store_id, item_id) 
+-- VALUES 
+-- (1, 1),
+-- (1, 2),
+-- (1, 3),
+-- (1, 4),
+-- (1, 5); 
 
 INSERT IGNORE INTO Matches (end_time, winner, status) 
 VALUES 

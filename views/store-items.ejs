@@ -26,36 +26,35 @@
               <div class="table-container-secondary">
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT STORES</h2>
-                  <div class="table-button-list">
-                    <button class="table-btn">View All</button>
-                  </div>
                 </div>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Store ID</th>
-                      <th>Number of Items</th>
-                      <th>Linked To</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% locals.recentStores.forEach(element=> { %>
+                <div class="scrollable-table">
+                  <table class="table">
+                    <thead>
                       <tr>
-                        <td>
-                          <%= element.storeID %>
-                        </td>
-                        <td>
-                          <%= element.numOfItems %>
-                        </td>
-                        <td>
-                          <%= element.username %>
-                        </td>
-                        <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
+                        <th>Store ID</th>
+                        <th>Number of Items</th>
+                        <th>Linked To</th>
+                        <th>Actions</th>
                       </tr>
-                      <% }) %>
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      <% locals.recentStores.forEach(element=> { %>
+                        <tr>
+                          <td>
+                            <%= element.storeID %>
+                          </td>
+                          <td>
+                            <%= element.numOfItems %>
+                          </td>
+                          <td>
+                            <%= element.username %>
+                          </td>
+                          <td class="table-btn-td"><button class="table-btn">View Available Store Items</button></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                </div>
               </div>
               <br><br>
               <div class="table-container-secondary">
@@ -75,51 +74,56 @@
                       Item</button>
                   </div>
                 </div>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Quality</th>
-                      <th>Current Price</th>
-                      <th>Original Price</th>
-                      <th>Applied Promotion</th>
-                      <th>Discount</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% locals.recentItems.forEach(element=> { %>
+                <div class="scrollable-table">
+                  <table class="table">
+                    <thead>
                       <tr>
-                        <td>
-                          <%= element.itemName %>
-                        </td>
-                        <td>
-                          <%= element.itemQuality %>
-                        </td>
-                        <td>
-                          <%= element.itemCurrentPrice %>
-                        </td>
-                        <td>
-                          <%= element.itemOriginalPrice %>
-                        </td>
-                        <td>
-                          <%= element.itemAppliedPromotion %>
-                        </td>
-                        <td>
-                          <%= element.itemDiscount %>
-                        </td>
-                        <td>
-                          <i class='bx bx-log-in add' aria-label="Add"></i>
-                          <i class='bx bxs-edit edit' aria-label="Edit" onclick="showEditItemModal('<%= element.itemID %>')"
-                            data-edit data-pointer-not-allowed></i>
-                          <i class='bx bx-trash delete' aria-label="Delete"
-                            onclick="showDeleteItemModal('<%= element.itemID %>')" data-delete
-                            data-pointer-not-allowed></i>
-                        </td>
+                        <th>Name</th>
+                        <th>Quality</th>
+                        <th>Current Price</th>
+                        <th>Original Price</th>
+                        <th>Applied Promotion</th>
+                        <th>Discount</th>
+                        <th>Actions</th>
                       </tr>
-                      <% }) %>
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      <% locals.recentItems.forEach(element=> { %>
+                        <tr>
+                          <td>
+                            <%= element.itemName %>
+                          </td>
+                          <td>
+                            <%= element.itemQuality %>
+                          </td>
+                          <td>
+                            <%= element.itemCurrentPrice %>
+                          </td>
+                          <td>
+                            <%= element.itemOriginalPrice %>
+                          </td>
+                          <td>
+                            <%= element.itemAppliedPromotion %>
+                          </td>
+                          <td>
+                            <%= element.itemDiscount %>
+                          </td>
+                          <td>
+                            <i class='bx bx-log-in add' aria-label="Add"
+                              onclick="showInsertItemModal('<%= element.itemID %>')" data-insert
+                              data-pointer-not-allowed></i>
+                            <i class='bx bxs-edit edit' aria-label="Edit"
+                              onclick="showEditItemModal('<%= element.itemID %>')" data-edit
+                              data-pointer-not-allowed></i>
+                            <i class='bx bx-trash delete' aria-label="Delete"
+                              onclick="showDeleteItemModal('<%= element.itemID %>')" data-delete
+                              data-pointer-not-allowed></i>
+                          </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
             <form class="modal create-item-modal" action="/store-items" method="POST" data-create-item-modal>
@@ -155,10 +159,10 @@
                   <span id="discount" data-save-input class="modal-fields">xxx percent off</span>
                 </div>
 
-                <div class="modal-footer">
-                  <button class="btn modal-btn-confirm" type="submit">Register</button>
-                  <button class="btn modal-btn-cancel" type="button" onclick="hideCreateItemModal()">Cancel</button>
-                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn modal-btn-confirm" type="submit">Register</button>
+                <button class="btn modal-btn-cancel" type="button" onclick="hideCreateItemModal()">Cancel</button>
               </div>
               <div class="modal-error-message" data-modal-error-message></div>
             </form>
@@ -204,13 +208,31 @@
                   </select>
                   <span id="discountEdit" data-save-input class="modal-fields">xxx percent off</span>
                 </div>
-                <div class="modal-footer">
-                  <button class="btn modal-btn-confirm" type="submit">Update</button>
-                  <button class="btn modal-btn-cancel" type="button" onclick="hideEditItemModal()">Cancel</button>
-                </div>
-                <div class="modal-error-message" data-modal-error-message></div>
               </div>
+              <div class="modal-footer">
+                <button class="btn modal-btn-confirm" type="submit">Update</button>
+                <button class="btn modal-btn-cancel" type="button" onclick="hideEditItemModal()">Cancel</button>
+              </div>
+              <div class="modal-error-message" data-modal-error-message></div>
+            </form>
 
+            <form class="modal insert-item-modal" action="/store-items/insert" method="POST" data-insert-item-modal>
+              <div class="modal-header">
+                <h2>Insert Item to Shop</h2>
+                <button class="close-btn" type="button" onclick="hideInsertItemModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <input type="hidden" id="itemIDInsert" name="itemID" data-save-input>
+                <div class="modal-fields">
+                  <label for="insertUsername">Insert to player: </label>
+                  <input type="text" id="insertUsername" name="username" aria-label="player username" data-save-input>
+                </div>
+              </div>
+              <div class="modal-error-message" data-modal-error-message></div>
+              <div class="modal-footer">
+                <button class="btn modal-btn-confirm" type="submit">Update</button>
+                <button class="btn modal-btn-cancel" type="button" onclick="hideInsertItemModal()">Cancel</button>
+              </div>
             </form>
           </main>
 

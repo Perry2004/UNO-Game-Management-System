@@ -91,3 +91,26 @@ exports.updateItem = async (req, res) => {
     res.status(500).redirect("/store-items");
   }
 }
+
+exports.insertItem = async (req, res) => {
+  try {
+    const { itemID, username } = req.body;
+    // DEBUG
+    console.log("In insertItem in controller: ", "itemID: ", itemID, "username: ", username);
+    await storeItemsModel.insertItem(itemID, username);
+    res.status(200).redirect("/store-items");
+  } catch (error) {
+    console.error("OH NO! Error Inserting Item:", error);
+    res.status(500).redirect("/store-items");
+  }
+}
+
+exports.checkItemInStore = async (req, res) => {
+  const { itemID, playerID } = req.query;
+  if (await storeItemsModel.isItemInStore(itemID, playerID)) {
+    res.status(200).send("Item is in store");
+  } else {
+    res.status(404).send("Item is not in store");
+  }
+
+}
