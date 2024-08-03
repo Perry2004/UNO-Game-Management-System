@@ -28,13 +28,13 @@ router.get("/login", authController.isLoggedIn, (req, res) => {
 router.get("/search-results", searchResultsController.getSearchResults);
 
 router.get("/dashboard", authController.isLoggedIn, dashboardController.loadDashboard);
-router.get("/dashboard/fetch-playerID", dashboardController.fetchPlayerID); 
-router.get("/dashboard/edit-modal/fetch-data", dashboardController.fetchPlayerData); 
-router.get("/dashboard/create-modal/check-input", dashboardController.checkFormInput); 
+router.get("/dashboard/fetch-playerID", dashboardController.fetchPlayerID);
+router.get("/dashboard/edit-modal/fetch-data", dashboardController.fetchPlayerData);
+router.get("/dashboard/create-modal/check-input", dashboardController.checkFormInput);
 
-router.post("/dashboard/update", dashboardController.updatePlayer); 
+router.post("/dashboard/update", dashboardController.updatePlayer);
 router.post("/dashboard/register", dashboardController.registerPlayer);
-router.delete("/dashboard/delete", dashboardController.deletePlayer); 
+router.delete("/dashboard/delete", dashboardController.deletePlayer);
 
 
 
@@ -58,7 +58,7 @@ router.get("/memberships/create-modal/check-membership", membershipsController.c
 
 router.post("/memberships/update", membershipsController.updateMembership);
 router.post("/memberships/register", membershipsController.registerMembership);
-router.delete("/memberships/delete", membershipsController.deleteMembership); 
+router.delete("/memberships/delete", membershipsController.deleteMembership);
 
 
 

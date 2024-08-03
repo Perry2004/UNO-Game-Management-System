@@ -95,8 +95,6 @@ exports.updateItem = async (req, res) => {
 exports.insertItem = async (req, res) => {
   try {
     const { itemID, username } = req.body;
-    // DEBUG
-    console.log("In insertItem in controller: ", "itemID: ", itemID, "username: ", username);
     await storeItemsModel.insertItem(itemID, username);
     res.status(200).redirect("/store-items");
   } catch (error) {
@@ -128,8 +126,6 @@ exports.fetchStoreItems = async (req, res) => {
 
 exports.deleteStoreItem = async (req, res) => {
   const { itemID, storeID } = req.query;
-  // DEBUG
-  console.log("In deleteStoreItem in controller: ", "itemID: ", itemID, "storeID: ", storeID);
   try {
     await storeItemsModel.deleteStoreItem(itemID, storeID);
     console.log(`Item ${itemID} deleted successfully from Store ${storeID}`);

@@ -982,6 +982,7 @@ footer #phone {
 
 
 /* ------------------------Show store items styles below------------------------------------------------------------------- */
+/* modified based on Search Result Section */
 .store-items {
 	min-width: 30%; 
 	border-radius: 1rem;

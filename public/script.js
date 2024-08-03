@@ -734,8 +734,6 @@ document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", a
 
   // validate if the item is alreay in the store
   const isItemInStore = await fetch(`/store-items/check-item-in-store?itemID=${itemID}&playerID=${playerID}`);
-  // DEBUG
-  console.log("isItemInStore: ", isItemInStore);
   if (isItemInStore.ok) {
     displayModalErrorMessage("[data-insert-item-modal]", "Item already in the store... Please insert another item!");
     return;
@@ -756,8 +754,6 @@ async function showStoreItemsModal(storeID) {
 
   // load data here 
   let storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
-  // DEBUG
-  console.log("storeItems: ", storeItems);
   storeItems = await storeItems.json();
   console.log("JSON storeItems: ", storeItems);
   if (storeItems.length > 0) {
