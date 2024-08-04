@@ -1,5 +1,9 @@
 const eventsModel = require("../models/events");
 
+const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
+
+
 /**
  * CREATE TABLE IF NOT EXISTS Events (
     event_id INT AUTO_INCREMENT,
@@ -65,27 +69,52 @@ exports.fetchEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   const { eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
 
-  if (eventID === null || eventID.trim() === "") {
+  // if (eventID === null || eventID.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+  
+  // if (name === null || name.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+  
+  // if (eventStartDate === null || eventStartDate.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+  
+  // if (eventEndDate === null || eventEndDate.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+  
+  // if (numOfParticipants === null || numOfParticipants.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+  
+  // if (eventStatus === null || eventStatus.trim() === "") {
+  //   return res.status(400).send("Form Incomplete... Please try again!");
+  // }
+
+  
+  if (eventID === null || eventID) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (name === null || name.trim() === "") {
+  if (name === null || name) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (eventStartDate === null || eventStartDate.trim() === "") {
+  if (eventStartDate === null || eventStartDate) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (eventEndDate === null || eventEndDate.trim() === "") {
+  if (eventEndDate === null || eventEndDate) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (numOfParticipants === null || numOfParticipants.trim() === "") {
+  if (numOfParticipants === null || numOfParticipants) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (eventStatus === null || eventStatus.trim() === "") {
+  if (eventStatus === null || eventStatus) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   

@@ -822,30 +822,30 @@ document.querySelector("[data-edit-item-modal")?.addEventListener("submit", asyn
 document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]"])) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-status]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Event's Status cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-status]"])) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Status cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-part-no]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-part-no]"])) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-edit-start-date]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
-    return;
-  }
+  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-edit-start-date]"])) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-end-date]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
-    return;
-  }
+  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-end-date]"])) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
+  //   return;
+  // }
 
   // // TODO: enforce
   // try {
@@ -897,30 +897,30 @@ function hideUpdateEventModal() {
 document.querySelector("[data-create-event-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]"])) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-status]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "Event's Status cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-status]"])) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Status cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-part-no]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
-    return;
-  }
+  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-part-no]"])) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-start-date]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
-    return;
-  }
+  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-start-date]"])) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
+  //   return;
+  // }
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-end-date]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
-    return;
-  }
+  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-end-date]"])) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
+  //   return;
+  // }
 
   // // TODO: enforce
   // try {

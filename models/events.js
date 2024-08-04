@@ -86,7 +86,7 @@ exports.insertEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
   } finally {
     // TODO: P3 
     // Reusable React component? or just a plain browser alert. Went with latter
-    alert("An error transpired: " + error_cf);
+    //alert("An error transpired: " + error_cf);
   }
 }
 
@@ -124,7 +124,7 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
   } finally {
     // TODO: P3 
     // Reusable React component? or just a plain browser alert. Went with latter
-    alert("An error transpired: " + error_cf);
+    //alert("An error transpired: " + error_cf);
   }
 }
 
