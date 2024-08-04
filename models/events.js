@@ -131,7 +131,7 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
 /**
  * For fetching an event's info
  */
-exports.fetchEvent() = async (eventID) => {
+exports.fetchEvent = async (eventID) => {
     try {
       const myQuery = `
         SELECT *
