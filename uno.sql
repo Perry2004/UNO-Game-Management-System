@@ -500,15 +500,15 @@ VALUES
 INSERT IGNORE INTO Items (current_price, name, quality, applied_promotion) 
 VALUES 
 (122, 'Red Card', 'Common', 'New Year Sale'),
-(187, 'Blue Card', 'Uncommon', 'Summer Sale'),
-(317, 'Green Card', 'Rare', 'Winter Sale'),
-(577, 'Yellow Card', 'Epic', 'Spring Sale'),
-(1097, 'Wild Card', 'Legendary', 'Autumn Sale'),
+(230, 'Blue Card', 'Uncommon', 'Summer Sale'),
+(415, 'Green Card', 'Rare', 'Winter Sale'),
+(666, 'Yellow Card', 'Epic', 'Spring Sale'),
+(1182, 'Wild Card', 'Legendary', 'Autumn Sale'),
 (122, 'Dummy Item 1', 'Common', 'New Year Sale'),
-(187, 'Dummy Item 2', 'Uncommon', 'Summer Sale'),
-(317, 'Dummy Item 3', 'Rare', 'Winter Sale'),
-(577, 'Dummy Item 4', 'Epic', 'Spring Sale'),
-(1097, 'Dummy Item 5', 'Legendary', 'Autumn Sale');
+(230, 'Dummy Item 2', 'Uncommon', 'Summer Sale'),
+(415, 'Dummy Item 3', 'Rare', 'Winter Sale'),
+(666, 'Dummy Item 4', 'Epic', 'Spring Sale'),
+(1182, 'Dummy Item 5', 'Legendary', 'Autumn Sale');
 
 INSERT IGNORE INTO StoreSellItems (store_id, item_id) 
 VALUES 

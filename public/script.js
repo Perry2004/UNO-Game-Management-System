@@ -68,7 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultTemplatesForMatch();
 
   const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
-  numOfPlayerDropdown.addEventListener("change", handlePlayerCountChangeForMatch);
+  if (numOfPlayerDropdown) {
+    numOfPlayerDropdown.addEventListener("change", handlePlayerCountChangeForMatch);
+  }
 
   // Restore modal state for Store-Items page
   if (window.location.pathname === "/store-items") {
@@ -580,7 +582,9 @@ function updatePrivilegeClass(modalType) {
 
 function initializeDefaultTemplatesForMatch() {
   const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
-  handlePlayerCountChangeForMatch({ target: numOfPlayerDropdown });
+  if (numOfPlayerDropdown) {
+    handlePlayerCountChangeForMatch({ target: numOfPlayerDropdown });
+  }
 }
 
 function handlePlayerCountChangeForMatch(e) {
@@ -750,8 +754,12 @@ document.getElementById("appliedPromotion")?.addEventListener("change", async ()
 
 document.getElementById("appliedPromotionEdit")?.addEventListener("change", async () => {
   const discount = document.getElementById("discountEdit");
-  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
+  // DEBUG
+  console.log("In appliedPromotionEdit change event, appliedPromotionEdit: ", document.getElementById("appliedPromotionEdit").value);
+  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotionEdit").value}`);
   discountValue = await discountValue.text();
+  // DEBUG
+  console.log("In appliedPromotionEdit change event, discountValue: ", discountValue);
   discount.innerHTML = `${discountValue}% OFF`;
 });
 
@@ -1003,8 +1011,8 @@ async function showStoreItemsModal(storeID) {
   let storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
   storeItems = await storeItems.json();
   console.log("JSON storeItems: ", storeItems);
+  const storeItemsTable = document.getElementById("storeItemsTable");
   if (storeItems.length > 0) {
-    const storeItemsTable = document.getElementById("storeItemsTable");
     storeItemsTable.innerHTML = "";
     storeItems.forEach((item) => {
       storeItemsTable.innerHTML += `
@@ -1023,8 +1031,8 @@ async function showStoreItemsModal(storeID) {
       `;
     });
   } else {
+    storeItemsTable.innerHTML = "<tr><td colspan='8'>There are no items left in the store.</td></tr>";
     console.error("Failed to fetch store items data");
-    return;
   }
 
   showModal();
