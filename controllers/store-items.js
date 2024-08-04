@@ -47,6 +47,8 @@ exports.checkItemName = async (req, res) => {
 
 exports.fetchDiscountData = async (req, res) => {
 	const { appliedPromotion } = req.query;
+  // DEBUG
+  console.log("In fetchDiscountData in controller, appliedPromotion:", appliedPromotion);
 	try {
 		let discount = await storeItemsModel.fetchDiscountData(appliedPromotion);
 		discount = String(discount);
