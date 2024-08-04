@@ -38,19 +38,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Make the Element Read Only
-  document.querySelectorAll("[data-read-only]")?.forEach((element) => {
-    element.style.cursor = "not-allowed";
-  });
-
   // Add event listeners to sort data on click
-  document.querySelector("[data-dropdown]")?.addEventListener("change", async (e) => {
+  document.querySelector("[data-sort-dropdown]")?.addEventListener("change", async (e) => {
     window.location.href = `${window.location.pathname}?order=${e.target.value}`;
   });
 
   // Restore dropdown state
   const [key, value] = window.location.search.substring(1).split("=");
-  document.querySelector("[data-dropdown]").value = value || "recent";
+  if (value) {
+    document.querySelector("[data-sort-dropdown]").value = value || "recent";
+  }
+
+  // Add Different Color for Status Display
+  document.querySelectorAll("[data-status]")?.forEach((element) => {
+    // console.log(element);
+    if (element.dataset.status === "Active" || element.dataset.status === "In Process") {
+      element.style.color = "#008040";
+    } else if (element.dataset.status === "Expired") {
+      element.style.color = "#f5222d";
+    } else if (element.dataset.status === "Completed") {
+      element.style.color = "#f5222d";
+    }
+  });
+
+  // Initalizing for the Create Match Modal
+  initializeDefaultTemplatesForMatch();
+
+  const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
+  numOfPlayerDropdown.addEventListener("change", handlePlayerCountChangeForMatch);
 
   // Restore modal state for Store-Items page
   if (window.location.pathname === "/store-items") {
@@ -400,6 +415,55 @@ function hideCreateMembershipModal() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
+/* Create Match Modal Section Below ----------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Edited by Perry ----------------------------------------------------------------------------------- */
+
+document.querySelector("[data-create-match-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const numOfPlayers = document.querySelector("#numOfPlayersCreate").value;
+  const usernames = [];
+  for (let i = 1; i <= numOfPlayers; i++) {
+    // validate form completion
+    if (document.querySelector(`#usernameCreate${i}`).value === "") {
+      displayModalErrorMessage("[data-create-match-modal]", "Form Incomplete... Please try again!");
+      return;
+    } else {
+      usernames.push(document.querySelector(`#usernameCreate${i}`).value);
+    }
+  }
+
+  const invalidUsernames = await validateUsernames(usernames);
+  if (invalidUsernames.length > 0) {
+    displayModalErrorMessage("[data-create-match-modal]", `The following usernames don't exist: ${invalidUsernames.join(", ")}`);
+    return;
+  }
+
+  clearFormData();
+  hideModalErrorMessage("[data-create-match-modal]");
+  e.target.submit();
+});
+
+function showCreateMatchModal() {
+  const createMatchModal = document.querySelector("[data-create-match-modal]");
+  createMatchModal.classList.add("openedModal");
+
+  showModal();
+  localStorage.setItem("modalState", "createMatchModalOpened");
+}
+
+function hideCreateMatchModal() {
+  const createMatchModal = document.querySelector("[data-create-match-modal]");
+  createMatchModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-create-match-modal]");
+  hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
 /* Helper Functions Below ---------------------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
@@ -511,14 +575,61 @@ function updatePrivilegeClass(modalType) {
   privilegeClass.innerHTML = currentClass;
 }
 
+function initializeDefaultTemplatesForMatch() {
+  const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
+  handlePlayerCountChangeForMatch({ target: numOfPlayerDropdown });
+}
+
+function handlePlayerCountChangeForMatch(e) {
+  const modalBody = document.querySelector("[data-create-match-modal] .modal-body");
+  const template = document.getElementById("modal-fields-template");
+
+  hideModalErrorMessage("[data-create-match-modal]");
+
+  document.querySelectorAll("[data-template-generated]").forEach((element) => {
+    element.remove();
+  });
+
+  for (let i = 1; i <= e.target.value; i++) {
+    const modalFields = template.content.cloneNode(true);
+
+    const modalLabel = modalFields.querySelector("label");
+    modalLabel.innerText = `Username of Player ${i}:`;
+    modalLabel.setAttribute("for", `usernameCreate${i}`);
+
+    const modalInput = modalFields.querySelector("input");
+    modalInput.id = `usernameCreate${i}`;
+    modalInput.name = `username${i}`;
+
+    modalBody.append(modalFields);
+  }
+}
+
 // Helper Function to Fetch Player Data in any modal
 async function fetchPlayerID(modalType) {
   const username = document.querySelector(`${modalType} [data-username]`).value;
+
   const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
   if (response.ok) {
     return response.json();
   }
   return null;
+}
+
+// Helper Function to Validate Multiple Usernames in any modal
+async function validateUsernames(usernames) {
+  const invalidUsernames = [];
+
+  await Promise.all(
+    usernames.map(async (username) => {
+      const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
+      if (!response.ok) {
+        invalidUsernames.push(username);
+      }
+    })
+  );
+
+  return invalidUsernames;
 }
 
 // Helper Function to Fetch Player Data to Display in Edit Player Modal
@@ -565,6 +676,7 @@ async function isUserWithoutMembership(modalType) {
 /* Perrry Below ---------------------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
+
 /**
  * Validate the form data before submitting.
  */
@@ -626,14 +738,14 @@ async function checkItemName() {
   return response.ok;
 }
 
-document.getElementById("appliedPromotion").addEventListener("change", async () => {
+document.getElementById("appliedPromotion")?.addEventListener("change", async () => {
   const discount = document.getElementById("discount");
   let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
   discountValue = await discountValue.text();
   discount.innerHTML = `${discountValue}% OFF`;
 });
 
-document.getElementById("appliedPromotionEdit").addEventListener("change", async () => {
+document.getElementById("appliedPromotionEdit")?.addEventListener("change", async () => {
   const discount = document.getElementById("discountEdit");
   let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
   discountValue = await discountValue.text();
@@ -809,3 +921,9 @@ async function removeItemFromStore(itemID, storeID) {
     console.error(`Failed to delete item ${itemID}`);
   }
 }
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Perrry Below 2 ------------------------------------------------------------------------------------ */
+/* =================================================================================================== */
+/* =================================================================================================== */
