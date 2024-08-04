@@ -29,3 +29,24 @@ exports.getRecentMatches = async () => {
     throw error;
   }
 };
+
+exports.registerMatches = async (usernames) => {
+  // create a new match
+  await db.promise().query(`INSERT INTO Matches (status) VALUES ('In Process')`);
+  // get the match id
+  const [matchID] = await db.promise().query(`SELECT LAST_INSERT_ID() AS matchID`);
+
+  const playerIDs = [];
+  for (let i = 0; i < usernames.length; i++) {
+    const [playerID] = await db.promise().query(`SELECT player_id FROM Players WHERE username = ?`, [usernames[i]]);
+    playerIDs.push(playerID[0].player_id);
+  }
+
+  // insert the players into the match
+  while (playerIDs.length) {
+    const playerID = playerIDs.shift();
+    await db.promise().query(`INSERT INTO PlayerInvolveMatches (match_id, player_id) VALUES (?, ?)`, [matchID[0].matchID, playerID]);
+    // DEBUG
+    console.log("In model: playerID:", playerID, "matchID:", matchID[0].matchID);
+  }
+}
