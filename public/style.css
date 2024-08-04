@@ -74,6 +74,68 @@ body :disabled {
 	cursor: not-allowed;
 }
 
+body .table-container-primary,
+body .table-container-secondary {
+	width: 100%;
+	border-radius: 1rem;
+	background-color: var(--grey2);
+}
+
+body .table-container-primary {
+	padding: 3rem 2rem 2.8rem 2rem;
+}
+
+body .table-container-secondary {
+	padding: 1.8rem 2rem 1.6rem 2rem;
+}
+
+body .scrollable-table {
+	width: 100%;
+	height: 270px;
+	overflow-y: auto;
+	scroll-snap-type: y mandatory;
+}
+
+body .scrollable-table.full-page {
+	height: 500px;
+}
+
+body .scrollable-table.one-third-page {
+	height: 180px;
+}
+
+body .scrollable-table.two-third-page {
+	height: 225px;
+}
+
+body .table {
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	font-size: 1.6rem;
+}
+
+body .table th {
+	background-color: var(--grey2);
+	padding: 1rem;
+	position: sticky;
+	top: 0;
+	border-bottom: 1px solid white;
+}
+
+body .table tr {
+	scroll-snap-align: start;
+	border-bottom: 1px solid white;
+}
+
+body .table td {
+	padding: 1rem;
+}
+
+body .table .table-btn-td {
+	padding: 0.5rem;
+}
+
 body {
 	background-color: var(--grey1);
 }
@@ -797,6 +859,103 @@ body.openedModal {
 	transform: translate(-50%, -180%);
 	border-radius: 5px;
 	display: none;
+}
+
+
+
+
+
+/* ------------------------------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------------------- */
+/* Match Details Section  */
+.match-details {
+	width: calc(100% - 4rem);
+	height: calc(100% - 4rem);
+	color: black;
+	background-color: var(--grey4);
+	margin: 2rem;
+	padding: 1rem; 
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+}
+
+.match-details.openedModal {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+.match-details .match-details-header .match-details-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.match-details .match-details-header .match-details-title h2,
+.match-details .match-details-header .match-details-title button {
+	color: white; 
+	margin-bottom: 0.5rem; 
+	background: none;
+}
+
+.match-details .match-details-header .match-details-player-information {
+	color: #e6f7ff; 
+}
+
+.match-details .match-details-header .match-details-title h2,
+.match-details .match-details-header .match-details-player-information h2,
+.match-details .match-details-body .table-container-header h2,
+.match-details .match-details-header .match-details-title button {
+	font-size: 2rem;
+}
+
+.match-details .match-details-header .match-details-basic-information,
+.match-details .match-details-header .match-details-player-information {
+	padding: 0rem 1rem;
+	margin-bottom: 1rem;
+}
+
+.match-details .match-details-body .table-container-header {
+	margin-bottom: 0.5rem;
+}
+
+.match-details .match-details-header .match-details-basic-information p,
+.match-details .match-details-header .match-details-player-information ul li {
+	font-size: 1.5rem;
+}
+
+.match-details .match-details-header .match-details-basic-information {
+	background-color: #95f0ff;
+	border-top-right-radius: 3rem;
+}
+
+.match-details .match-details-header .match-details-player-information {
+	background-color: var(--blue2); 
+}
+
+.match-details .match-details-header .match-details-player-information ul {
+	padding: 0 2rem 0.5rem;
+}
+
+.match-details .match-details-body {
+	width: 100%;
+	flex-grow: 1;
+	padding: 0.5rem 1rem 0;
+	background-color: white;
+	border-bottom-left-radius: 3rem;
+	border-bottom-right-radius: 3rem;
+ 
+}
+
+.match-details .match-details-body .scrollable-table {
+	height: 300px;
+}
+
+.match-details .match-details-body .table {
+	font-size: 1.4rem;
 }
 
 

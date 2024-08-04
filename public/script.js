@@ -467,6 +467,18 @@ function hideCreateMatchModal() {
   hideModal();
 }
 
+function showMatchDetailsModal(matchID) {
+	const matchDetailsModal = document.querySelector("[data-match-detials]");
+	matchDetailsModal.classList.add("openedModal");
+
+	localStorage.setItem("modalState", "matchDetialslOpened");
+}
+
+function hideMatchDetailsModal() {
+	const matchDetailsModal = document.querySelector("[data-match-detials]");
+	matchDetailsModal.classList.remove("openedModal");
+}
+
 /* =================================================================================================== */
 /* =================================================================================================== */
 /* Helper Functions Below ---------------------------------------------------------------------------- */
