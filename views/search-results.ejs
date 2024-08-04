@@ -1,26 +1,28 @@
-<div class="search-result" data-search-result>
-    <div class="search-result-header">
-        <h2>Your Search Result</h2>
-        <button class="close-btn" type="button" onclick="hideSearchResult()">&times;</button>
-    </div>
-    <div class="scrollable-table">
+<div class="search-result-header">
+    <h2>Your Search Result</h2>
+    <button class="close-btn" type="button" onclick="hideSearchResult()">&times;</button>
+</div>
+<div class="scrollable-table">
+    <% if (locals.columnNames.length > 0 && locals.columnData.length > 0) { %>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Username</th>
-                    <th>Total Wins</th>
-                    <th>Total Game</th>
+                    <% locals.columnNames.forEach(element => { %>
+                    <th><%= element.replace('_', ' ').toUpperCase() %></th>
+                    <% }) %>
                 </tr>
             </thead>
             <tbody>
-                <% locals.recentPlayers.forEach(element => { %>
+                <% locals.columnData.forEach(row => { %>
                     <tr>
-                        <td><%= element.username %></td>
-                        <td><%= element.totalWin %></td>
-                        <td><%= element.totalGameCount %></td>
+                    <% locals.columnNames.forEach(column => { %>
+                        <td><%= row[column] %></td>
+                    <% }) %>
                     </tr>
                 <% }) %>
             </tbody>
         </table>
-    </div>
+    <% } else { %>
+        <p>No data is available with your search...</p>
+    <% } %>
 </div>
