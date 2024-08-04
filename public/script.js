@@ -24,14 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listeners to delete data on click
   document.querySelector("[data-conform-delete]")?.addEventListener("click", async () => {
     if (itemToDelete) {
+      console.log(itemToDelete); // discern the item to delete.
       const response = await fetch(`${pathname}/delete`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ item: itemToDelete }),
       });
+      console.log(response);
+      console.log(JSON.stringify({ item: itemToDelete }))
 
       if (response.ok) {
-        window.location.reload();
+        window.location.reload(); 
       } else {
         console.error(`Failed to delete ${itemToDelete}`);
       }
@@ -607,3 +610,136 @@ document.querySelector("[data-edit-membership-modal")?.addEventListener("submit"
   hideModalErrorMessage("[data-edit-membership-modal]");
   e.target.submit();
 });
+
+// --- Update Event Modal --- ;
+document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-status]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Event's Status cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-part-no]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-edit-start-date]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-end-date]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
+    return;
+  }
+
+  // // TODO: enforce
+  // try {
+  //   Number(document.querySelector("updateNumberOfParticipants"));
+  // } catch (e) {
+  //   displayModalErrorMessage("[data-edit-event-modal]", "Participants must be numerical.");
+  //   return;
+  // }
+
+  hideModalErrorMessage("[data-edit-event-modal]");
+
+  e.target.submit();
+});
+
+async function showUpdateEventModal(eventID) {
+  const eventNameInput = document.querySelector("[data-edit-event-modal] [data-event-name]");
+  const startDateInput = document.querySelector("[data-edit-event-modal] [data-event-start-date]");
+  const endDateInput = document.querySelector("[data-edit-event-modal] [data-event-end-date]");
+  const participantsInput = document.querySelector("[data-edit-event-modal] [data-event-part-no]");
+  const statusInput = document.querySelector("[data-edit-event-modal] [data-event-status]");
+
+  const response = await fetch(`/events/fetch-event?eventID=${eventID}`);
+  if (response.ok) {
+    eventData = response.body; // JSON returned.
+    eventNameInput.value = eventData.name;
+    startDateInput.value = eventData.start_date; 
+    endDateInput.value = eventData.end_date; 
+    participantsInput.value = eventData.num_of_participants;
+    statusInput.value = eventData.status;
+  }
+
+  const editEventModal = document.querySelector("[data-edit-event-modal]");
+  editEventModal.classList.add("openedModal");
+
+  showModal();
+  localStorage.setItem("modalState", "updateEventModalOpened");
+}
+
+function hideUpdateEventModal() {
+  const editEventModal = document.querySelector("[data-edit-event-modal]");
+  editEventModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-edit-event-modal]");
+  hideModal();
+}
+
+// --- Create Event Modal---
+
+document.querySelector("[data-create-event-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-status]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "Event's Status cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-part-no]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-start-date]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
+    return;
+  }
+
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-end-date]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
+    return;
+  }
+
+  // // TODO: enforce
+  // try {
+  //   Number(document.querySelector("cNumberOfParticipants"));
+  // } catch (e) {
+  //   displayModalErrorMessage("[data-create-event-modal]", "Participants must be numerical.");
+  //   return;
+  // }
+
+  clearFormData();
+  hideModalErrorMessage("[data-create-event-modal]");
+  e.target.submit();
+});
+
+function showCreateEventModal() {
+  const createEventModal = document.querySelector("[data-create-event-modal]");
+  createEventModal.classList.add("openedModal");
+
+  showModal();
+  localStorage.setItem("modalState", "createEventModalOpened");
+}
+
+function hideCreateEventModal() {
+  const createEventModal = document.querySelector("[data-create-event-modal]");
+  createEventModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-create-event-modal]");
+  hideModal();
+}

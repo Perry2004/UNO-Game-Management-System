@@ -128,6 +128,27 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
   }
 }
 
+/**
+ * For fetching an event's info
+ */
+exports.fetchEvent() = async (eventID) => {
+    try {
+      const myQuery = `
+        SELECT *
+        FROM Events
+        WHERE event_id = ? 
+      `;
+      const [results] = await db.promise().query(myQuery, [eventID]);
+  
+      return results[0];
+
+    } catch (error) {
+      console.error(logError("fetchEvent"), error);
+      throw error;
+    }
+
+}
+
 
 /**
  * For deletion of a single tuple inside the Events Table. 
@@ -137,16 +158,19 @@ exports.deleteEvent = async (eventID) => {
   // to display the error inside the browser.
   error_cf = "";
 
+  // don't need to explicitly parse eventID to an integer; you can pass it directly as part of the array, and the driver will handle the appropriate data type conversion and escaping
   try {
     await db
     .promise()
-    .query("DELETE FROM Events WHERE event_id = ?", [eventID])
+    .query("DELETE FROM Events WHERE event_id = ?", [eventID]); // parseInt() unneeded
   } catch (error) {
-    error_cf = error.message;
+    // error_cf = error.message;
     console.log(error.message);
-  } finally {
-    alert("An error transpired: " + error_cf);
+    throw error;
   }
+  // } finally {
+  //   alert("An error transpired: " + error_cf);
+  // }
 
 }
 

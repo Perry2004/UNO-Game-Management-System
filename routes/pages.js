@@ -47,10 +47,15 @@ router.post("/memberships/update", membershipsController.updateMembership);
 router.delete("/memberships/delete", membershipsController.deleteMembership); 
 
 
-
+/**
+ * Events
+ */
 router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
+router.post("/events/create-event", eventsController.insertEvent) // event creation
+router.get("/events/fetch-event", eventsController.fetchEvent) // fetch event information for edit field
+router.post("/events/update-event", eventsController.updateEvent) // update event
 
-
+router.delete("/events/delete", eventsController.deleteEvent); // TODO: can't fix 404.
 
 
 router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
