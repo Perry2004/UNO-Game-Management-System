@@ -107,11 +107,15 @@ exports.deleteItemByID = async (itemID) => {
   let storeID = await db.promise().query(`SELECT store_id FROM StoreSellItems WHERE item_id = ?`, [itemID]);
   if (storeID[0].length !== 0) {
     storeID = storeID[0][0].store_id;
-    await db.promise().query(`DELETE FROM StoreSellItems WHERE item_id = ?`, [itemID]);
+
     // use WHERE EXISTS to decrease num_of_items for all stores that have the item
     await db
       .promise()
       .query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE EXISTS (SELECT * FROM StoreSellItems WHERE store_id = ?)`, [storeID]);
+
+    await db.promise().query(`DELETE FROM StoreSellItems WHERE item_id = ?`, [itemID]);
+    // DEBUG
+    console.log("In deleteItemByID in model, current num_of_items: ", (await db.promise().query(`SELECT num_of_items FROM Stores WHERE store_id = ?`, [storeID]))[0][0].num_of_items);
   }
 
   await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
