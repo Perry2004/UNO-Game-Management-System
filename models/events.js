@@ -1,6 +1,10 @@
 const db = require("../config/db");
 const { format } = require("date-fns");
 
+const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
+
+
 /**
  * CREATE TABLE IF NOT EXISTS Events (
     event_id INT AUTO_INCREMENT,
@@ -80,7 +84,7 @@ exports.insertEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
 
   } catch (error) {
     error_cf = error.message;
-    console.log(error.message);
+    console.log(error.message); // TODO: this is the source. of the error.
     // throw error // find this aversive. 
 
   } finally {
