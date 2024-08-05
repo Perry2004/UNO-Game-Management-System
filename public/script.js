@@ -833,29 +833,52 @@ document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", as
   e.preventDefault();
   console.log(e);
 
-  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]", "[data-event-status]", "[data-event-part-no]", "[data-event-start-date]", "[data-event-end-date]"])) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Form is incomplete.");
+  const eventNameEdit = document.querySelector("#eventNameUpdate");
+  const eventStartDateEdit = document.querySelector("#updateStartDate");
+  const eventEndDateEdit = document.querySelector("#updateEndDate");
+  const eventNumOfParticipantsEdit = document.querySelector("#updateNumberOfParticipants");
+  const eventStatusEdit = document.querySelector("#updateEventStatus");
+
+  // validate if all fields are filled
+  switch (true) {
+    case eventNameEdit.value === "":
+      displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
+      return;
+    case eventStartDateEdit.value === "":
+      displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
+      return;
+    case eventEndDateEdit.value === "":
+      displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
+      return;
+    case eventNumOfParticipantsEdit.value === "":
+      displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+      return;
+  }
+
+  // validate if the start date is before the end date
+  if (new Date(eventStartDateEdit.value) > new Date(eventEndDateEdit.value)) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Invalid Date Range... Please try again!");
     return;
   }
 
-  // TODO: I can't figure this out.
-  if (new Date(document.querySelector("[data-edit-event-modal] [data-event-start-date]").value) < new Date(document.querySelector("[data-edit-event-modal] [data-event-end-date]").value)) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Start Date must be greater than the End Date.");
+  // validate if the event name is already in the database
+  const eventName = eventNameEdit.value;
+  const response = await fetch(`/events/check-event-name?eventName=${eventName}`);
+  if (response.ok) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Event name already exists... Please try again!");
     return;
   }
 
-  if (!Number.isInteger(Number(document.querySelector("[data-edit-event-modal] [data-event-part-no]").value))) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Number of Participants must be an Integer.");
-    return;
+  let eventStatus = "";
+  if (new Date() < new Date(eventStartDateEdit.value)) {
+    eventStatus = "Upcoming";
+  } else if (new Date() > new Date(eventEndDateEdit.value)) {
+    eventStatus = "Expired";
+  } else {
+    eventStatus = "Active";
   }
 
-  // // TODO: enforce
-  // try {
-  //   Number(document.querySelector("updateNumberOfParticipants"));
-  // } catch (e) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "Participants must be numerical.");
-  //   return;
-  // }
+  eventStatusEdit.value = eventStatus;
 
   hideModalErrorMessage("[data-edit-event-modal]");
 
@@ -879,29 +902,16 @@ async function showUpdateEventModal(eventID) {
     console.log(eventData);
     eventIDInput.value = eventData.event_id;
     eventNameInput.value = eventData.name;
-
-    const start = new Date(eventData.start_date);
-    let year = start.getFullYear();
-    let month = ("0" + (start.getMonth() + 1)).slice(-2); 
-    let day = ("0" + start.getDate()).slice(-2); 
-    const start_date  = `${year}-${month}-${day}`;
-
-    startDateInput.value = start_date; 
-
-    const end = new Date(eventData.end_date);
-    year = end.getFullYear();
-    month = ("0" + (end.getMonth() + 1)).slice(-2); 
-    day = ("0" + end.getDate()).slice(-2); 
-    const end_date  = `${year}-${month}-${day}`;
-
-    endDateInput.value = end_date; 
-
+    startDateInput.value = eventData.start_date.split("T")[0];
+    endDateInput.value = eventData.end_date.split("T")[0];
     statusInput.value = eventData.status;
     // statusInput.value = start < end ? "Active" : "Completed"
     participantsInput.value = eventData.num_of_participants;
   } else {
     console.log("showUpdateEventModal has an error.");
   }
+
+  document.querySelector("#eventID").value = eventID;
 
   const editEventModal = document.querySelector("[data-edit-event-modal]");
   editEventModal.classList.add("openedModal");
@@ -924,21 +934,53 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
   e.preventDefault();
   console.log(e);
 
-  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]", "[data-event-status]", "[data-event-part-no]", "[data-event-start-date]", "[data-event-end-date]"])) {
-    displayModalErrorMessage("[data-create-event-modal]", "Form is incomplete.");
+  const eventNameCreate = document.querySelector("#eventNameC");
+  const eventStartDateCreate = document.querySelector("#cStartDate");
+  const eventEndDateCreate = document.querySelector("#cEndDate");
+  const eventNumOfParticipantsCreate = document.querySelector("#cNumberOfParticipants");
+
+  // validate if the form is complete 
+  switch (true) {
+    case eventNameCreate.value === "":
+      displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
+      return;
+    case eventStartDateCreate.value === "":
+      displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
+      return;
+    case eventEndDateCreate.value === "":
+      displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
+      return;
+    case eventNumOfParticipantsCreate.value === "":
+      displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
+      return;
+  }
+
+  // validate if the name is already in the database
+  const eventName = eventNameCreate.value;
+  const response = await fetch(`/events/check-event-name?eventName=${eventName}`);
+  if (response.ok) {
+    displayModalErrorMessage("[data-create-event-modal]", "Event name already exists... Please try again!");
     return;
   }
 
-  // TODO: I can't figure this out.
-  if (new Date(document.querySelector("[data-create-event-modal] [data-event-start-date]").value) < new Date(document.querySelector("[data-create-event-modal] [data-event-end-date]").value)) {
-    displayModalErrorMessage("[data-create-event-modal]", "Start Date must be greater than the End Date.");
+  // validate if the start date is before the end date
+  if (new Date(eventStartDateCreate.value) > new Date(eventEndDateCreate.value)) {
+    displayModalErrorMessage("[data-create-event-modal]", "Invalid Date Range... Please try again!");
     return;
   }
 
-  if (!Number.isInteger(Number(document.querySelector("[data-create-event-modal] [data-event-part-no]").value))) {
-    displayModalErrorMessage("[data-create-event-modal]", "Number of Participants must be an Integer.");
-    return;
+  // determine the status of the event
+  let eventStatus = "";
+  if (new Date() < new Date(eventStartDateCreate.value)) {
+    eventStatus = "Upcoming";
+  } else if (new Date() > new Date(eventEndDateCreate.value)) {
+    eventStatus = "Expired";
+  } else {
+    eventStatus = "Active";
   }
+  document.querySelector("#cEventStatus").value = eventStatus;
+
+  const eventStatusCreate = document.querySelector("#cStatus");
 
   clearFormData();
   hideModalErrorMessage("[data-create-event-modal]");
@@ -1138,7 +1180,7 @@ async function loadMatchDetails(matchID) {
       }
       additionalInfo = playedCardsString;
     }
-    
+
     matchDetailsTableBody.innerHTML += `
       <tr>
         <td> ${matchDetail.timeStamp} </td>
@@ -1181,3 +1223,5 @@ async function loadMatchDetailsData(matchID) {
     return null;
   }
 }
+
+// ---- Events page ----------------

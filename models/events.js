@@ -1,5 +1,7 @@
+const { formatInTimeZone } = require("date-fns-tz");
 const db = require("../config/db");
 const { format } = require("date-fns");
+const vancouverTimeZone = "America/Vancouver";
 
 const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
 const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
@@ -21,8 +23,33 @@ const resError = (functionName) => `OH NO! Internal Server Error with ${function
  * 
  * For fetching the pre-populated (limited to 10) tuples in the Events table.
  */
-exports.getRecentEvents = async () => {
+exports.getRecentEvents = async (sortBy) => {
   try {
+    let sortByClause = "";
+    switch (sortBy) {
+      case "recent":
+        sortByClause = "event_id";
+        break;
+      case "startDate":
+        sortByClause = "start_date";
+        break;
+      case "endDate":
+        sortByClause = "end_date";
+        break;
+      case "numOfParticipants":
+        sortByClause = "num_of_participants";
+        break;
+      case "status":
+        sortByClause = "status";
+        break;
+      default:
+        sortByClause = "event_id";
+    }
+
+    // DEBUG
+    console.log("In getRecentEvents, sortBy: ", sortBy);
+    console.log("In getRecentEvents, sortByClause: ", sortByClause);
+
     const [results] = await db.promise().query(`
         SELECT 
             event_id AS eventID, 
@@ -32,16 +59,14 @@ exports.getRecentEvents = async () => {
             num_of_participants AS numOfParticipants, 
             status AS eventStatus
         FROM Events
-        ORDER BY event_id DESC 
+        ORDER BY ${sortByClause} DESC 
     `);
-
-    // TODO: check for an empty array; P3. if it is the case that it is empty, then use pre-population. Careful for integrity constraints.
 
     return results.map((element) => ({
       eventID: element.eventID,
       eventName: element.eventName,
-      eventStartDate: format(new Date(element.eventStartDate), "yyyy-M-d"),
-      eventEndDate: format(new Date(element.eventEndDate), "yyyy-M-d"),
+      eventStartDate: formatInTimeZone(element.eventStartDate, vancouverTimeZone, "yyyy-MM-dd"),
+      eventEndDate: formatInTimeZone(element.eventEndDate, vancouverTimeZone, "yyyy-MM-dd"),
       numOfParticipants: element.numOfParticipants,
       eventStatus: element.eventStatus,
     }));
@@ -68,7 +93,6 @@ exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
 
   // to display the error inside the browser.
   error_cf = "";
-  console.log(eventEndDate);
 
   try {
     await db
@@ -85,7 +109,6 @@ exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
 
   } catch (error) {
     error_cf = error.message;
-    console.log(error.message + "inside insertEvent; models."); 
     // throw error // find this aversive. 
 
   } finally {
@@ -102,10 +125,15 @@ exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
  * - this function is only tied to the appropriate button. 
  *        this implies that a check for an event existing will be redundant.  
  */
-exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus) => {
-  
+exports.updateEvent = async (name, eventStartDate, eventEndDate, numOfParticipants, eventStatus, eventID) => {
+
   // to display the error inside the browser.
   error_cf = "";
+
+  eventStartDate = new Date(eventStartDate);
+  eventEndDate = new Date(eventEndDate);
+  eventStartDate = formatInTimeZone(eventStartDate, vancouverTimeZone, "yyyy-MM-dd");
+  eventEndDate = formatInTimeZone(eventEndDate, vancouverTimeZone, "yyyy-MM-dd");
 
   try {
     await db
@@ -118,12 +146,10 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
         eventStatus, // = new Date(eventStartDate) < new Date(eventEndDate) ? "Active" : "Completed",
         eventID
       ]);
-    console.log("Event updated: " + {eventID}); // should be viewable on the browser
     // TODO: confirm if the backend SQL was also updated.
 
   } catch (error) {
     error_cf = error.message;
-    console.log(error.message, "inside updateEvent models");
     // throw error // find this aversive.
 
   } finally {
@@ -137,21 +163,20 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
  * For fetching an event's info
  */
 exports.fetchEvent = async (eventID) => {
-    try {
-      const myQuery = `
+  try {
+    const myQuery = `
         SELECT *
         FROM Events
         WHERE event_id = ?
         `
-      const [results] = await db.promise().query(myQuery, [eventID]);
-      console.log(results[0]);
-  
-      return results[0];
+    const [results] = await db.promise().query(myQuery, [eventID]);
 
-    } catch (error) {
-      console.error(logError("fetchEvent"), error);
-      throw error;
-    }
+    return results[0];
+
+  } catch (error) {
+    console.error(logError("fetchEvent"), error);
+    throw error;
+  }
 
 }
 
@@ -167,8 +192,8 @@ exports.deleteEvent = async (eventID) => {
   // don't need to explicitly parse eventID to an integer; you can pass it directly as part of the array, and the driver will handle the appropriate data type conversion and escaping
   try {
     await db
-    .promise()
-    .query("DELETE FROM Events WHERE event_id = ?", [eventID]); // parseInt() unneeded
+      .promise()
+      .query("DELETE FROM Events WHERE event_id = ?", [eventID]); // parseInt() unneeded
   } catch (error) {
     // error_cf = error.message;
     console.log(error.message);
@@ -210,3 +235,17 @@ exports.deleteEvent = async (eventID) => {
 
 // TODO: 
 // inside memberships line 89, throw new Error seems iffy.
+
+exports.checkEventExistence = async (eventName) => {
+  try {
+    const [results] = await db.promise().query("SELECT * FROM Events WHERE name = ?", [eventName]);
+    if (results.length === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error(logError("checkEventExistence"), error);
+    throw error;
+  }
+}

@@ -19,7 +19,8 @@ const resError = (functionName) => `OH NO! Internal Server Error with ${function
 exports.loadEvents = async (req, res) => {
   if (req.loginStatus === true) {
     try {
-      const recentEvents = await eventsModel.getRecentEvents();
+      const { order: sortBy } = req.query;
+      const recentEvents = await eventsModel.getRecentEvents(sortBy);
 
       res.render("events", { recentEvents });
     } catch (error) {
@@ -74,32 +75,10 @@ exports.fetchEvent = async (req, res) => {
  * Update an Event.
  */
 exports.updateEvent = async (req, res) => {
-  const { eventIDU, eventNameUpdate, updateStartDate, updateEndDate, updateNumberOfParticipants, updateEventStatus } = req.body;
-  console.log(req.body);
+  const { eventNameUpdate: name, updateStartDate: eventStartDate, updateEndDate: eventEndDate, updateNumberOfParticipants: numOfParticipants, updateEventStatus: eventStatus, eventID} = req.body;
 
-  
-  if (eventNameUpdate === null ) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
-  if (updateStartDate === null ) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
-  if (updateEndDate === null ) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
-  if (updateNumberOfParticipants === null ) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
-  if (updateEventStatus === null ) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
   try {
-    await eventsModel.updateEvent(eventIDU, eventNameUpdate, updateStartDate, updateEndDate, updateNumberOfParticipants, updateEventStatus);
+    await eventsModel.updateEvent(name, eventStartDate, eventEndDate, numOfParticipants, eventStatus, eventID);
     return res.redirect("/events");
   } catch (error) {
     console.error("Error Updating Event:", error);
@@ -126,3 +105,19 @@ exports.deleteEvent = async (req, res) => {
     res.status(500).send(resError("deleteEvent"));
   }
 };
+
+exports.checkEventExistence = async (req, res) => {
+  const { eventName } = req.query;
+
+  try {
+    const results = await eventsModel.checkEventExistence(eventName);
+    if (results) {
+      res.status(200).send("Event Exists!");
+    } else {
+      res.status(409).send("Event Doesn't Exist!");
+    }
+  } catch (error) {
+    console.error(logError("checkEventExistence"), error);
+    res.status(500).send(resError("checkEventExistence"));
+  }
+}
