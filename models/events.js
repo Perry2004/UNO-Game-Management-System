@@ -145,6 +145,7 @@ exports.fetchEvent = async (eventID) => {
         WHERE event_id = ?
         `
       const [results] = await db.promise().query(myQuery, [eventID]);
+      console.log(results[0]);
   
       return results[0];
 
