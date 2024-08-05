@@ -348,7 +348,7 @@ CREATE TABLE IF NOT EXISTS PlayActionFromCard (
         ON UPDATE CASCADE
 ); 
 
-INSERT IGNORE INTO PlayerUsernameAndEmail (username, email) 
+INSERT INTO PlayerUsernameAndEmail (username, email) 
 VALUES 
 ('Handsome Programmer', 'handsome_programmer@student.ubc.ca'),
 ('Happy Professor', 'happy_professor@student.ubc.ca'),
@@ -371,7 +371,7 @@ VALUES
 ('Brave Soldier', 'brave_soldier@student.ubc.ca'),
 ('Efficient Assistant', 'efficient_assistant@student.ubc.ca');
 
-INSERT IGNORE INTO PlayerLevel (experience_point, level) 
+INSERT INTO PlayerLevel (experience_point, level) 
 VALUES 
 (0, 1),
 (1000, 1),
@@ -385,7 +385,7 @@ VALUES
 (9000, 9),
 (10000, 10); 
 
-INSERT IGNORE INTO Players (username, total_win, total_game_count, win_rate, experience_point, country, password) 
+INSERT INTO Players (username, total_win, total_game_count, win_rate, experience_point, country, password) 
 VALUES 
 ('Reliable Developer', 5, 15, 0.33, 2000, 'Canada', 'xhjanjwnfewhfohuenee'), 
 ('Brilliant Analyst', 7, 18, 0.39, 4000, 'India', 'qpicuniqxmeuhrhbdndeqw'), 
@@ -408,7 +408,7 @@ VALUES
 ('Selfish Engineer', 12, 13, 0.92, 9000, 'USA', 'voefhnownfhvseowenfw'), 
 ('Dangerous Salesman', 20, 27, 0.74, 10000, 'Japan', 'pqweopqoccmuhqwciuq');
 
-INSERT IGNORE INTO MembershipPrivilegeClass (privilege_level, privilege_class) 
+INSERT INTO MembershipPrivilegeClass (privilege_level, privilege_class) 
 VALUES 
 (1, 'Bronze'),
 (2, 'Silver'),
@@ -416,7 +416,7 @@ VALUES
 (4, 'Platinum'),
 (5, 'Diamond'); 
 
-INSERT IGNORE INTO Memberships (player_id, issue_date, expire_date, privilege_level)
+INSERT INTO Memberships (player_id, issue_date, expire_date, privilege_level)
 VALUES 
 (1, '2024-03-14', '2024-05-13', 3),
 (2, '2024-07-21', '2024-12-03', 5),
@@ -439,7 +439,7 @@ VALUES
 (19, '2024-01-25', '2024-02-22', 4),
 (20, '2024-04-15', '2024-05-23', 5);
 
-INSERT IGNORE INTO Events (name, start_date, end_date, status) 
+INSERT INTO Events (name, start_date, end_date, status) 
 VALUES 
 ('UNO Mania', '2024-07-30', '2024-08-01', 'Completed'),
 ('Stack Attack', '2024-09-30', '2024-10-02', 'Upcoming'),
@@ -457,7 +457,7 @@ VALUES
 ('Friendship Match',  '2024-04-01',  '2024-04-30', 'Completed'),
 ('Ultimate Showdown',  '2024-05-01',  '2024-09-30', 'Active');
 
-INSERT IGNORE INTO Stores (player_id, num_of_items) 
+INSERT INTO Stores (player_id, num_of_items) 
 VALUES 
 (1, 5),
 (2, 5),
@@ -480,7 +480,7 @@ VALUES
 (19, 5),
 (20, 5);
 
-INSERT IGNORE INTO ItemOriginalPrice (quality, original_price) 
+INSERT INTO ItemOriginalPrice (quality, original_price) 
 VALUES 
 ('Common', 188),
 ('Uncommon', 288),
@@ -488,7 +488,7 @@ VALUES
 ('Epic', 888),
 ('Legendary', 1688); 
 
-INSERT IGNORE INTO ItemDiscount (applied_promotion, discount) 
+INSERT INTO ItemDiscount (applied_promotion, discount) 
 VALUES 
 ('New Year Sale', 35),
 ('Christmas Sale', 80),
@@ -497,7 +497,7 @@ VALUES
 ('Spring Sale', 25),
 ('Autumn Sale', 30); 
 
-INSERT IGNORE INTO Items (current_price, name, quality, applied_promotion) 
+INSERT INTO Items (current_price, name, quality, applied_promotion) 
 VALUES 
 (122, 'Red Card', 'Common', 'New Year Sale'),
 (230, 'Blue Card', 'Uncommon', 'Summer Sale'),
@@ -510,7 +510,7 @@ VALUES
 (666, 'Dummy Item 4', 'Epic', 'Spring Sale'),
 (1182, 'Dummy Item 5', 'Legendary', 'Autumn Sale');
 
-INSERT IGNORE INTO StoreSellItems (store_id, item_id) 
+INSERT INTO StoreSellItems (store_id, item_id) 
 VALUES 
 (1, 1),
 (1, 2),
@@ -613,19 +613,22 @@ VALUES
 (20, 4),
 (20, 5);
 
-INSERT IGNORE INTO Matches (end_time, winner, status) 
+INSERT INTO Matches (end_time, winner, status) 
 VALUES 
 ('2024-07-27 12:00:00', 'Handsome Programmer', 'Completed'), 
 ('2024-07-27 12:00:00', 'Happy Professor', 'Completed'),
 ('2024-07-27 12:00:00', 'Poor Student', 'Completed'), 
 ('2024-07-27 12:00:00', 'Selfish Engineer', 'Completed'), 
 ('2024-07-27 12:00:00', 'Dangerous Salesman', 'Completed'), 
+('2024-08-01 12:00:00', NULL, 'In Process'), 
 (NULL, NULL, DEFAULT),
 (NULL, NULL, DEFAULT), 
 (NULL, NULL, DEFAULT), 
-(NULL, NULL, DEFAULT); 
+(NULL, NULL, DEFAULT),
+(NULL, NULL, DEFAULT),
+(NULL, NULL, DEFAULT);
 
-INSERT IGNORE INTO Decks (total_cards) 
+INSERT INTO Decks (total_cards) 
 VALUES 
 (108),
 (108),
@@ -633,7 +636,7 @@ VALUES
 (108),
 (108); 
 
-INSERT IGNORE INTO CardInDeck (card_id, deck_id, name, has_played) 
+INSERT INTO CardInDeck (card_id, deck_id, name, has_played) 
 VALUES 
 (1, 1, 'NAME', 0),
 (2, 1, 'NAME', 0),
@@ -646,7 +649,7 @@ VALUES
 (9, 2, 'NAME', 0),
 (10, 2, 'NAME', 0); 
 
-INSERT IGNORE INTO WildCard (card_id, deck_id) 
+INSERT INTO WildCard (card_id, deck_id) 
 VALUES 
 (1, 1),
 (2, 1),
@@ -654,7 +657,7 @@ VALUES
 (4, 1),
 (5, 1); 
 
-INSERT IGNORE INTO WildDraw4Card (card_id, deck_id) 
+INSERT INTO WildDraw4Card (card_id, deck_id) 
 VALUES 
 (6, 2),
 (7, 2),
@@ -662,7 +665,7 @@ VALUES
 (9, 2),
 (10, 2); 
 
-INSERT IGNORE INTO NumberCard (card_id, deck_id, number, color) 
+INSERT INTO NumberCard (card_id, deck_id, number, color) 
 VALUES 
 (1, 1, 1, 'Red'),
 (2, 1, 2, 'Blue'),
@@ -670,7 +673,7 @@ VALUES
 (4, 1, 4, 'Yellow'),
 (5, 1, 5, 'Red'); 
 
-INSERT IGNORE INTO SkipCard (card_id, deck_id, color) 
+INSERT INTO SkipCard (card_id, deck_id, color) 
 VALUES 
 (6, 2, 'Red'),
 (7, 2, 'Blue'),
@@ -678,7 +681,7 @@ VALUES
 (9, 2, 'Yellow'),
 (10, 2, 'Red'); 
 
-INSERT IGNORE INTO ReverseCard (card_id, deck_id, color) 
+INSERT INTO ReverseCard (card_id, deck_id, color) 
 VALUES 
 (1, 1, 'Red'),
 (2, 1, 'Blue'),
@@ -686,7 +689,7 @@ VALUES
 (4, 1, 'Yellow'),
 (5, 1, 'Red'); 
 
-INSERT IGNORE INTO Draw2Card (card_id, deck_id, color) 
+INSERT INTO Draw2Card (card_id, deck_id, color) 
 VALUES 
 (6, 2, 'Red'),
 (7, 2, 'Blue'),
@@ -694,7 +697,7 @@ VALUES
 (9, 2, 'Yellow'),
 (10, 2, 'Red'); 
 
-INSERT IGNORE INTO HandInPlayerAndMatch (hand_id, player_id, match_id, card_amount) 
+INSERT INTO HandInPlayerAndMatch (hand_id, player_id, match_id, card_amount) 
 VALUES 
 (1, 1, 1, 7),
 (2, 2, 2, 7),
@@ -702,15 +705,23 @@ VALUES
 (4, 4, 4, 7),
 (5, 5, 5, 7); 
 
-INSERT IGNORE INTO TurnInPlayerAndMatch (turn_id, player_id, match_id, turn_order) 
+INSERT INTO TurnInPlayerAndMatch (turn_id, player_id, match_id, turn_order) 
 VALUES 
-(1, 1, 1, 'clockwise'),
+-- (1, 1, 1, 'clockwise'),
 (2, 2, 2, 'clockwise'),
 (3, 3, 3, 'clockwise'),
 (4, 4, 4, 'counter clockwise'),
 (5, 5, 5, 'counter clockwise'); 
 
-INSERT IGNORE INTO ActionInTurn (action_id, turn_id, player_id, match_id)
+INSERT INTO TurnInPlayerAndMatch (turn_id, player_id, match_id, turn_order)
+VALUES
+(1, 1, 1, 'clockwise'),
+(2, 2, 1, 'clockwise'),
+(3, 3, 1, 'clockwise'),
+(4, 4, 1, 'counter clockwise'),
+(5, 5, 1, 'counter clockwise');
+
+INSERT INTO ActionInTurn (action_id, turn_id, player_id, match_id)
 VALUES
 (1, 1, 1, 1),
 (2, 2, 2, 2),
@@ -718,7 +729,7 @@ VALUES
 (4, 4, 4, 4),
 (5, 5, 5, 5);
 
-INSERT IGNORE INTO SkipAction (action_id, turn_id, player_id, match_id)
+INSERT INTO SkipAction (action_id, turn_id, player_id, match_id)
 VALUES
 (1, 1, 1, 1),
 (2, 2, 2, 2),
@@ -726,7 +737,7 @@ VALUES
 (4, 4, 4, 4),
 (5, 5, 5, 5);
 
-INSERT IGNORE INTO PlayAction (action_id, turn_id, player_id, match_id) 
+INSERT INTO PlayAction (action_id, turn_id, player_id, match_id) 
 VALUES 
 (1, 1, 1, 1),
 (2, 2, 2, 2),
@@ -734,7 +745,7 @@ VALUES
 (4, 4, 4, 4),
 (5, 5, 5, 5);
 
-INSERT IGNORE INTO DrawAction (action_id, turn_id, player_id, match_id, draw_amount) 
+INSERT INTO DrawAction (action_id, turn_id, player_id, match_id, draw_amount) 
 VALUES 
 (1, 1, 1, 1, 2),
 (2, 2, 2, 2, 2),
@@ -742,7 +753,7 @@ VALUES
 (4, 4, 4, 4, 2),
 (5, 5, 5, 5, 2); 
 
-INSERT IGNORE INTO PlayerContainItems (player_id, item_id) 
+INSERT INTO PlayerContainItems (player_id, item_id) 
 VALUES 
 (1, 1),
 (1, 2),
@@ -751,7 +762,7 @@ VALUES
 (1, 5), 
 (2, 5); 
 
-INSERT IGNORE INTO PlayerParticipateEvents (player_id, event_id) 
+INSERT INTO PlayerParticipateEvents (player_id, event_id) 
 VALUES 
 (1, 1),
 (1, 2),
@@ -764,7 +775,30 @@ VALUES
 (1, 9),
 (1, 10);
 
-INSERT IGNORE INTO PlayerInvolveMatches (player_id, match_id) 
+INSERT INTO PlayerInvolveMatches (player_id, match_id) 
+VALUES 
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 3),
+(7, 4),
+(8, 4),
+(9, 5),
+(10, 5),
+(11, 6),
+(12, 6),
+(13, 7),
+(14, 7),
+(15, 8),
+(16, 8),
+(17, 9),
+(18, 9),
+(19, 10),
+(20, 10);
+
+INSERT INTO MatchHasDeck (match_id, deck_id) 
 VALUES 
 (1, 1),
 (2, 2),
@@ -772,15 +806,7 @@ VALUES
 (4, 4),
 (5, 5); 
 
-INSERT IGNORE INTO MatchHasDeck (match_id, deck_id) 
-VALUES 
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5); 
-
-INSERT IGNORE INTO CardHeldByHand (card_id, deck_id, hand_id, player_id, match_id) 
+INSERT INTO CardHeldByHand (card_id, deck_id, hand_id, player_id, match_id) 
 VALUES 
 (1, 1, 1, 1, 1),
 (2, 1, 2, 2, 2),
@@ -788,7 +814,7 @@ VALUES
 (4, 1, 4, 4, 4),
 (5, 1, 5, 5, 5); 
 
-INSERT IGNORE INTO PlayActionFromCard (action_id, turn_id, player_id, match_id, card_id, deck_id) 
+INSERT INTO PlayActionFromCard (action_id, turn_id, player_id, match_id, card_id, deck_id) 
 VALUES 
 (1, 1, 1, 1, 1, 1),
 (2, 2, 2, 2, 2, 1),

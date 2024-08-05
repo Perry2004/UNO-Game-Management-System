@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(JSON.stringify({ item: itemToDelete }))
 
       if (response.ok) {
-        window.location.reload(); 
+        window.location.reload();
       } else {
         console.error(`Failed to delete ${itemToDelete}`);
       }
@@ -467,16 +467,18 @@ function hideCreateMatchModal() {
   hideModal();
 }
 
-function showMatchDetailsModal(matchID) {
-	const matchDetailsModal = document.querySelector("[data-match-detials]");
-	matchDetailsModal.classList.add("openedModal");
+async function showMatchDetailsModal(matchID) {
 
-	localStorage.setItem("modalState", "matchDetialslOpened");
+  await loadMatchDetails(matchID);
+  const matchDetailsModal = document.querySelector("[data-match-detials]");
+  matchDetailsModal.classList.add("openedModal");
+
+  localStorage.setItem("modalState", "matchDetialslOpened");
 }
 
 function hideMatchDetailsModal() {
-	const matchDetailsModal = document.querySelector("[data-match-detials]");
-	matchDetailsModal.classList.remove("openedModal");
+  const matchDetailsModal = document.querySelector("[data-match-detials]");
+  matchDetailsModal.classList.remove("openedModal");
 }
 
 /* =================================================================================================== */
@@ -766,12 +768,8 @@ document.getElementById("appliedPromotion")?.addEventListener("change", async ()
 
 document.getElementById("appliedPromotionEdit")?.addEventListener("change", async () => {
   const discount = document.getElementById("discountEdit");
-  // DEBUG
-  console.log("In appliedPromotionEdit change event, appliedPromotionEdit: ", document.getElementById("appliedPromotionEdit").value);
   let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotionEdit").value}`);
   discountValue = await discountValue.text();
-  // DEBUG
-  console.log("In appliedPromotionEdit change event, discountValue: ", discountValue);
   discount.innerHTML = `${discountValue}% OFF`;
 });
 
@@ -883,8 +881,8 @@ async function showUpdateEventModal(eventID) {
   if (response.ok) {
     eventData = response.body; // JSON returned.
     eventNameInput.value = eventData.name;
-    startDateInput.value = eventData.start_date; 
-    endDateInput.value = eventData.end_date; 
+    startDateInput.value = eventData.start_date;
+    endDateInput.value = eventData.end_date;
     participantsInput.value = eventData.num_of_participants;
     statusInput.value = eventData.status;
   }
@@ -1082,3 +1080,92 @@ async function removeItemFromStore(itemID, storeID) {
 /* Perrry Below 2 ------------------------------------------------------------------------------------ */
 /* =================================================================================================== */
 /* =================================================================================================== */
+async function loadMatchDetails(matchID) {
+  const matchIDField = document.querySelectorAll(".match-details-basic-information p")[0];
+  const matchStartTimeField = document.querySelectorAll(".match-details-basic-information p")[1];
+  const matchEndTimeField = document.querySelectorAll(".match-details-basic-information p")[2];
+  const matchWinnerField = document.querySelectorAll(".match-details-basic-information p")[3];
+
+  const matchInfo = (await loadMatchInfo(matchID))[0];
+  matchIDField.innerHTML = "Match ID: " + matchInfo.matchID;
+  matchStartTimeField.innerHTML = "Start Time: " + matchInfo.startTime;
+  matchEndTimeField.innerHTML = "End Time: " + matchInfo.endTime;
+  matchWinnerField.innerHTML = "Winner: " + matchInfo.winner;
+
+  const matchDetailsPlayerInformation = document.querySelector(".match-details-player-information ul");
+  const matchPlayers = (await loadMatchPlayers(matchID));
+  matchDetailsPlayerInformation.innerHTML = "";
+  while (matchPlayers.length > 0) {
+    const username = matchPlayers.shift();
+    const player = document.createElement("li");
+    player.innerHTML = username.username + " (" + username.country + ")";
+    matchDetailsPlayerInformation.appendChild(player);
+  }
+
+  const matchDetailsTableBody = document.querySelector(".match-details-body tbody");
+  const matchDetails = await loadMatchDetailsData(matchID);
+
+  // DEBUG
+  // console.log("Match Details: ", JSON.parse(JSON.stringify(matchDetails)))
+
+  matchDetailsTableBody.innerHTML = "";
+  while (matchDetails.length > 0) {
+    const matchDetail = matchDetails.shift();
+    let additionalInfo = "NA";
+    const playedCards = matchDetail.playedCards;
+    if (playedCards) {
+      let playedCardsString = "";
+      if (playedCards.length > 0) {
+        for (let i = 0; i < playedCards.length; i++) {
+          if (i === playedCards.length - 1) {
+            playedCardsString += playedCards[i].cardType;
+          } else {
+            playedCardsString += playedCards[i].cardType + ", ";
+          }
+        }
+      }
+      additionalInfo = playedCardsString;
+    }
+    
+    matchDetailsTableBody.innerHTML += `
+      <tr>
+        <td> ${matchDetail.timeStamp} </td>
+        <td> ${matchDetail.username} </td>
+        <td> ${matchDetail.type} </td>
+        <td> ${additionalInfo} </td>
+        <td> ${matchDetail.numOfCardsInHand} </td>
+        <td> ${matchDetail.numOfCardsInDeck} </td>
+        <td> ${matchDetail.currentDirection} </td>
+        <td> ${matchDetail.nextTurn} </td>
+      </tr>
+    `;
+  }
+}
+
+async function loadMatchInfo(matchID) {
+  const response = await fetch(`/matches/fetch-match-info?matchID=${matchID}`);
+  if (response.ok) {
+    return await response.json();
+  } else {
+    return null;
+  }
+}
+
+async function loadMatchPlayers(matchID) {
+  const response = await fetch(`/matches/fetch-match-players?matchID=${matchID}`);
+  if (response.ok) {
+    return await response.json();
+  } else {
+    return null;
+  }
+}
+
+async function loadMatchDetailsData(matchID) {
+  const response = await fetch(`/matches/fetch-match-details?matchID=${matchID}`);
+  if (response.ok) {
+    const result = (await response.json());
+    return result;
+  } else {
+    return null;
+  }
+}

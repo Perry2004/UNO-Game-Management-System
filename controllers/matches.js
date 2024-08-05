@@ -34,3 +34,41 @@ exports.registerMatches = async (req, res) => {
     res.status(500).redirect("/matches");
   }
 };
+
+exports.fetchMatchInfo = async (req, res) => {
+  const { matchID } = req.query;
+
+  try {
+    const matchInfo = await matchesModel.fetchMatchInfo(matchID);
+    res.status(200).send(matchInfo);
+  } catch (error) {
+    console.error(logError("fetchMatchInfo"), error);
+    res.status(500).send(resError("fetchMatchInfo"));
+  }
+}
+
+exports.fetchMatchPlayers = async (req, res) => {
+  const { matchID } = req.query;
+
+  try {
+    const matchPlayers = await matchesModel.fetchMatchPlayers(matchID);
+    // DEBUG
+    // console.log("In controller: success fetching match players: ", matchPlayers); 
+    res.status(200).send(matchPlayers);
+  } catch (error) {
+    console.error(logError("fetchMatchPlayers"), error);
+    res.status(500).send(resError("fetchMatchPlayers"));
+  }
+}
+
+exports.fetchMatchDetails = async (req, res) => {
+  const { matchID } = req.query;
+
+  try {
+    const matchDetails = await matchesModel.fetchMatchDetails(matchID);
+    res.status(200).send(matchDetails);
+  } catch (error) {
+    console.error(logError("fetchMatchDetails"), error);
+    res.status(500).send(resError("fetchMatchDetails"));
+  }
+}
