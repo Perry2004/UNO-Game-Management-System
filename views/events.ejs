@@ -28,8 +28,8 @@
                     <div class="main-body-header">
                         <h2 class="main-title">RECENT EVENTS</h2>
                         <div class="table-button-list">
-                            <select name="selector" id="selector" class="dropdown">
-                                <option value="Filter">Filter by Number of Participants</option>
+                            <p class="dropdown-title">Sort By:</p> 
+                            <select name="selector" id="selector" class="dropdown" data-sort-dropdown data-pointer-not-allowed>
                                 <option value="Win Rate">Participants >= 10</option>
                                 <option value="Win Rate">Participants >= 30</option>
                                 <option value="Win Rate">Participants >= 50</option>
@@ -41,34 +41,36 @@
 
                     <!--Start Table-->
 
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Number of Participants</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% locals.recentEvents.forEach(element => { %>
+					<div class="scrollable-table full-page">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td><%= element.eventID %></td>
-                                    <td><%= element.eventName %></td>
-                                    <td><%= element.eventStartDate %></td>
-                                    <td><%= element.eventEndDate %></td>
-                                    <td><%= element.numOfParticipants %></td>
-                                    <td><%= element.eventStatus %></td>
-                                    <td><i class='bx bxs-edit edit' aria-label="Edit" onclick="showUpdateEventModal('<%= element.eventID %>')" data-edit data-pointer-not-allowed></i>
-                                        <i class='bx bx-trash delete' aria-label="Delete" onclick="showDeleteItemModal('<%= element.eventID %>')" data-delete data-pointer-not-allowed></i>
-                                    </td>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Number of Participants</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <% locals.recentEvents.forEach(element => { %>
+                                    <tr>
+                                        <td><%= element.eventID %></td>
+                                        <td><%= element.eventName %></td>
+                                        <td><%= element.eventStartDate %></td>
+                                        <td><%= element.eventEndDate %></td>
+                                        <td><%= element.numOfParticipants %></td>
+                                        <td><%= element.eventStatus %></td>
+                                        <td><i class='bx bxs-edit edit' aria-label="Edit" onclick="showUpdateEventModal('<%= element.eventID %>')" data-edit data-pointer-not-allowed></i>
+                                            <i class='bx bx-trash delete' aria-label="Delete" onclick="showDeleteItemModal('<%= element.eventID %>')" data-delete data-pointer-not-allowed></i>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -89,7 +91,7 @@
                 <div class="modal-body">
                     <div class="modal-fields">
                         <label for="eventNameUpdate">Event Name: </label>
-                        <!-- <input type="hidden" id="eventID" name="eventID" data-event-id> -->
+                        <input type="hidden" id="eventIDU" name="eventIDU" data-event-id> 
                         <input type="text" id="eventNameUpdate" name="eventNameUpdate" autocomplete="event-name" aria-label="Event Name" data-event-name>
                     </div>
                     <div class="modal-fields">

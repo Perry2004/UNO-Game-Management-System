@@ -74,59 +74,32 @@ exports.fetchEvent = async (req, res) => {
  * Update an Event.
  */
 exports.updateEvent = async (req, res) => {
-  const { eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
-
-  // if (eventID === null || eventID.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
-  
-  // if (name === null || name.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
-  
-  // if (eventStartDate === null || eventStartDate.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
-  
-  // if (eventEndDate === null || eventEndDate.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
-  
-  // if (numOfParticipants === null || numOfParticipants.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
-  
-  // if (eventStatus === null || eventStatus.trim() === "") {
-  //   return res.status(400).send("Form Incomplete... Please try again!");
-  // }
+  const { eventIDU, eventNameUpdate, updateStartDate, updateEndDate, updateNumberOfParticipants, updateEventStatus } = req.body;
+  console.log(req.body);
 
   
-  if (eventID === null || eventID) {
+  if (eventNameUpdate === null ) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (name === null || name) {
+  if (updateStartDate === null ) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (eventStartDate === null || eventStartDate) {
+  if (updateEndDate === null ) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (eventEndDate === null || eventEndDate) {
+  if (updateNumberOfParticipants === null ) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
-  if (numOfParticipants === null || numOfParticipants) {
-    return res.status(400).send("Form Incomplete... Please try again!");
-  }
-  
-  if (eventStatus === null || eventStatus) {
+  if (updateEventStatus === null ) {
     return res.status(400).send("Form Incomplete... Please try again!");
   }
   
   try {
-    await eventsModel.updateEvent(eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus);
+    await eventsModel.updateEvent(eventIDU, eventNameUpdate, updateStartDate, updateEndDate, updateNumberOfParticipants, updateEventStatus);
     return res.redirect("/events");
   } catch (error) {
     console.error("Error Updating Event:", error);
