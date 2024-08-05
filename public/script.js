@@ -1087,7 +1087,7 @@ async function loadMatchDetails(matchID) {
   const matchWinnerField = document.querySelectorAll(".match-details-basic-information p")[3];
 
   const matchInfo = (await loadMatchInfo(matchID))[0];
-  matchIDField.innerHTML = "Match ID: " + matchInfo.matchID;
+  matchIDField.innerHTML = "Match ID: " + matchID;
   matchStartTimeField.innerHTML = "Start Time: " + matchInfo.startTime;
   matchEndTimeField.innerHTML = "End Time: " + matchInfo.endTime;
   matchWinnerField.innerHTML = "Winner: " + matchInfo.winner;
