@@ -46,10 +46,6 @@ exports.getRecentEvents = async (sortBy) => {
         sortByClause = "event_id";
     }
 
-    // DEBUG
-    console.log("In getRecentEvents, sortBy: ", sortBy);
-    console.log("In getRecentEvents, sortByClause: ", sortByClause);
-
     const [results] = await db.promise().query(`
         SELECT 
             event_id AS eventID, 
@@ -132,8 +128,9 @@ exports.updateEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
 
   eventStartDate = new Date(eventStartDate);
   eventEndDate = new Date(eventEndDate);
-  eventStartDate = formatInTimeZone(eventStartDate, vancouverTimeZone, "yyyy-MM-dd");
-  eventEndDate = formatInTimeZone(eventEndDate, vancouverTimeZone, "yyyy-MM-dd");
+  // to UTC
+  eventStartDate = new Date(eventStartDate.getUTCFullYear(), eventStartDate.getUTCMonth(), eventStartDate.getUTCDate());
+  eventEndDate = new Date(eventEndDate.getUTCFullYear(), eventEndDate.getUTCMonth(), eventEndDate.getUTCDate());
 
   try {
     await db
@@ -239,10 +236,12 @@ exports.deleteEvent = async (eventID) => {
 exports.checkEventExistence = async (eventName) => {
   try {
     const [results] = await db.promise().query("SELECT * FROM Events WHERE name = ?", [eventName]);
+    // DEBUG
+    console.log("Event exists: ", results);
     if (results.length === 0) {
       return false;
     } else {
-      return true;
+      return results[0].name;
     }
   } catch (error) {
     console.error(logError("checkEventExistence"), error);
