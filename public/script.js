@@ -1094,6 +1094,7 @@ async function loadMatchDetails(matchID) {
 
   const matchDetailsPlayerInformation = document.querySelector(".match-details-player-information ul");
   const matchPlayers = (await loadMatchPlayers(matchID));
+  const nextPlayer = matchPlayers[0].username;
   matchDetailsPlayerInformation.innerHTML = "";
   while (matchPlayers.length > 0) {
     const username = matchPlayers.shift();
@@ -1109,6 +1110,17 @@ async function loadMatchDetails(matchID) {
   // console.log("Match Details: ", JSON.parse(JSON.stringify(matchDetails)))
 
   matchDetailsTableBody.innerHTML = "";
+  matchDetailsTableBody.innerHTML += `
+    <tr>
+      <td> ${matchInfo.startTime} </td>
+      <td> SYSTEM </td>
+      <td> GAME START </td>
+      <td> NA </td>
+      <td> FULL </td>
+      <td> NA </td>
+      <td> CLOCKWISE </td>
+      <td> ${nextPlayer} </td>
+  `;
   while (matchDetails.length > 0) {
     const matchDetail = matchDetails.shift();
     let additionalInfo = "NA";

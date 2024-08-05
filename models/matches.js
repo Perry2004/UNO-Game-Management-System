@@ -135,15 +135,14 @@ exports.fetchMatchDetails = async (matchID) => {
       } else if (drawActions) {
         validAction = drawActions;
         validAction.type = "Draw";
-      } else
-        if (playActions) {
-          validAction = playActions;
-          validAction.type = "Play";
-        }
+      } else if (playActions) {
+        validAction = playActions;
+        validAction.type = "Play";
+      }
 
       // if action is play, get card info
       let playedCards = [];
-      if (validAction.type === "Play") {
+      if (validAction.type === "Play" || validAction.type === "Draw") {
         // card types: Wild Card, Wild Draw 4 Card, Number Card, Skip Card, Reverse Card, Draw 2 Card
         cardTypes = ["WildCard", "WildDraw4Card", "NumberCard", "SkipCard", "ReverseCard", "Draw2Card"];
 
@@ -192,7 +191,7 @@ exports.fetchMatchDetails = async (matchID) => {
         nextTurnIndex = (nextTurnIndex - 1 + usernamesInMatch.length) % usernamesInMatch.length;
       }
 
-      if (validAction.type === "Play") {
+      if (validAction.type === "Play" || validAction.type === "Draw") {
         validAction.playedCards = playedCards;
       }
 
