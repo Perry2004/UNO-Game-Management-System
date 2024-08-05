@@ -861,14 +861,6 @@ document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", as
     return;
   }
 
-  // validate if the event name is already in the database
-  const eventName = eventNameEdit.value;
-  const response = await fetch(`/events/check-event-name?eventName=${eventName}`);
-  if (response.ok) {
-    displayModalErrorMessage("[data-edit-event-modal]", "Event name already exists... Please try again!");
-    return;
-  }
-
   let eventStatus = "";
   if (new Date() < new Date(eventStartDateEdit.value)) {
     eventStatus = "Upcoming";
@@ -953,14 +945,6 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
     case eventNumOfParticipantsCreate.value === "":
       displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
       return;
-  }
-
-  // validate if the name is already in the database
-  const eventName = eventNameCreate.value;
-  const response = await fetch(`/events/check-event-name?eventName=${eventName}`);
-  if (response.ok) {
-    displayModalErrorMessage("[data-create-event-modal]", "Event name already exists... Please try again!");
-    return;
   }
 
   // validate if the start date is before the end date
