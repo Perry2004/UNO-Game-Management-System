@@ -236,8 +236,6 @@ exports.deleteEvent = async (eventID) => {
 exports.checkEventExistence = async (eventName) => {
   try {
     const [results] = await db.promise().query("SELECT * FROM Events WHERE name = ?", [eventName]);
-    // DEBUG
-    console.log("Event exists: ", results);
     if (results.length === 0) {
       return false;
     } else {

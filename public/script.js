@@ -867,7 +867,7 @@ document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", as
   if (new Date() < new Date(eventStartDateEdit.value)) {
     eventStatus = "Upcoming";
   } else if (new Date() > new Date(eventEndDateEdit.value)) {
-    eventStatus = "Expired";
+    eventStatus = "Completed";
   } else {
     eventStatus = "Active";
   }
@@ -1133,9 +1133,6 @@ async function loadMatchDetails(matchID) {
 
   const matchDetailsTableBody = document.querySelector(".match-details-body tbody");
   const matchDetails = await loadMatchDetailsData(matchID);
-
-  // DEBUG
-  // console.log("Match Details: ", JSON.parse(JSON.stringify(matchDetails)))
 
   matchDetailsTableBody.innerHTML = "";
   matchDetailsTableBody.innerHTML += `
