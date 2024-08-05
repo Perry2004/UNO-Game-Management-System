@@ -869,14 +869,21 @@ async function showUpdateEventModal(eventID) {
   const statusInput = document.querySelector("[data-edit-event-modal] [data-event-status]");
 
   const response = await fetch(`/events/fetch-event?eventID=${eventID}`);
+
+  // const dateObj = new Date(dateString);
+  // const year = dateObj.getFullYear();
+  // const month = ("0" + (dateObj.getMonth() + 1)).slice(-2); 
+  // const day = ("0" + dateObj.getDate()).slice(-2); 
+  // const formattedDate = `${year}-${month}-${day}`;
+
   if (response.ok) {
-    eventData = response.body; // JSON returned.
-    console.log(response.body);
+    eventData = await response.json(); // JSON returned.
+    console.log(eventData);
     eventNameInput.value = eventData.name;
-    startDateInput.value = eventData.start_date; 
-    endDateInput.value = eventData.end_date; 
-    participantsInput.value = eventData.num_of_participants;
+    startDateInput.value = new Date(eventData.start_date[0, 10]); 
+    endDateInput.value = new Date(eventData.end_date); 
     statusInput.value = eventData.status;
+    participantsInput.value = eventData.num_of_participants;
   } else {
     console.log("showUpdateEventModal has an error.");
   }
