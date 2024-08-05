@@ -1,6 +1,10 @@
 const db = require("../config/db");
 const { format } = require("date-fns");
 
+const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
+
+
 /**
  * CREATE TABLE IF NOT EXISTS Events (
     event_id INT AUTO_INCREMENT,
@@ -57,22 +61,24 @@ exports.getRecentEvents = async () => {
  *          this checking refers to the attribute domains.
  *          does not apply to start and end date attributes.
  */
-exports.insertEvent = async (eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus) => {
+exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipants, eventStatus) => {
+  // remove eventID
   // PK auto-enforced
   // no CK
   // no FK
 
   // to display the error inside the browser.
   error_cf = "";
+  console.log(eventEndDate);
 
   try {
     await db
       .promise()
       .query("INSERT INTO Events SET ?", {
-        event_id: eventID,
+        // event_id: eventID,
         name: name,
-        start_date: format(new Date(eventStartDate), "yyyy-M-d"),
-        end_date: format(new Date(eventEndDate), "yyyy-M-d"),
+        start_date: eventStartDate, // format(new Date(eventStartDate), "yyyy-mm-dd"),
+        end_date: eventEndDate, // format(new Date(eventEndDate), "yyyy-mm-dd"),
         num_of_participants: numOfParticipants,
         status: eventStatus
       });
@@ -80,7 +86,7 @@ exports.insertEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
 
   } catch (error) {
     error_cf = error.message;
-    console.log(error.message);
+    console.log(error.message + "inside insertEvent; models."); 
     // throw error // find this aversive. 
 
   } finally {
@@ -107,8 +113,8 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
       .promise()
       .query("UPDATE Events SET name = ?, start_date = ?, end_date = ?, num_of_participants = ?, status = ? WHERE event_id = ?", [
         name,
-        format(new Date(eventStartDate), "yyyy-M-d"),
-        format(new Date(eventEndDate), "yyyy-M-d"),
+        format(new Date(eventStartDate), "yyyy-mm-dd"),
+        format(new Date(eventEndDate), "yyyy-mm-dd"),
         numOfParticipants,
         eventStatus,
         eventID
@@ -118,7 +124,7 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
 
   } catch (error) {
     error_cf = error.message;
-    console.log(error.message);
+    console.log(error.message, "inside updateEvent models");
     // throw error // find this aversive.
 
   } finally {
@@ -136,8 +142,8 @@ exports.fetchEvent = async (eventID) => {
       const myQuery = `
         SELECT *
         FROM Events
-        WHERE event_id = ? 
-      `;
+        WHERE event_id = ?
+        `
       const [results] = await db.promise().query(myQuery, [eventID]);
   
       return results[0];

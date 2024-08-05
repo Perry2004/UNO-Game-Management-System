@@ -35,10 +35,15 @@ exports.loadEvents = async (req, res) => {
  * Insert an Event.
  */
 exports.insertEvent = async (req, res) => {
-  const { eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
+  // const { name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
+  const { eventNameC, cStartDate, cEndDate , cNumberOfParticipants, cEventStatus } = req.body;
+  // removed eventID
+  console.log(Object.keys(req)); //.body
+  console.log(req.body);
+  // console.log(req.eventNameC); // invalid
 
   try {
-    await eventsModel.insertEvent(eventID, name, eventStartDate, eventEndDate, numOfParticipants, eventStatus);
+    await eventsModel.insertEvent(eventNameC, cStartDate, cEndDate , cNumberOfParticipants, cEventStatus);
     res.redirect("/events"); // redirection
   } catch (error) {
     console.error(logError("insertEvent"), error);
@@ -52,6 +57,8 @@ exports.insertEvent = async (req, res) => {
  */
 exports.fetchEvent = async (req, res) => {
   const { eventID } = req.query; // TODO: confirm.
+  console.log(req.query);
+  console.log(eventID);
 
   try {
     const results = await eventsModel.fetchEvent(eventID);
@@ -135,7 +142,7 @@ exports.deleteEvent = async (req, res) => {
 
   const { item: eventID } = req.body;
   // const eventID = req.body;
-  console.log(req + "Request <.");
+  console.log(req.body + "Request <.");
 
   try {
     await eventsModel.deleteEvent(eventID);

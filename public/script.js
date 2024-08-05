@@ -831,6 +831,7 @@ document.querySelector("[data-edit-item-modal")?.addEventListener("submit", asyn
 // --- Update Event Modal --- ;
 document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
+  console.log(e);
 
   // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]"])) {
   //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
@@ -880,11 +881,14 @@ async function showUpdateEventModal(eventID) {
   const response = await fetch(`/events/fetch-event?eventID=${eventID}`);
   if (response.ok) {
     eventData = response.body; // JSON returned.
+    console.log(response.body);
     eventNameInput.value = eventData.name;
     startDateInput.value = eventData.start_date;
     endDateInput.value = eventData.end_date;
     participantsInput.value = eventData.num_of_participants;
     statusInput.value = eventData.status;
+  } else {
+    console.log("showUpdateEventModal has an error.");
   }
 
   const editEventModal = document.querySelector("[data-edit-event-modal]");
@@ -906,6 +910,7 @@ function hideUpdateEventModal() {
 
 document.querySelector("[data-create-event-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
+  console.log(e);
 
   // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]"])) {
   //   displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
