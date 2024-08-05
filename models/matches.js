@@ -14,7 +14,6 @@ exports.getRecentMatches = async () => {
             status AS matchStatus
         FROM Matches 
         ORDER BY match_id DESC 
-        LIMIT 10
     `);
 
     return results.map((element) => ({
