@@ -76,5 +76,8 @@ router.delete("/events/delete", eventsController.deleteEvent); // TODO: can't fi
 
 router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
 router.post("/matches/register", matchesController.registerMatches);
+router.get("/matches/fetch-match-info", matchesController.fetchMatchInfo);
+router.get("/matches/fetch-match-players", matchesController.fetchMatchPlayers);
+router.get("/matches/fetch-match-details", matchesController.fetchMatchDetails);
 
 module.exports = router;
