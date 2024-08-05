@@ -823,30 +823,21 @@ document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", as
   e.preventDefault();
   console.log(e);
 
-  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]"])) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
-  //   return;
-  // }
+  if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-name]", "[data-event-status]", "[data-event-part-no]", "[data-event-start-date]", "[data-event-end-date]"])) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Form is incomplete.");
+    return;
+  }
 
-  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-status]"])) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Status cannot be empty.. Please try again!");
-  //   return;
-  // }
+  // TODO: I can't figure this out.
+  if (new Date(document.querySelector("[data-edit-event-modal] [data-event-start-date]").value) < new Date(document.querySelector("[data-edit-event-modal] [data-event-end-date]").value)) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Start Date must be greater than the End Date.");
+    return;
+  }
 
-  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-part-no]"])) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
-  //   return;
-  // }
-
-  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-edit-start-date]"])) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
-  //   return;
-  // }
-
-  // if (isFieldsEmpty("[data-edit-event-modal]", ["[data-event-end-date]"])) {
-  //   displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
-  //   return;
-  // }
+  if (!Number.isInteger(Number(document.querySelector("[data-edit-event-modal] [data-event-part-no]").value))) {
+    displayModalErrorMessage("[data-edit-event-modal]", "Number of Participants must be an Integer.");
+    return;
+  }
 
   // // TODO: enforce
   // try {
@@ -862,6 +853,7 @@ document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", as
 });
 
 async function showUpdateEventModal(eventID) {
+  const eventIDInput = document.querySelector("[data-edit-event-modal] [data-event-id]");
   const eventNameInput = document.querySelector("[data-edit-event-modal] [data-event-name]");
   const startDateInput = document.querySelector("[data-edit-event-modal] [data-event-start-date]");
   const endDateInput = document.querySelector("[data-edit-event-modal] [data-event-end-date]");
@@ -870,19 +862,32 @@ async function showUpdateEventModal(eventID) {
 
   const response = await fetch(`/events/fetch-event?eventID=${eventID}`);
 
-  // const dateObj = new Date(dateString);
-  // const year = dateObj.getFullYear();
-  // const month = ("0" + (dateObj.getMonth() + 1)).slice(-2); 
-  // const day = ("0" + dateObj.getDate()).slice(-2); 
-  // const formattedDate = `${year}-${month}-${day}`;
+
 
   if (response.ok) {
     eventData = await response.json(); // JSON returned.
     console.log(eventData);
+    eventIDInput.value = eventData.event_id;
     eventNameInput.value = eventData.name;
-    startDateInput.value = new Date(eventData.start_date[0, 10]); 
-    endDateInput.value = new Date(eventData.end_date); 
+
+    const start = new Date(eventData.start_date);
+    let year = start.getFullYear();
+    let month = ("0" + (start.getMonth() + 1)).slice(-2); 
+    let day = ("0" + start.getDate()).slice(-2); 
+    const start_date  = `${year}-${month}-${day}`;
+
+    startDateInput.value = start_date; 
+
+    const end = new Date(eventData.end_date);
+    year = end.getFullYear();
+    month = ("0" + (end.getMonth() + 1)).slice(-2); 
+    day = ("0" + end.getDate()).slice(-2); 
+    const end_date  = `${year}-${month}-${day}`;
+
+    endDateInput.value = end_date; 
+
     statusInput.value = eventData.status;
+    // statusInput.value = start < end ? "Active" : "Completed"
     participantsInput.value = eventData.num_of_participants;
   } else {
     console.log("showUpdateEventModal has an error.");
@@ -909,38 +914,21 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
   e.preventDefault();
   console.log(e);
 
-  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]"])) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
-  //   return;
-  // }
+  if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-name]", "[data-event-status]", "[data-event-part-no]", "[data-event-start-date]", "[data-event-end-date]"])) {
+    displayModalErrorMessage("[data-create-event-modal]", "Form is incomplete.");
+    return;
+  }
 
-  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-status]"])) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Status cannot be empty.. Please try again!");
-  //   return;
-  // }
+  // TODO: I can't figure this out.
+  if (new Date(document.querySelector("[data-create-event-modal] [data-event-start-date]").value) < new Date(document.querySelector("[data-create-event-modal] [data-event-end-date]").value)) {
+    displayModalErrorMessage("[data-create-event-modal]", "Start Date must be greater than the End Date.");
+    return;
+  }
 
-  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-part-no]"])) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
-  //   return;
-  // }
-
-  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-start-date]"])) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
-  //   return;
-  // }
-
-  // if (isFieldsEmpty("[data-create-event-modal]", ["[data-event-end-date]"])) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
-  //   return;
-  // }
-
-  // // TODO: enforce
-  // try {
-  //   Number(document.querySelector("cNumberOfParticipants"));
-  // } catch (e) {
-  //   displayModalErrorMessage("[data-create-event-modal]", "Participants must be numerical.");
-  //   return;
-  // }
+  if (!Number.isInteger(Number(document.querySelector("[data-create-event-modal] [data-event-part-no]").value))) {
+    displayModalErrorMessage("[data-create-event-modal]", "Number of Participants must be an Integer.");
+    return;
+  }
 
   clearFormData();
   hideModalErrorMessage("[data-create-event-modal]");

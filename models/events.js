@@ -33,7 +33,6 @@ exports.getRecentEvents = async () => {
             status AS eventStatus
         FROM Events
         ORDER BY event_id DESC 
-        LIMIT 10;
     `);
 
     // TODO: check for an empty array; P3. if it is the case that it is empty, then use pre-population. Careful for integrity constraints.
@@ -80,9 +79,9 @@ exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
         start_date: eventStartDate, // format(new Date(eventStartDate), "yyyy-mm-dd"),
         end_date: eventEndDate, // format(new Date(eventEndDate), "yyyy-mm-dd"),
         num_of_participants: numOfParticipants,
-        status: eventStatus
+        status: eventStatus // = new Date(eventStartDate) < new Date(eventEndDate) ? "Active" : "Completed"
       });
-    console.log("Event added: " + {eventID});
+    // console.log("Event added: " + {eventID});
 
   } catch (error) {
     error_cf = error.message;
@@ -113,10 +112,10 @@ exports.updateEvent = async (eventID, name, eventStartDate, eventEndDate, numOfP
       .promise()
       .query("UPDATE Events SET name = ?, start_date = ?, end_date = ?, num_of_participants = ?, status = ? WHERE event_id = ?", [
         name,
-        format(new Date(eventStartDate), "yyyy-mm-dd"),
-        format(new Date(eventEndDate), "yyyy-mm-dd"),
+        eventStartDate,
+        eventEndDate,
         numOfParticipants,
-        eventStatus,
+        eventStatus, // = new Date(eventStartDate) < new Date(eventEndDate) ? "Active" : "Completed",
         eventID
       ]);
     console.log("Event updated: " + {eventID}); // should be viewable on the browser
