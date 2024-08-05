@@ -61,6 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
       element.style.color = "#f5222d";
     } else if (element.dataset.status === "Completed") {
       element.style.color = "#f5222d";
+    } else if (element.dataset.status === "Upcoming") {
+      element.style.color = "#1e90ff";
     }
   });
 
