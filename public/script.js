@@ -960,7 +960,7 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
   if (new Date() < new Date(eventStartDateCreate.value)) {
     eventStatus = "Upcoming";
   } else if (new Date() > new Date(eventEndDateCreate.value)) {
-    eventStatus = "Expired";
+    eventStatus = "Completed";
   } else {
     eventStatus = "Active";
   }
