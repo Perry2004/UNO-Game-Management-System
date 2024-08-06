@@ -39,8 +39,6 @@ exports.insertEvent = async (req, res) => {
   // const { name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
   const { eventNameC, cStartDate, cEndDate , cNumberOfParticipants, cEventStatus } = req.body;
   // removed eventID
-  console.log(Object.keys(req)); //.body
-  console.log(req.body);
   // console.log(req.eventNameC); // invalid
 
   try {
