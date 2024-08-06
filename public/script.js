@@ -24,14 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listeners to delete data on click
   document.querySelector("[data-conform-delete]")?.addEventListener("click", async () => {
     if (itemToDelete) {
-      console.log(itemToDelete); // discern the item to delete.
       const response = await fetch(`${pathname}/delete`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ item: itemToDelete }),
       });
-      console.log(response);
-      console.log(JSON.stringify({ item: itemToDelete }))
 
       if (response.ok) {
         window.location.reload();
@@ -42,14 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Add event listeners to sort data on click
-  document.querySelector("[data-sort-dropdown]")?.addEventListener("change", async (e) => {
+  document.querySelector("[data-dropdown-sort]")?.addEventListener("change", async (e) => {
     window.location.href = `${window.location.pathname}?order=${e.target.value}`;
   });
 
   // Restore dropdown state
   const [key, value] = window.location.search.substring(1).split("=");
   if (value) {
-    document.querySelector("[data-sort-dropdown]").value = value || "recent";
+    document.querySelector("[data-dropdown-sort]").value = value || "recent";
+  }
+
+  // Restore Store Items Details State
+  if (window.location.pathname === "/store-items" && localStorage.getItem("storeItemsState")) {
+    const modalState = localStorage.getItem("storeItemsState");
+    showStoreItemsDetails(modalState);
+    localStorage.removeItem("storeItemsState");
   }
 
   // Add Different Color for Status Display
@@ -62,26 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (element.dataset.status === "Completed") {
       element.style.color = "#f5222d";
     } else if (element.dataset.status === "Upcoming") {
-      element.style.color = "#1e90ff";
+      element.style.color = "#1E90FF";
     }
   });
-
-  // Initalizing for the Create Match Modal
-  initializeDefaultTemplatesForMatch();
-
-  const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
-  if (numOfPlayerDropdown) {
-    numOfPlayerDropdown.addEventListener("change", handlePlayerCountChangeForMatch);
-  }
-
-  // Restore modal state for Store-Items page
-  if (window.location.pathname === "/store-items") {
-    const modalState = localStorage.getItem("storeItemsModalState");
-    if (modalState !== null) {
-      showStoreItemsModal(modalState);
-    }
-    localStorage.removeItem("storeItemsModalState");
-  }
 });
 
 /* =================================================================================================== */
@@ -179,7 +166,7 @@ function hideSearchResult() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
-/* Delete Item Modal Section Below ------------------------------------------------------------------- */
+/* Delete Anything Modal Section Below --------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
 
@@ -190,7 +177,6 @@ function showDeleteItemModal(deleteItem) {
   deleteItemModal.classList.add("openedModal");
 
   showModal();
-  localStorage.setItem("modalState", "deleteItemModalOpened");
 }
 
 function hideDeleteItemModal() {
@@ -210,7 +196,7 @@ document.querySelector("[data-edit-player-modal]")?.addEventListener("submit", a
   e.preventDefault();
 
   if (isFieldsEmpty("[data-edit-player-modal]", ["[data-username]"])) {
-    displayModalErrorMessage("[data-edit-player-modal]", "Username cannot be empty.. Please try again!");
+    displayModalErrorMessage("[data-edit-player-modal]", "Username cannot be empty... Please try again!");
     return;
   }
 
@@ -224,20 +210,46 @@ document.querySelector("[data-edit-player-modal]")?.addEventListener("submit", a
     return;
   }
 
+  const originalUsernameInput = document.querySelector("[data-edit-player-modal] [data-original-username]");
+  const usernameInput = document.querySelector("[data-edit-player-modal] [data-username]");
+
+  if (originalUsernameInput.value !== usernameInput.value) {
+    const usernameAvailable = await isUsernameAvailable("[data-edit-player-modal]");
+    if (!usernameAvailable) {
+      displayModalErrorMessage("[data-edit-player-modal]", "Username is taken... Please try again!");
+      return;
+    }
+  }
+
+  const originalEmailInput = document.querySelector("[data-edit-player-modal] [data-original-email]");
+  const emailInput = document.querySelector("[data-edit-player-modal] [data-email]");
+
+  if (originalEmailInput.value !== emailInput.value) {
+    const emailAvailable = await isEmailAvailable("[data-edit-player-modal]");
+    if (!emailAvailable) {
+      displayModalErrorMessage("[data-edit-player-modal]", "Email is taken... Please try again!");
+      return;
+    }
+  }
+
   hideModalErrorMessage("[data-edit-player-modal]");
   e.target.submit();
 });
 
 async function showEditPlayerModal(playerID) {
   const playerIDInput = document.querySelector("[data-edit-player-modal] [data-player-id]");
+  const originalUsernameInput = document.querySelector("[data-edit-player-modal] [data-original-username]");
   const usernameInput = document.querySelector("[data-edit-player-modal] [data-username]");
+  const originalEmailInput = document.querySelector("[data-edit-player-modal] [data-original-email]");
   const emailInput = document.querySelector("[data-edit-player-modal] [data-email]");
   const countryInput = document.querySelector("[data-edit-player-modal] [data-country]");
 
   const playerData = await fetchPlayerData(playerID);
   if (playerData) {
     playerIDInput.value = playerData.playerID;
+    originalUsernameInput.value = playerData.username;
     usernameInput.value = playerData.username;
+    originalEmailInput.value = playerData.email;
     emailInput.value = playerData.email;
     countryInput.value = playerData.country;
   }
@@ -246,7 +258,6 @@ async function showEditPlayerModal(playerID) {
   editPlayerModal.classList.add("openedModal");
 
   showModal();
-  localStorage.setItem("modalState", "editPlayerModalOpened");
 }
 
 function hideEditPlayerModal() {
@@ -260,6 +271,67 @@ function hideEditPlayerModal() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
+/* Edit Item Modal Section Below --------------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+document.querySelector("[data-edit-item-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (isFieldsEmpty("[data-edit-item-modal]", ["[data-name]"])) {
+    displayModalErrorMessage("[data-edit-item-modal]", "Name cannot be empty.. Please try again!");
+    return;
+  }
+
+  const originalItemNameInput = document.querySelector("[data-edit-item-modal] [data-original-name]");
+  const itemNameInput = document.querySelector("[data-edit-item-modal] [data-name]");
+
+  if (originalItemNameInput.value !== itemNameInput.value) {
+    const itemNameAvailable = await isItemNameAvailable("[data-edit-item-modal]");
+    if (!itemNameAvailable) {
+      displayModalErrorMessage("[data-edit-item-modal]", "Name is taken... Please try again!");
+      return;
+    }
+  }
+
+  hideModalErrorMessage("[data-edit-item-modal]");
+  e.target.submit();
+});
+
+async function showEditItemModal(itemID) {
+  const itemIDInput = document.querySelector("[data-edit-item-modal] [data-item-id]");
+  const originalItemNameInput = document.querySelector("[data-edit-item-modal] [data-original-name]");
+  const itemNameInput = document.querySelector("[data-edit-item-modal] [data-name]");
+  const qualityInput = document.querySelector("[data-edit-item-modal] [data-quality]");
+  const appliedPromotionInput = document.querySelector("[data-edit-item-modal] [data-applied-promotion]");
+  const discountInput = document.querySelector("[data-edit-item-modal] [data-discount]");
+
+  const itemData = await fetchItemData(itemID);
+  if (itemData) {
+    itemIDInput.value = itemData.itemID;
+    originalItemNameInput.value = itemData.itemName;
+    itemNameInput.value = itemData.itemName;
+    qualityInput.value = itemData.itemQuality;
+    appliedPromotionInput.value = itemData.itemAppliedPromotion;
+  }
+
+  const editItemModal = document.querySelector("[data-edit-item-modal]");
+  editItemModal.classList.add("openedModal");
+
+  initalizeAppliedPromotionForItem("[data-edit-item-modal]");
+  showModal();
+}
+
+function hideEditItemModal() {
+  const editItemModal = document.querySelector("[data-edit-item-modal]");
+  editItemModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-edit-item-modal]");
+  hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
 /* Edit Membership Modal Section Below ------------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
@@ -268,7 +340,7 @@ document.querySelector("[data-edit-membership-modal")?.addEventListener("submit"
   e.preventDefault();
 
   if (isFieldsEmpty("[data-edit-membership-modal]", ["[data-username]"])) {
-    displayModalErrorMessage("[data-edit-membership-modal]", "Username cannot be empty.. Please try again!");
+    displayModalErrorMessage("[data-edit-membership-modal]", "Username cannot be empty... Please try again!");
     return;
   }
 
@@ -290,7 +362,6 @@ async function showEditMembershipModal(playerID) {
   const issueDateInput = document.querySelector("[data-edit-membership-modal] [data-issue-date]");
   const expireDateInput = document.querySelector("[data-edit-membership-modal] [data-expire-date]");
   const privilegeLevelInput = document.querySelector("[data-edit-membership-modal] [data-privilege-level]");
-  const privilegeClassInput = document.querySelector("[data-edit-membership-modal] [data-privilege-class]");
 
   const membershipData = await fetchMembershipData(playerID);
   if (membershipData) {
@@ -299,14 +370,13 @@ async function showEditMembershipModal(playerID) {
     issueDateInput.value = membershipData.membershipIssueDate;
     expireDateInput.value = membershipData.membershipExpireDate;
     privilegeLevelInput.value = membershipData.membershipPrivilegeLevel;
-    privilegeClassInput.innerHTML = membershipData.membershipPrivilegeClass;
   }
 
   const editMembershipModal = document.querySelector("[data-edit-membership-modal]");
   editMembershipModal.classList.add("openedModal");
 
+  initalizePrivilegeLevelForMembership("[data-edit-membership-modal]");
   showModal();
-  localStorage.setItem("modalState", "editMembershipModalOpened");
 }
 
 function hideEditMembershipModal() {
@@ -358,7 +428,6 @@ function showCreatePlayerModal() {
   createPlayerModal.classList.add("openedModal");
 
   showModal();
-  localStorage.setItem("modalState", "createPlayerModalOpened");
 }
 
 function hideCreatePlayerModal() {
@@ -372,6 +441,47 @@ function hideCreatePlayerModal() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
+/* Create Item Modal Section Below ------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+document.querySelector("[data-create-item-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (isFieldsEmpty("[data-create-item-modal]", ["[data-name]"])) {
+    displayModalErrorMessage("[data-create-item-modal]", "Name cannot be empty.. Please try again!");
+    return;
+  }
+
+  const itemNameAvailable = await isItemNameAvailable("[data-create-item-modal]");
+  if (!itemNameAvailable) {
+    displayModalErrorMessage("[data-create-item-modal]", "Name is taken... Please try again!");
+    return;
+  }
+
+  clearFormData();
+  hideModalErrorMessage("[data-create-item-modal]");
+  e.target.submit();
+});
+
+function showCreateItemModal() {
+  const createItemModal = document.querySelector("[data-create-item-modal]");
+  createItemModal.classList.add("openedModal");
+
+  initalizeAppliedPromotionForItem("[data-create-item-modal]");
+  showModal();
+}
+
+function hideCreateItemModal() {
+  const createItemModal = document.querySelector("[data-create-item-modal]");
+  createItemModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-create-item-modal]");
+  hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
 /* Create Membership Modal Section Below ------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
@@ -379,7 +489,7 @@ function hideCreatePlayerModal() {
 document.querySelector("[data-create-membership-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  if (isFieldsEmpty("[data-create-membership-modal]", ["[data-username]", "[data-membership-duration]"])) {
+  if (isFieldsEmpty("[data-create-membership-modal]", ["[data-username]", "[data-duration]"])) {
     displayModalErrorMessage("[data-create-membership-modal]", "Form Incomplete... Please try again!");
     return;
   }
@@ -408,8 +518,8 @@ function showCreateMembershipModal() {
   const createMembershipModal = document.querySelector("[data-create-membership-modal]");
   createMembershipModal.classList.add("openedModal");
 
+  initalizePrivilegeLevelForMembership("[data-create-membership-modal]");
   showModal();
-  localStorage.setItem("modalState", "createMembershipModalOpened");
 }
 
 function hideCreateMembershipModal() {
@@ -422,43 +532,37 @@ function hideCreateMembershipModal() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
-/* Create Match Modal Section Below ----------------------------------------------------------------- */
+/* Create Match Modal Section Below ------------------------------------------------------------------ */
 /* =================================================================================================== */
 /* =================================================================================================== */
-/* Edited by Perry ----------------------------------------------------------------------------------- */
 
 document.querySelector("[data-create-match-modal]")?.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const numOfPlayers = document.querySelector("#numOfPlayersCreate").value;
-  const usernames = [];
-  for (let i = 1; i <= numOfPlayers; i++) {
-    // validate form completion
-    if (document.querySelector(`#usernameCreate${i}`).value === "") {
-      displayModalErrorMessage("[data-create-match-modal]", "Form Incomplete... Please try again!");
-      return;
-    } else {
-      usernames.push(document.querySelector(`#usernameCreate${i}`).value);
-    }
-  }
+  const usernames = Array.from(document.querySelectorAll("[data-create-match-modal] [data-username]")).map((element) => element.value);
 
   const invalidUsernames = await validateUsernames(usernames);
+
   if (invalidUsernames.length > 0) {
     displayModalErrorMessage("[data-create-match-modal]", `The following usernames don't exist: ${invalidUsernames.join(", ")}`);
     return;
   }
 
   clearFormData();
-  hideModalErrorMessage("[data-create-match-modal]");
-  e.target.submit();
+  hideModalErrorMessage("[data-create-membership-modal]");
+  // e.target.submit();
 });
 
 function showCreateMatchModal() {
   const createMatchModal = document.querySelector("[data-create-match-modal]");
   createMatchModal.classList.add("openedModal");
 
+  initializeDefaultTemplatesForMatch();
+
+  const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
+  numOfPlayerDropdown.addEventListener("change", handlePlayerCountChangeForMatch);
+
   showModal();
-  localStorage.setItem("modalState", "createMatchModalOpened");
 }
 
 function hideCreateMatchModal() {
@@ -469,18 +573,153 @@ function hideCreateMatchModal() {
   hideModal();
 }
 
-async function showMatchDetailsModal(matchID) {
-
-  await loadMatchDetails(matchID);
+function showMatchDetailsModal(matchID) {
   const matchDetailsModal = document.querySelector("[data-match-detials]");
   matchDetailsModal.classList.add("openedModal");
-
-  localStorage.setItem("modalState", "matchDetialslOpened");
 }
 
 function hideMatchDetailsModal() {
   const matchDetailsModal = document.querySelector("[data-match-detials]");
   matchDetailsModal.classList.remove("openedModal");
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Insert Item Modal Section Below ------------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  if (isFieldsEmpty("[data-insert-item-modal]", ["[data-username]"])) {
+    displayModalErrorMessage("[data-insert-item-modal]", "Username cannot be empty... Please try again!");
+    return;
+  }
+
+  const playerID = await fetchPlayerID("[data-insert-item-modal]");
+
+  if (!playerID) {
+    displayModalErrorMessage("[data-insert-item-modal]", "Username doesn't exist... Please try again!");
+    return;
+  }
+
+  const itemToInsert = document.querySelector("[data-insert-item-modal] [data-item-id]").value;
+
+  if (!(await isItemNotInPlayerStore(itemToInsert, playerID))) {
+    displayModalErrorMessage("[data-insert-item-modal]", "Item already in the store... Please try again!");
+    return;
+  }
+
+  clearFormData();
+  hideModalErrorMessage("[data-insert-item-modal]");
+  e.target.submit();
+});
+
+function showInsertItemModal(itemID) {
+  const itemToInsert = document.querySelector("[data-insert-item-modal] [data-item-id]");
+  itemToInsert.value = itemID;
+
+  const insertItemModal = document.querySelector("[data-insert-item-modal]");
+  insertItemModal.classList.add("openedModal");
+
+  showModal();
+}
+
+function hideInsertItemModal() {
+  const insertItemModal = document.querySelector("[data-insert-item-modal]");
+  insertItemModal.classList.remove("openedModal");
+
+  hideModalErrorMessage("[data-insert-item-modal]");
+  hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* View Store Item Section Below --------------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+async function showStoreItemsDetails(storeID) {
+  const storeItemsDetails = document.querySelector("[data-store-items-details]");
+  storeItemsDetails?.classList.add("openedModal");
+
+  const storeItemsDetailsHeader = document.querySelector("[data-store-items-details-header] h2");
+  storeItemsDetailsHeader.innerHTML = `Available Items in Store ${storeID}`;
+
+  const storeItemsDetailsTable = document.querySelector("[data-store-item-details-table]");
+  const storeItemsDetailsData = await fetchStoreItemDetails(storeID);
+
+  if (storeItemsDetailsData.length > 0) {
+    storeItemsDetailsTable.innerHTML = ` 
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Item ID</th>
+						<th>Name</th>
+						<th>Quality</th>
+						<th>Current Price</th>
+						<th>Original Price</th>
+						<th>Applied Promotion</th>
+						<th>Discount</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody data-store-items-details-table-body>
+
+				</tbody>
+			</table>
+		`;
+
+    const storeItemsDetailsTableBody = document.querySelector("[data-store-items-details-table-body]");
+
+    storeItemsDetailsData.forEach((element) => {
+      storeItemsDetailsTableBody.innerHTML += `
+				<tr>
+					<td>${element.itemID}</td>
+					<td>${element.itemName}</td>
+					<td>${element.itemQuality}</td>
+					<td>\$${element.itemCurrentPrice}</td>
+					<td>\$${element.itemOriginalPrice}</td>
+					<td>${element.itemAppliedPromotion}</td>
+					<td>${element.itemDiscount === 0 ? "No Discount" : element.itemDiscount + "% OFF"}</td>
+					<td>
+						<i class="bx bx-trash delete" aria-label="Delete" onclick="removeItemFromStore(${element.itemID}, ${storeID})"></i>
+					</td>
+				</tr>
+			`;
+    });
+  } else {
+    storeItemsDetailsTable.innerHTML = `<p>There are no items left in the store.</p>`;
+  }
+
+  showModal();
+}
+
+function hideStoreItemsDetails() {
+  const storeItemsDetails = document.querySelector("[data-store-items-details]");
+  storeItemsDetails?.classList.remove("openedModal");
+
+  resetStoreItemsDetails();
+  hideModal();
+}
+
+async function removeItemFromStore(itemID, storeID) {
+  const response = await fetch("/store-items/delete-store-item", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ storeID: storeID, itemID: itemID }),
+  });
+
+  if (response.ok) {
+    const storeItemsDetailsData = await fetchStoreItemDetails(storeID);
+    if (storeItemsDetailsData.length > 0) {
+      localStorage.setItem("storeItemsState", storeID);
+    }
+    window.location.reload();
+  } else {
+    console.error(`Failed to delete item ${itemID} in store`);
+  }
 }
 
 /* =================================================================================================== */
@@ -519,20 +758,22 @@ function hideModal() {
   others.forEach((element) => {
     element.classList.remove("openedModal");
   });
-
-  localStorage.setItem("modalState", "closed");
 }
 
 function displayModalErrorMessage(modalType, message) {
   const modalErrorMessage = document.querySelector(`${modalType} [data-modal-error-message]`);
-  modalErrorMessage.innerHTML = `&#9888; ${message}`;
-  modalErrorMessage.style.display = "flex";
+  if (modalErrorMessage) {
+    modalErrorMessage.innerHTML = `&#9888; ${message}`;
+    modalErrorMessage.style.display = "flex";
+  }
 }
 
 function hideModalErrorMessage(modalType) {
   const modalErrorMessage = document.querySelector(`${modalType} [data-modal-error-message]`);
-  modalErrorMessage.innerHTML = "";
-  modalErrorMessage.style.display = "none";
+  if (modalErrorMessage) {
+    modalErrorMessage.innerHTML = "";
+    modalErrorMessage.style.display = "none";
+  }
 }
 
 function isFieldsEmpty(modalType, fieldsArray) {
@@ -558,49 +799,60 @@ function clearPasswordFields(modalType) {
   }
 }
 
+function resetStoreItemsDetails() {
+  const storeItemsDetailsTable = document.querySelector("[data-store-item-details-table]");
+  storeItemsDetailsTable.innerHTML = "";
+}
+
 function clearFormData() {
   localStorage.removeItem("formData");
 }
 
 function isDurationValid(modalType) {
-  const membershipDuration = document.querySelector(`${modalType} [data-membership-duration]`).value;
+  const membershipDuration = document.querySelector(`${modalType} [data-duration]`).value;
   currentDate = new Date();
   expireDate = new Date(new Date().getTime() + membershipDuration * 24 * 60 * 60 * 1000);
   return isNaN(expireDate);
 }
 
-function updatePrivilegeClass(modalType) {
-  const privilegeLevel = document.querySelector(`${modalType} [data-privilege-level]`);
-  const privilegeClass = document.querySelector(`${modalType} [data-privilege-class]`);
+async function initalizePrivilegeLevelForMembership(modalType) {
+  const privilegeLevelInput = document.querySelector(`${modalType} [data-privilege-level]`);
+  const privilegeClassInput = document.querySelector(`${modalType} [data-privilege-class]`);
 
-  let currentClass;
+  const privilegeClass = await fetchPrivilegeClass(privilegeLevelInput.value);
+  privilegeClassInput.innerHTML = privilegeClass;
 
-  switch (privilegeLevel.value) {
-    case "1":
-      currentClass = "Bronze";
-      break;
-    case "2":
-      currentClass = "Silver";
-      break;
-    case "3":
-      currentClass = "Gold";
-      break;
-    case "4":
-      currentClass = "Platinum";
-      break;
-    case "5":
-      currentClass = "Diamond";
-      break;
+  privilegeLevelInput.addEventListener("change", async () => {
+    const privilegeClass = await fetchPrivilegeClass(privilegeLevelInput.value);
+
+    privilegeClassInput.innerHTML = privilegeClass;
+  });
+}
+
+async function initalizeAppliedPromotionForItem(modalType) {
+  const appliedPromotionInput = document.querySelector(`${modalType} [data-applied-promotion]`);
+  const discountInput = document.querySelector(`${modalType} [data-discount]`);
+
+  const discount = await fetchItemDiscount(appliedPromotionInput.value);
+  if (discount === 0) {
+    discountInput.innerHTML = "";
+  } else {
+    discountInput.innerHTML = `${discount}% OFF`;
   }
 
-  privilegeClass.innerHTML = currentClass;
+  appliedPromotionInput.addEventListener("change", async () => {
+    const discount = await fetchItemDiscount(appliedPromotionInput.value);
+    if (discount === 0) {
+      discountInput.innerHTML = "";
+    } else {
+      discountInput.innerHTML = `${discount}% OFF`;
+    }
+  });
 }
 
 function initializeDefaultTemplatesForMatch() {
   const numOfPlayerDropdown = document.querySelector("[data-create-match-modal] [data-number-of-players]");
-  if (numOfPlayerDropdown) {
-    handlePlayerCountChangeForMatch({ target: numOfPlayerDropdown });
-  }
+  handlePlayerCountChangeForMatch({ target: numOfPlayerDropdown });
 }
 
 function handlePlayerCountChangeForMatch(e) {
@@ -628,7 +880,7 @@ function handlePlayerCountChangeForMatch(e) {
   }
 }
 
-// Helper Function to Fetch Player Data in any modal
+// Helper Function to Fetch PlayerID in Any Modal
 async function fetchPlayerID(modalType) {
   const username = document.querySelector(`${modalType} [data-username]`).value;
 
@@ -639,20 +891,27 @@ async function fetchPlayerID(modalType) {
   return null;
 }
 
-// Helper Function to Validate Multiple Usernames in any modal
-async function validateUsernames(usernames) {
-  const invalidUsernames = [];
+// Helper Function to Check Username Availability in Dashboard
+async function isUsernameAvailable(modalType) {
+  const username = document.querySelector(`${modalType} [data-username]`).value;
+  const response = await fetch(`/dashboard/check-input?username=${username}`);
+  return response.ok;
+}
 
-  await Promise.all(
-    usernames.map(async (username) => {
-      const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
-      if (!response.ok) {
-        invalidUsernames.push(username);
-      }
-    })
-  );
+// Helper Function to Check Username Availability in Dashboard
+async function isEmailAvailable(modalType) {
+  const email = document.querySelector(`${modalType} [data-email]`).value;
+  const response = await fetch(`/dashboard/check-input?email=${email}`);
+  return response.ok;
+}
 
-  return invalidUsernames;
+// Helper Function to Fetch Store Item Details
+async function fetchStoreItemDetails(storeID) {
+  const response = await fetch(`/store-items/fetch-store-items-details?storeID=${storeID}`);
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
 }
 
 // Helper Function to Fetch Player Data to Display in Edit Player Modal
@@ -664,18 +923,44 @@ async function fetchPlayerData(playerID) {
   return null;
 }
 
-// Helper Function to Check Username Availability in Create Player Modal
-async function isUsernameAvailable(modalType) {
-  const username = document.querySelector(`${modalType} [data-username]`).value;
-  const response = await fetch(`/dashboard/create-modal/check-input?username=${username}`);
+// Helper Function to Fetch Discount Data in Store-Items
+async function fetchItemDiscount(appliedPromotion) {
+  const response = await fetch(`/store-items/fetch-discount?appliedPromotion=${appliedPromotion}`);
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
+}
+
+// Helper Function to Check Item Name Availability in Store-Items
+async function isItemNameAvailable(modalType) {
+  const itemName = document.querySelector(`${modalType} [data-name]`).value;
+  const response = await fetch(`/store-items/check-input?itemName=${itemName}`);
   return response.ok;
 }
 
-// Helper Function to Check Username Availability in Create Player Modal
-async function isEmailAvailable(modalType) {
-  const email = document.querySelector(`${modalType} [data-email]`).value;
-  const response = await fetch(`/dashboard/create-modal/check-input?email=${email}`);
+// Helper Function to Check Whether the Item can be Inserted in Insert Item Modal
+async function isItemNotInPlayerStore(itemID, playerID) {
+  const response = await fetch(`/store-items/check-input?itemID=${itemID}&playerID=${playerID}`);
   return response.ok;
+}
+
+// Helper Function to Fetch Item Data to Display in Edit Items Modal
+async function fetchItemData(itemID) {
+  const response = await fetch(`/store-items/edit-modal/fetch-data?itemID=${itemID}`);
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
+}
+
+// Helper Function to Fetch Privilege Class in Store-Items
+async function fetchPrivilegeClass(privilegeLevel) {
+  const response = await fetch(`/memberships/fetch-privilege-class?privilegeLevel=${privilegeLevel}`);
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
 }
 
 // Helper Function to Fetch Membership Data to Display in Edit Membership Modal
@@ -694,141 +979,27 @@ async function isUserWithoutMembership(modalType) {
   return response.ok;
 }
 
+// Helper Function to Validate Multiple Usernames in Matches
+async function validateUsernames(usernames) {
+  const invalidUsernames = [];
+
+  await Promise.all(
+    usernames.map(async (username) => {
+      const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
+      if (!response.ok) {
+        invalidUsernames.push(username);
+      }
+    })
+  );
+
+  return invalidUsernames;
+}
+
 /* =================================================================================================== */
 /* =================================================================================================== */
-/* Perrry Below ---------------------------------------------------------------------------- */
+/* Perrry Below -------------------------------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
-
-/**
- * Validate the form data before submitting.
- */
-document.querySelector("[data-create-item-modal]")?.addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  if (document.getElementById("itemNameCreate").value === "" || document.getElementById("itemQuality").value === "" || document.getElementById("appliedPromotion").value === "") {
-    console.log("Form Incomplete... Please try again!");
-    displayModalErrorMessage("[data-create-item-modal]", "Form Incomplete... Please try again!");
-    return;
-  }
-
-
-  if (!(await checkItemName())) {
-    displayModalErrorMessage("[data-create-item-modal]", "Item already exists... Please try again!");
-    return;
-  }
-
-  // currentDate = new Date();
-  // expireDate = new Date(new Date().getTime() + document.getElementById("Duration").value * 24 * 60 * 60 * 1000);
-  // console.log("Calculated expire date: ", expireDate);
-  // if (isNaN(expireDate)) {
-  //   displayModalErrorMessage("[data-create-membership-modal]", "Invalid date, aborted.");
-  //   return;
-  // }
-
-  clearFormData();
-  hideModalErrorMessage("[data-create-item-modal]");
-  e.target.submit();
-});
-
-async function showCreateItemModal() {
-  const createItemModal = document.querySelector("[data-create-item-modal]");
-  createItemModal.classList.add("openedModal");
-
-  const discount = document.getElementById("discount");
-  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
-  discountValue = await discountValue.text();
-  discount.innerHTML = `${discountValue}% OFF`;
-
-  showModal();
-  localStorage.setItem("modalState", "createItemModalOpened");
-}
-
-function hideCreateItemModal() {
-  const createItemModal = document.querySelector("[data-create-item-modal]");
-  createItemModal.classList.remove("openedModal");
-
-  hideModalErrorMessage("[data-create-item-modal]");
-  hideModal();
-}
-
-/**
- * Check if the item name is occupied.
- */
-async function checkItemName() {
-  const itemName = document.getElementById("itemNameCreate").value;
-  const response = await fetch(`/store-items/check-item-name?itemName=${itemName}`);
-  return response.ok;
-}
-
-document.getElementById("appliedPromotion")?.addEventListener("change", async () => {
-  const discount = document.getElementById("discount");
-  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotion").value}`);
-  discountValue = await discountValue.text();
-  discount.innerHTML = `${discountValue}% OFF`;
-});
-
-document.getElementById("appliedPromotionEdit")?.addEventListener("change", async () => {
-  const discount = document.getElementById("discountEdit");
-  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotionEdit").value}`);
-  discountValue = await discountValue.text();
-  discount.innerHTML = `${discountValue}% OFF`;
-});
-
-
-async function showEditItemModal(itemID) {
-  const editItemModal = document.querySelector("[data-edit-item-modal]");
-
-
-  // load data to edit modal
-  itemData = await fetch(`/store-items/fetch?itemID=${itemID}`);
-  if (itemData.ok) {
-    itemData = await itemData.json();
-
-    const itemName = document.getElementById("itemNameEdit");
-    const itemIDInput = document.getElementById("itemIDEdit");
-    const itemQuality = document.getElementById("itemQualityEdit");
-    const appliedPromotion = document.getElementById("appliedPromotionEdit");
-
-    itemName.value = itemData.name;
-    itemIDInput.value = itemData.item_id;
-    itemQuality.value = itemData.quality;
-    appliedPromotion.value = itemData.applied_promotion;
-  } else {
-    console.error("Failed to fetch item data");
-    return;
-  }
-
-  const discount = document.getElementById("discountEdit");
-  let discountValue = await fetch(`/store-items/fetch-discount?appliedPromotion=${document.getElementById("appliedPromotionEdit").value}`);
-  discountValue = await discountValue.text();
-  discount.innerHTML = `${discountValue}% OFF`;
-
-  editItemModal.classList.add("openedModal");
-  showModal();
-}
-
-async function hideEditItemModal() {
-  const editItemModal = document.querySelector("[data-edit-item-modal]");
-  editItemModal.classList.remove("openedModal");
-  hideModal();
-}
-
-document.querySelector("[data-edit-item-modal")?.addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const itemName = document.getElementById("itemNameEdit");
-  const itemQuality = document.getElementById("itemQualityEdit");
-  const appliedPromotion = document.getElementById("appliedPromotionEdit");
-
-  if (itemName.value === "" || itemQuality.value === "" || appliedPromotion.value === "") {
-    displayModalErrorMessage("[data-edit-item-modal]", "Form Incomplete... Please try again!");
-    return;
-  }
-
-  hideModalErrorMessage("[data-edit-item-modal]");
-  e.target.submit();
-});
 
 // --- Update Event Modal --- ;
 document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", async function (e) {
@@ -931,7 +1102,6 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
   const eventNameCreate = document.querySelector("#eventNameC");
   const eventStartDateCreate = document.querySelector("#cStartDate");
   const eventEndDateCreate = document.querySelector("#cEndDate");
-  const eventNumOfParticipantsCreate = document.querySelector("#cNumberOfParticipants");
 
   // validate if the form is complete 
   switch (true) {
@@ -943,9 +1113,6 @@ document.querySelector("[data-create-event-modal]")?.addEventListener("submit", 
       return;
     case eventEndDateCreate.value === "":
       displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
-      return;
-    case eventNumOfParticipantsCreate.value === "":
-      displayModalErrorMessage("[data-create-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
       return;
   }
 
@@ -988,223 +1155,3 @@ function hideCreateEventModal() {
   hideModalErrorMessage("[data-create-event-modal]");
   hideModal();
 }
-/* -----------Insert item codes below----------------- */
-function showInsertItemModal(itemID) {
-  const itemIDInsert = document.getElementById("itemIDInsert");
-  itemIDInsert.value = itemID;
-  const insertItemModal = document.querySelector("[data-insert-item-modal]");
-  insertItemModal.classList.add("openedModal");
-  showModal();
-}
-
-function hideInsertItemModal() {
-  const insertItemModal = document.querySelector("[data-insert-item-modal]");
-  insertItemModal.classList.remove("openedModal");
-  hideModal();
-}
-
-document.querySelector("[data-insert-item-modal]")?.addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const insertUsername = document.getElementById("insertUsername");
-  const username = insertUsername.value;
-  const itemID = document.getElementById("itemIDInsert").value;
-
-  // validation form completion
-  if (insertUsername.value === "") {
-    displayModalErrorMessage("[data-insert-item-modal]", "Form Incomplete... Please try again!");
-    return;
-  }
-
-  // validate if the username exists
-  const insertItemCheck = await fetch(`/dashboard/fetch-playerID?username=${insertUsername.value}`);
-  if (!insertItemCheck.ok) {
-    displayModalErrorMessage("[data-insert-item-modal]", "Username doesn't exist... Please try again!");
-    return;
-  }
-
-  const playerID = await insertItemCheck.json();
-
-  // validate if the item is alreay in the store
-  const isItemInStore = await fetch(`/store-items/check-item-in-store?itemID=${itemID}&playerID=${playerID}`);
-  if (isItemInStore.ok) {
-    displayModalErrorMessage("[data-insert-item-modal]", "Item already in the store... Please insert another item!");
-    return;
-  }
-
-  clearFormData();
-  hideModalErrorMessage("[data-insert-item-modal]");
-  e.target.submit();
-});
-
-/* ----------------Show Store Items ----------------- */
-async function showStoreItemsModal(storeID) {
-  const storeItemsModal = document.querySelector("[data-store-items-modal]");
-  storeItemsModal.classList.add("openedModal");
-
-  const storeItemsModalHeader = document.getElementById("storeItemsModalHeader");
-  storeItemsModalHeader.innerHTML = `Items in Store ${storeID}`;
-
-  // load data here 
-  let storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
-  storeItems = await storeItems.json();
-  console.log("JSON storeItems: ", storeItems);
-  const storeItemsTable = document.getElementById("storeItemsTable");
-  if (storeItems.length > 0) {
-    storeItemsTable.innerHTML = "";
-    storeItems.forEach((item) => {
-      storeItemsTable.innerHTML += `
-        <tr>
-          <td>${item.item_id}</td>
-          <td>${item.name}</td>
-          <td>${item.quality}</td>
-          <td>${item.current_price}</td>
-          <td>${item.original_price}</td>
-          <td>${item.applied_promotion}</td>
-          <td>${item.discount}</td>
-          <td>
-            <i class="bx bx-trash delete" aria-label="Delete" onclick="removeItemFromStore(${item.item_id}, ${storeID})"></i>
-          </td>
-        </tr>
-      `;
-    });
-  } else {
-    storeItemsTable.innerHTML = "<tr><td colspan='8'>There are no items left in the store.</td></tr>";
-    console.error("Failed to fetch store items data");
-  }
-
-  showModal();
-}
-
-function hideStoreItemsModal() {
-  const storeItemsModal = document.querySelector("[data-store-items-modal]");
-  storeItemsModal.classList.remove("openedModal");
-  localStorage.removeItem("storeItemsModalState");
-  hideModal();
-}
-
-async function removeItemFromStore(itemID, storeID) {
-  const response = await fetch(`/store-items/delete-store-item?itemID=${itemID}&storeID=${storeID}`, {
-    method: "DELETE",
-  });
-  if (response.ok) {
-    // if there is no item in the store, hide the modal
-    const storeItems = await fetch(`/store-items/fetch-store-items?storeID=${storeID}`);
-    if (storeItems.ok) {
-      const storeItemsData = await storeItems.json();
-      if (storeItemsData.length !== 0) {
-        // set local storage to restore the modal state after reload
-        localStorage.setItem("storeItemsModalState", storeID);
-      }
-    }
-    window.location.reload();
-  } else {
-    console.error(`Failed to delete item ${itemID}`);
-  }
-}
-
-/* =================================================================================================== */
-/* =================================================================================================== */
-/* Perrry Below 2 ------------------------------------------------------------------------------------ */
-/* =================================================================================================== */
-/* =================================================================================================== */
-async function loadMatchDetails(matchID) {
-  const matchIDField = document.querySelectorAll(".match-details-basic-information p")[0];
-  const matchStartTimeField = document.querySelectorAll(".match-details-basic-information p")[1];
-  const matchEndTimeField = document.querySelectorAll(".match-details-basic-information p")[2];
-  const matchWinnerField = document.querySelectorAll(".match-details-basic-information p")[3];
-
-  const matchInfo = (await loadMatchInfo(matchID))[0];
-  matchIDField.innerHTML = "Match ID: " + matchID;
-  matchStartTimeField.innerHTML = "Start Time: " + matchInfo.startTime;
-  matchEndTimeField.innerHTML = "End Time: " + matchInfo.endTime;
-  matchWinnerField.innerHTML = "Winner: " + matchInfo.winner;
-
-  const matchDetailsPlayerInformation = document.querySelector(".match-details-player-information ul");
-  const matchPlayers = (await loadMatchPlayers(matchID));
-  const nextPlayer = matchPlayers[0].username;
-  matchDetailsPlayerInformation.innerHTML = "";
-  while (matchPlayers.length > 0) {
-    const username = matchPlayers.shift();
-    const player = document.createElement("li");
-    player.innerHTML = username.username + " (" + username.country + ")";
-    matchDetailsPlayerInformation.appendChild(player);
-  }
-
-  const matchDetailsTableBody = document.querySelector(".match-details-body tbody");
-  const matchDetails = await loadMatchDetailsData(matchID);
-
-  matchDetailsTableBody.innerHTML = "";
-  matchDetailsTableBody.innerHTML += `
-    <tr>
-      <td> ${matchInfo.startTime} </td>
-      <td> SYSTEM </td>
-      <td> GAME START </td>
-      <td> NA </td>
-      <td> FULL </td>
-      <td> NA </td>
-      <td> CLOCKWISE </td>
-      <td> ${nextPlayer} </td>
-  `;
-  while (matchDetails.length > 0) {
-    const matchDetail = matchDetails.shift();
-    let additionalInfo = "NA";
-    const playedCards = matchDetail.playedCards;
-    if (playedCards) {
-      let playedCardsString = "";
-      if (playedCards.length > 0) {
-        for (let i = 0; i < playedCards.length; i++) {
-          if (i === playedCards.length - 1) {
-            playedCardsString += playedCards[i].cardType;
-          } else {
-            playedCardsString += playedCards[i].cardType + ", ";
-          }
-        }
-      }
-      additionalInfo = playedCardsString;
-    }
-
-    matchDetailsTableBody.innerHTML += `
-      <tr>
-        <td> ${matchDetail.timeStamp} </td>
-        <td> ${matchDetail.username} </td>
-        <td> ${matchDetail.type} </td>
-        <td> ${additionalInfo} </td>
-        <td> ${matchDetail.numOfCardsInHand} </td>
-        <td> ${matchDetail.numOfCardsInDeck} </td>
-        <td> ${matchDetail.currentDirection} </td>
-        <td> ${matchDetail.nextTurn} </td>
-      </tr>
-    `;
-  }
-}
-
-async function loadMatchInfo(matchID) {
-  const response = await fetch(`/matches/fetch-match-info?matchID=${matchID}`);
-  if (response.ok) {
-    return await response.json();
-  } else {
-    return null;
-  }
-}
-
-async function loadMatchPlayers(matchID) {
-  const response = await fetch(`/matches/fetch-match-players?matchID=${matchID}`);
-  if (response.ok) {
-    return await response.json();
-  } else {
-    return null;
-  }
-}
-
-async function loadMatchDetailsData(matchID) {
-  const response = await fetch(`/matches/fetch-match-details?matchID=${matchID}`);
-  if (response.ok) {
-    const result = (await response.json());
-    return result;
-  } else {
-    return null;
-  }
-}
-
-// ---- Events page ----------------

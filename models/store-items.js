@@ -1,199 +1,305 @@
 const db = require("../config/db");
 
-exports.getRecentStores = async () => {
-  try {
-    const [results] = await db.promise().query(`
-        Select 
-            s.store_id AS storeID, 
-            s.num_of_items AS numOfItems,
-            p.username AS username, 
-            p.player_id AS playerID
-        FROM Stores s
-        JOIN Players p ON s.player_id = p.player_id
-        ORDER BY s.player_id DESC;
-    `);
+const logError = (functionName) => `OH NO! Error with ${functionName} in Store-Items Models:`;
 
-    return results;
-  } catch (error) {
-    console.error("OH NO! Error fetching recent stores:", error.message);
-    throw error;
-  }
+exports.getAllStores = async () => {
+	try {
+		const [results] = await db.promise().query(`
+			Select 
+				s.store_id AS storeID, 
+				s.num_of_items AS numOfItems,
+				p.username AS username, 
+				p.player_id AS playerID
+			FROM Stores s
+			JOIN Players p ON s.player_id = p.player_id
+			ORDER BY s.player_id DESC
+    	`);
+
+		return results;
+	} catch (error) {
+		console.error(logError("getAllStores"), error);
+		throw error;
+	}
 };
 
-exports.getRecentItems = async (order) => {
-  let orderByClause;
+exports.getAllItems = async (order) => {
+	let orderByClause;
 
-  switch (order) {
-    case "recent":
-      orderByClause = "i.item_id";
-      break;
-    case "quality":
-      orderByClause = "iop.original_price";
-      break;
-    case "currentPrice":
-      orderByClause = "i.current_price";
-      break;
-    case "discount":
-      orderByClause = "id.discount";
-      break;
-    default:
-      orderByClause = "i.item_id";
-  }
+	switch (order) {
+		case "recent":
+			orderByClause = "i.item_id DESC";
+			break;
+		case "quality":
+			orderByClause = "iop.original_price DESC";
+			break;
+		case "currentPrice":
+			orderByClause = "i.current_price DESC";
+			break;
+		case "discount":
+			orderByClause = "id.discount DESC";
+			break;
+		default:
+			orderByClause = "i.item_id DESC";
+	}
 
-  try {
-    const [results] = await db.promise().query(`
-        SELECT 
-            i.name AS itemName, 
-            i.item_id AS itemID,
-            i.quality AS itemQuality, 
-            i.current_price AS itemCurrentPrice, 
-            iop.original_price AS itemOriginalPrice, 
-            i.applied_promotion AS itemAppliedPromotion,
-            id.discount AS itemDiscount
-        FROM Items i
-        JOIN ItemOriginalPrice iop ON i.quality = iop.quality
-        JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
-        ORDER BY ${orderByClause} DESC;
-    `);
+	try {
+		const [results] = await db.promise().query(`
+			SELECT 
+				i.item_id AS itemID,
+				i.name AS itemName, 
+				i.quality AS itemQuality, 
+				i.current_price AS itemCurrentPrice, 
+				iop.original_price AS itemOriginalPrice, 
+				i.applied_promotion AS itemAppliedPromotion,
+				id.discount AS itemDiscount
+			FROM Items i
+			JOIN ItemOriginalPrice iop ON i.quality = iop.quality
+			JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
+			ORDER BY ${orderByClause} 
+    	`);
 
-    return results.map((element) => ({
-      itemName: element.itemName,
-      itemID: element.itemID,
-      itemQuality: element.itemQuality,
-      itemCurrentPrice: "$" + element.itemCurrentPrice,
-      itemOriginalPrice: "$" + element.itemOriginalPrice,
-      itemAppliedPromotion: element.itemAppliedPromotion,
-      itemDiscount: element.itemDiscount + "% OFF",
-    }));
-  } catch (error) {
-    console.error("OH NO! Error fetching recent items:", error.message);
-    throw error;
-  }
+		return results.map((element) => ({
+			itemID: element.itemID,
+			itemName: element.itemName,
+			itemQuality: element.itemQuality,
+			itemCurrentPrice: "$" + element.itemCurrentPrice,
+			itemOriginalPrice: "$" + element.itemOriginalPrice,
+			itemAppliedPromotion: element.itemAppliedPromotion,
+			itemDiscount: element.itemDiscount === 0 ? "No Discount" : element.itemDiscount + "% OFF",
+		}));
+	} catch (error) {
+		console.error(logError("getAllItems"), error);
+		throw error;
+	}
 };
 
-exports.registerItem = async (name, quality, appliedPromotion) => {
-  // get the original price
-  let originalPrice = await db.promise().query(`SELECT original_price FROM ItemOriginalPrice WHERE quality = ?`, [quality]);
-  originalPrice = originalPrice[0][0].original_price;
+exports.getStoreItemsDetailsByStoreID = async (storeID) => {
+	try {
+		const myQuery = `
+			SELECT 
+				i.item_id AS itemID, 
+				i.name AS itemName, 
+				i.quality AS itemQuality, 
+				i.current_price AS itemCurrentPrice, 
+				i.applied_promotion AS itemAppliedPromotion, 
+				iop.original_price AS itemOriginalPrice, 
+				id.discount AS itemDiscount
+			FROM Items i
+			JOIN ItemOriginalPrice iop ON i.quality = iop.quality
+			JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
+			JOIN StoreSellItems ssi ON i.item_id = ssi.item_id
+			WHERE ssi.store_id = ?
+			ORDER BY i.item_id
+    	`;
 
-  // get discount
-  let discount = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
-  discount = discount[0][0].discount;
-  let currentPrice = originalPrice * (1 - discount / 100);
+		const [results] = await db.promise().query(myQuery, [storeID]);
 
-  await db.promise().query(
-    `
-    INSERT INTO Items (name, quality, current_price, applied_promotion) 
-    VALUES (?, ?, ?, ?)
-    `,
-    [name, quality, currentPrice, appliedPromotion]
-  );
-
-  console.log("Item registered successfully");
+		return results;
+	} catch (error) {
+		console.error(logError("getStoreItemsByStoreID"), error);
+		throw error;
+	}
 };
 
-exports.isItemNameRegistered = async (name) => {
-  const [results] = await db.promise().query(`SELECT * FROM Items WHERE name = ?`, [name]);
-  return results.length > 0;
+exports.getDiscountByAppliedPromotion = async (appliedPromotion) => {
+	try {
+		const myQuery = `
+			SELECT 
+				id.discount AS itemDiscount
+			FROM ItemDiscount id
+			WHERE applied_promotion = ?
+    	`;
+
+		const [results] = await db.promise().query(myQuery, [appliedPromotion]);
+
+		return results[0]?.itemDiscount;
+	} catch (error) {
+		console.error(logError("getDiscountByAppliedPromotion"), error);
+		throw error;
+	}
 };
 
-exports.fetchDiscountData = async (appliedPromotion) => {
-  const [results] = await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]);
-  return results[0].discount;
+exports.getOriginalPriceByQuality = async (quality) => {
+	try {
+		const myQuery = `
+			SELECT 
+				iop.original_price AS itemOriginalPrice
+			FROM ItemOriginalPrice iop
+			WHERE quality = ?
+    	`;
+
+		const [results] = await db.promise().query(myQuery, [quality]);
+
+		return results[0]?.itemOriginalPrice;
+	} catch (error) {
+		console.error(logError("getOriginalPriceByQuality"), error);
+		throw error;
+	}
+};
+
+exports.getStoreIDByPlayerID = async (playerID) => {
+	try {
+		const [results] = await db.promise().query("SELECT store_id FROM Stores WHERE player_id = ?", [playerID]);
+
+		return results[0]?.store_id;
+	} catch (error) {
+		console.error(logError("getStoreIDByPlayerID"), error);
+		throw error;
+	}
+};
+
+exports.getItemDataByID = async (itemID) => {
+	try {
+		const myQuery = `
+			SELECT 
+				i.item_id AS itemID, 
+				i.name AS itemName, 
+				i.quality AS itemQuality, 
+				i.applied_promotion AS itemAppliedPromotion
+			FROM Items i
+			WHERE item_id = ?
+    	`;
+
+		const [results] = await db.promise().query(myQuery, [itemID]);
+
+		return results[0];
+	} catch (error) {
+		console.error(logError("getItemDataByID"), error);
+		throw error;
+	}
+};
+
+exports.isItemNameAvailable = async (itemName) => {
+	try {
+		const [results] = await db.promise().query("SELECT * FROM Items WHERE name = ?", [itemName]);
+
+		return results.length === 0;
+	} catch (error) {
+		console.error(logError("isItemNameAvailable"), error);
+		throw error;
+	}
+};
+
+exports.isItemNotInPlayerStore = async (playerID, itemID) => {
+	try {
+		const myQuery = `
+			SELECT * 
+			FROM StoreSellItems 
+  			WHERE store_id = (SELECT store_id FROM Stores WHERE player_id = ?) AND item_id = ?
+		`;
+
+		const [results] = await db.promise().query(myQuery, [playerID, itemID]);
+
+		return results.length === 0;
+	} catch (error) {
+		console.error(logError("isItemNotInPlayerStore"), error);
+		throw error;
+	}
+};
+
+exports.insertItem = async (storeID, itemID) => {
+	try {
+		await db.promise().query("INSERT INTO StoreSellItems SET ?", {
+			store_id: storeID,
+			item_id: itemID,
+		});
+
+		updateNumOfItemsInStore();
+		console.log("OH YES! Item Registered Successfully!");
+	} catch (error) {
+		console.error(logError("registerItem"), error);
+		throw error;
+	}
+};
+
+exports.updateItemByID = async (itemID, updates) => {
+	try {
+		const columnNames = Object.keys(updates);
+		const columnValues = Object.values(updates);
+		const setClause = columnNames.map((element) => `${element} = ?`).join(", ");
+
+		if (setClause) {
+			const myQuery = `UPDATE Items SET ${setClause} WHERE item_id = ?`;
+			columnValues.push(itemID);
+
+			await db.promise().query(myQuery, columnValues);
+			console.log("OH YES! Item Updated Successfully!");
+		}
+	} catch (error) {
+		console.error(logError("updateItemByID"), error);
+		throw error;
+	}
+};
+
+exports.registerStore = async (playerID) => {
+	try {
+		await db.promise().query("INSERT INTO Stores SET ?", {
+			player_id: playerID,
+		});
+		console.log("OH YES! Store Registered Successfully!");
+	} catch (error) {
+		console.error(logError("registerStore"), error);
+		throw error;
+	}
+};
+
+exports.registerItem = async (name, quality, appliedPromotion, currentPrice) => {
+	try {
+		await db.promise().query("INSERT INTO Items SET ?", {
+			name: name,
+			quality: quality,
+			applied_promotion: appliedPromotion,
+			current_price: currentPrice,
+		});
+		console.log("OH YES! Item Registered Successfully!");
+	} catch (error) {
+		console.error(logError("registerItem"), error);
+		throw error;
+	}
 };
 
 exports.deleteItemByID = async (itemID) => {
-  // first delete from StoreSellItems and decrease num_of_items in Stores
-  let storeID = await db.promise().query(`SELECT store_id FROM StoreSellItems WHERE item_id = ?`, [itemID]);
-  if (storeID[0].length !== 0) {
-    storeID = storeID[0][0].store_id;
+	try {
+		await db.promise().query("DELETE FROM Items WHERE item_id = ?", [itemID]);
+		updateNumOfItemsInStore();
 
-    // use WHERE EXISTS to decrease num_of_items for all stores that have the item
-    await db
-      .promise()
-      .query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE EXISTS (SELECT * FROM StoreSellItems WHERE store_id = ?)`, [storeID]);
-
-    await db.promise().query(`DELETE FROM StoreSellItems WHERE item_id = ?`, [itemID]);
-    // DEBUG
-    console.log("In deleteItemByID in model, current num_of_items: ", (await db.promise().query(`SELECT num_of_items FROM Stores WHERE store_id = ?`, [storeID]))[0][0].num_of_items);
-  }
-
-  await db.promise().query(`DELETE FROM Items WHERE item_id = ?`, [itemID]);
-  console.log(`Item ${itemID} deleted successfully`);
+		console.log("OH YES! Item Deleted Successfully!");
+	} catch (error) {
+		console.error(logError("deleteItemByID"), error);
+		throw error;
+	}
 };
 
-exports.fetchItemData = async (itemID) => {
-  const [results] = await db.promise().query(
-    `
-    SELECT *
-    FROM Items
-    WHERE item_id = ?
-  `,
-    [itemID]
-  );
-  return results[0];
+exports.deleteStoreItem = async (storeID, itemID) => {
+	try {
+		await db.promise().query(`DELETE FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
+		updateNumOfItemsInStore();
+
+		console.log("OH YES! Item From Store Deleted Successfully!");
+	} catch (error) {
+		console.error(logError("deleteItemByID"), error);
+		throw error;
+	}
 };
 
-exports.updateItemByID = async (itemID, name, quality, appliedPromotion) => {
-  const originalPrice = (await db.promise().query(`SELECT original_price FROM ItemOriginalPrice WHERE quality = ?`, [quality]))[0][0].original_price;
-  const discount = (await db.promise().query(`SELECT discount FROM ItemDiscount WHERE applied_promotion = ?`, [appliedPromotion]))[0][0].discount;
-  const currentPrice = originalPrice * (1 - discount / 100);
-  await db
-    .promise()
-    .query(`UPDATE Items SET name = ?, quality = ?, current_price = ?, applied_promotion = ? WHERE item_id = ?`, [
-      name,
-      quality,
-      currentPrice,
-      appliedPromotion,
-      itemID,
-    ]);
-};
+const updateNumOfItemsInStore = async () => {
+	try {
+		await db.promise().query("SET SQL_SAFE_UPDATES = 0");
 
-exports.insertItem = async (itemID, username) => {
-  let playerID = await db.promise().query(`SELECT player_id FROM Players WHERE username = ?`, [username]);
-  playerID = playerID[0][0].player_id;
+		await db.promise().query(`
+			UPDATE Stores 
+			SET num_of_items = (
+				SELECT COUNT(*)
+				FROM StoreSellItems
+				WHERE StoreSellItems.store_id = Stores.store_id
+			);
+		`);
 
-  let storeID = await db.promise().query(`SELECT store_id FROM Stores WHERE player_id = ?`, [playerID]);
-  storeID = storeID[0][0].store_id;
-  // update StoreSellItems
-  await db.promise().query(`INSERT INTO StoreSellItems (store_id, item_id) VALUES (?, ?)`, [storeID, itemID]);
+		await db.promise().query("SET SQL_SAFE_UPDATES = 1");
 
-  // update Store.num_of_items
-  await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items + 1 WHERE store_id = ?`, [storeID]);
-};
-
-exports.isItemInStore = async (itemID, playerID) => {
-  let storeID = await db.promise().query(`SELECT store_id FROM Stores WHERE player_id = ?`, [playerID]);
-  storeID = storeID[0][0].store_id;
-
-  const [results] = await db.promise().query(`SELECT * FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
-  return results.length > 0;
-};
-
-exports.getStoreItems = async (storeID) => {
-  const [results] = await db.promise().query(
-    `
-    SELECT i.item_id, i.name, i.quality, i.current_price, i.applied_promotion, iop.original_price, id.discount
-    FROM Items i
-    JOIN ItemOriginalPrice iop ON i.quality = iop.quality
-    JOIN ItemDiscount id ON i.applied_promotion = id.applied_promotion
-    JOIN StoreSellItems ssi ON i.item_id = ssi.item_id
-    WHERE ssi.store_id = ?
-    ORDER BY i.item_id
-  `,
-    [storeID]
-  );
-  return results;
-};
-
-exports.deleteStoreItem = async (itemID, storeID) => {
-  // DEBUG
-  console.log("In deleteStoreItem in model, storeID: ", storeID, "itemID: ", itemID);
-  await db.promise().query(`DELETE FROM StoreSellItems WHERE store_id = ? AND item_id = ?`, [storeID, itemID]);
-  // DEBUG
-  console.log(`DELETE FROM StoreSellItems WHERE store_id = ${storeID} AND item_id = ${itemID}`);
-  console.log("Deleted from StoreSellItems");
-  await db.promise().query(`UPDATE Stores SET num_of_items = num_of_items - 1 WHERE store_id = ?`, [storeID]);
-  // DEBUG
-  console.log("Decreased num_of_items in Stores");
+		console.log("OH YES! Number of Items in Store Updated Successfully!");
+	} catch (error) {
+		console.error(logError("updateNumOfItemsInStore"), error);
+		throw error;
+	}
 };

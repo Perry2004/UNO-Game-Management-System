@@ -1,8 +1,8 @@
 const dashboardModel = require("../models/dashboard");
 const membershipsModel = require("../models/memberships");
 
-const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
-const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
+const logError = (functionName) => `OH NO! Error with ${functionName} in Memberships Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Memberships Controllers:`;
 
 exports.loadMemberships = async (req, res) => {
 	if (!req.loginStatus) {
@@ -17,6 +17,23 @@ exports.loadMemberships = async (req, res) => {
 	} catch (error) {
 		console.error(logError("loadMemberships"), error);
 		res.status(500).send(resError("loadMemberships"));
+	}
+};
+
+exports.fetchPrivilegeClass = async (req, res) => {
+	const { privilegeLevel } = req.query;
+
+	try {
+		const results = await membershipsModel.getPrivilegeClassByPrivilegeLevel(privilegeLevel);
+
+		if (results == null) {
+			return res.status(404).send(`OH NO! Privilege Class for ${privilegeLevel} does not exist!`);
+		}
+
+		return res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchPrivilegeClass"), error);
+		res.status(500).send(resError("fetchPrivilegeClass"));
 	}
 };
 
@@ -36,7 +53,7 @@ exports.checkMembershipExistence = async (req, res) => {
 	const { username } = req.query;
 
 	try {
-		const playerID = await dashboardModel.getPlayerID(username);
+		const playerID = await dashboardModel.getPlayerIDByUsername(username);
 		const membershipExistence = await membershipsModel.isPlayerMembershipRegistered(playerID);
 
 		if (!membershipExistence) {
@@ -80,7 +97,7 @@ exports.registerMembership = async (req, res) => {
 	const { username, duration, privilegeLevel } = req.body;
 
 	try {
-		const playerID = await dashboardModel.getPlayerID(username);
+		const playerID = await dashboardModel.getPlayerIDByUsername(username);
 		await membershipsModel.registerMembership(playerID, duration, privilegeLevel);
 
 		res.redirect("/memberships");

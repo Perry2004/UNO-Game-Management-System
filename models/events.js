@@ -123,6 +123,10 @@ exports.insertEvent = async (name, eventStartDate, eventEndDate, numOfParticipan
  */
 exports.updateEvent = async (name, eventStartDate, eventEndDate, numOfParticipants, eventStatus, eventID) => {
 
+  if (!numOfParticipants) {
+    numOfParticipants = 0;
+  }
+
   // to display the error inside the browser.
   error_cf = "";
 

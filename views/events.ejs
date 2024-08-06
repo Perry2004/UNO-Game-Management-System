@@ -29,10 +29,10 @@
               <div class="table-container-primary">
                 <div class="main-body-header">
                   <h2 class="main-title">RECENT EVENTS</h2>
-                  <div class="table-button-list">
+                  <div class="table-btn-list">
                     <div class="dropdown-container">
                       <p class="dropdown-title">Sort By:</p>
-                      <select name="selector" id="selector" class="dropdown" data-sort-dropdown
+                      <select name="selector" id="selector" class="dropdown" data-dropdown-sort
                         data-pointer-not-allowed>
                         <option value="recent" selected>Recent</option>
                         <option value="startDate">Start Date</option>
@@ -131,7 +131,8 @@
                 <div class="modal-fields">
                   <label for="updateNumberOfParticipants">Number of Participants: </label>
                   <input type="number" min="0" id="updateNumberOfParticipants" name="updateNumberOfParticipants"
-                    autocomplete="event-no-of-participants" aria-label="Number of Participants" data-event-part-no>
+                    autocomplete="event-no-of-participants" aria-label="Number of Participants" data-event-part-no
+                    disabled>
                   <!--should be a number-->
                 </div>
                 <div class="modal-fields">
@@ -172,14 +173,9 @@
                     aria-label="Event End Date" data-event-end-date>
                 </div>
                 <div class="modal-fields">
-                  <label for="cNumberOfParticipants">Number of Participants: </label>
-                  <input type="number" min="0" id="cNumberOfParticipants" name="cNumberOfParticipants"
-                    autocomplete="event-no-of-participants" aria-label="Number of Participants" data-event-part-no>
-                  <!--should be a number-->
-                </div>
-                <div class="modal-fields">
                   <input type="hidden" id="cEventStatus" name="cEventStatus" autocomplete="event-status"
                     aria-label="Event Status" data-event-status>
+                  <input type="hidden" id="cNumberOfParticipants" name="cNumberOfParticipants" value="0">
                 </div>
               </div>
               <div class="modal-footer">
