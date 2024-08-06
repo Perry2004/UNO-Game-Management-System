@@ -136,7 +136,7 @@ exports.getMatchDetails = async (matchID) => {
 				handInPlayerAndDeck.cardInHand -= 1;
 			} else if (action.action === "Draw") {
 				handInPlayerAndDeck.cardInHand += parseInt(action.additionalInfo.split(" ")[0]);
-				cardInDeck -= action.additionalInfo;
+				cardInDeck -= parseInt(action.additionalInfo.split(" ")[0]);
 			}
 
 			cardCounts[turn.playerID] = handInPlayerAndDeck;
