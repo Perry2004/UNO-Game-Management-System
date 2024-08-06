@@ -550,7 +550,7 @@ document.querySelector("[data-create-match-modal]")?.addEventListener("submit", 
 
   clearFormData();
   hideModalErrorMessage("[data-create-membership-modal]");
-  // e.target.submit();
+  e.target.submit();
 });
 
 function showCreateMatchModal() {
