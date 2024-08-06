@@ -106,11 +106,20 @@ We also divided the front-end (the React components) equally (in the manner abov
 - Some Group Members may find on-boarding more challenging than others and as such they may fall behind. In such a scenario it is expected that other group members will be of assistance in addition to the T.A. team.
 
 ---
+
+# Tech Stack Changes: 
+- We switched from `Oracle DB` to `MySQL` as it supports more features and is more user-friendly.
+- We get rid of the `React` front-end framework to reduce the complexity of the project. 
+- Because of the need to use `npm`, we finished our development on the local machine.
+
 # Setup: 
 
 ### Local Setup:
+1. Requirements: 
+   1. `Node.js` and `npm` installed on your local machine.
+   2. `MySQL` installed on your local machine.
 
-1. `.env` file:
+2. `.env` file:
 
    1. The `.env` file is used to store the environment variables for initializing the database connection.
    2. Please create a `.env` file in the root directory of the project with the following content with appropriate values:
@@ -131,6 +140,12 @@ Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL 
 
 2. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
 
-3. Use the command `npm run start` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default.
+3. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default.
+   1. There is no need to create db and load sql scripts manually as the application will automatically create the database and load the sql scripts from the specified file `./uno.sql`. 
+
+---
+# Deliverables for Milestone 4: 
+- [Milestone 4 PDF document](./CPSC304Milestone4.pdf)
+- [.sql script to setup the database](./uno.sql)
 
 ---
