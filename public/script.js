@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		} else if (element.dataset.status === "Completed") {
 			element.style.color = "#f5222d";
 		} else if (element.dataset.status === "Upcoming") {
-			element.style.color = "#1E90FF";
+			element.style.color = "#1890ff";
 		}
 	});
 });
@@ -288,7 +288,6 @@ async function showEditItemModal(itemID) {
 	const itemNameInput = document.querySelector("[data-edit-item-modal] [data-name]");
 	const qualityInput = document.querySelector("[data-edit-item-modal] [data-quality]");
 	const appliedPromotionInput = document.querySelector("[data-edit-item-modal] [data-applied-promotion]");
-	const discountInput = document.querySelector("[data-edit-item-modal] [data-discount]");
 
 	const itemData = await fetchItemData(itemID);
 	if (itemData) {
@@ -322,11 +321,6 @@ function hideEditItemModal() {
 
 document.querySelector("[data-edit-membership-modal")?.addEventListener("submit", async function (e) {
 	e.preventDefault();
-
-	if (isFieldsEmpty("[data-edit-membership-modal]", ["[data-username]"])) {
-		displayModalErrorMessage("[data-edit-membership-modal]", "Username cannot be empty... Please try again!");
-		return;
-	}
 
 	const issueDateInput = document.querySelector("[data-edit-membership-modal] [data-issue-date]");
 	const expireDateInput = document.querySelector("[data-edit-membership-modal] [data-expire-date]");
@@ -368,6 +362,75 @@ function hideEditMembershipModal() {
 	editMembershipModal.classList.remove("openedModal");
 
 	hideModalErrorMessage("[data-edit-membership-modal]");
+	hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Edit Event Modal Section Below ------------------------------------------------------------------- */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+document.querySelector("[data-edit-event-modal")?.addEventListener("submit", async function (e) {
+	e.preventDefault();
+
+	if (isFieldsEmpty("[data-edit-event-modal]", ["[data-name]"])) {
+		displayModalErrorMessage("[data-edit-event-modal]", "Name cannot be empty... Please try again!");
+		return;
+	}
+
+	const originalEventNameInput = document.querySelector("[data-edit-event-modal] [data-original-name]");
+	const eventNameInput = document.querySelector("[data-edit-event-modal] [data-name]");
+
+	if (originalEventNameInput.value !== eventNameInput.value) {
+		const eventNameAvailable = await isEventNameAvailable("[data-edit-event-modal]");
+		if (!eventNameAvailable) {
+			displayModalErrorMessage("[data-edit-event-modal]", "Name is taken... Please try again!");
+			return;
+		}
+	}
+
+	const startDateInput = document.querySelector("[data-edit-event-modal] [data-start-date]");
+	const endDateInput = document.querySelector("[data-edit-event-modal] [data-end-date]");
+
+	if (endDateInput.value < startDateInput.value) {
+		displayModalErrorMessage("[data-edit-event-modal]", "Invalid End Date... Please try again!");
+		return;
+	}
+
+	hideModalErrorMessage("[data-edit-event-modal]");
+	e.target.submit();
+});
+
+async function showEditEventModal(eventID) {
+	const eventIDInput = document.querySelector("[data-edit-event-modal] [data-event-id]");
+	const originalEventNameInput = document.querySelector("[data-edit-event-modal] [data-original-name]");
+	const eventNameInput = document.querySelector("[data-edit-event-modal] [data-name]");
+	const startDateInput = document.querySelector("[data-edit-event-modal] [data-start-date]");
+	const endDateInput = document.querySelector("[data-edit-event-modal] [data-end-date]");
+	const participantsInput = document.querySelector("[data-edit-event-modal] [data-participants]");
+
+	const eventData = await fetchEventData(eventID);
+	if (eventData) {
+		eventIDInput.value = eventData.eventID;
+		originalEventNameInput.value = eventData.eventName;
+		eventNameInput.value = eventData.eventName;
+		startDateInput.value = eventData.eventStartDate;
+		endDateInput.value = eventData.eventEndDate;
+		participantsInput.value = eventData.eventNumOfParticipants;
+	}
+
+	const editEventModal = document.querySelector("[data-edit-event-modal]");
+	editEventModal.classList.add("openedModal");
+
+	showModal();
+}
+
+function hideEditEventModal() {
+	const editEventModal = document.querySelector("[data-edit-event-modal]");
+	editEventModal.classList.remove("openedModal");
+
+	hideModalErrorMessage("[data-edit-event-modal]");
 	hideModal();
 }
 
@@ -425,7 +488,7 @@ function hideCreatePlayerModal() {
 
 /* =================================================================================================== */
 /* =================================================================================================== */
-/* Create Item Modal Section Below ------------------------------------------------------------- */
+/* Create Item Modal Section Below ------------------------------------------------------------------- */
 /* =================================================================================================== */
 /* =================================================================================================== */
 
@@ -511,6 +574,64 @@ function hideCreateMembershipModal() {
 	createMembershipModal.classList.remove("openedModal");
 
 	hideModalErrorMessage("[data-create-membership-modal]");
+	hideModal();
+}
+
+/* =================================================================================================== */
+/* =================================================================================================== */
+/* Create Event Modal Section Below ------------------------------------------------------------------ */
+/* =================================================================================================== */
+/* =================================================================================================== */
+
+document.querySelector("[data-create-event-modal]")?.addEventListener("submit", async function (e) {
+	e.preventDefault();
+
+	if (isFieldsEmpty("[data-create-event-modal]", ["[data-name]"])) {
+		displayModalErrorMessage("[data-create-event-modal]", "Name cannot be empty... Please try again!");
+		return;
+	}
+
+	if (isFieldsEmpty("[data-create-event-modal]", ["[data-start-date]"])) {
+		displayModalErrorMessage("[data-create-event-modal]", "Start Date cannot be empty... Please try again!");
+		return;
+	}
+
+	if (isFieldsEmpty("[data-create-event-modal]", ["[data-end-date]"])) {
+		displayModalErrorMessage("[data-create-event-modal]", "End Date cannot be empty... Please try again!");
+		return;
+	}
+
+	const eventNameAvailable = await isEventNameAvailable("[data-create-event-modal]");
+	if (!eventNameAvailable) {
+		displayModalErrorMessage("[data-create-event-modal]", "Name is taken... Please try again!");
+		return;
+	}
+
+	const startDateInput = document.querySelector("[data-create-event-modal] [data-start-date]");
+	const endDateInput = document.querySelector("[data-create-event-modal] [data-end-date]");
+
+	if (endDateInput.value < startDateInput.value) {
+		displayModalErrorMessage("[data-create-event-modal]", "Invalid End Date... Please try again!");
+		return;
+	}
+
+	clearFormData();
+	hideModalErrorMessage("[data-create-event-modal]");
+	e.target.submit();
+});
+
+function showCreateEventModal() {
+	const createEventModal = document.querySelector("[data-create-event-modal]");
+	createEventModal.classList.add("openedModal");
+
+	showModal();
+}
+
+function hideCreateEventModal() {
+	const createEventModal = document.querySelector("[data-create-event-modal]");
+	createEventModal.classList.remove("openedModal");
+
+	hideModalErrorMessage("[data-create-event-modal]");
 	hideModal();
 }
 
@@ -709,6 +830,7 @@ async function removeItemFromStore(itemID, storeID) {
 /* View Match Details Section Below ------------------------------------------------------------------ */
 /* =================================================================================================== */
 /* =================================================================================================== */
+
 async function showMatchDetailsModal(matchID) {
 	const matchIDText = document.querySelector("[data-match-id]");
 	const matchStartTimeText = document.querySelector("[data-match-start-time]");
@@ -773,8 +895,8 @@ async function showMatchDetailsModal(matchID) {
 	const matchDetails = await fetchMatchDetails(matchID);
 
 	if (matchDetails) {
+		// Add Match Details Rows
 		matchDetails.forEach((element) => {
-			// Add Match Details Rows
 			const row = document.createElement("tr");
 
 			const timeCell = document.createElement("td");
@@ -1043,7 +1165,6 @@ function handlePlayerCountChangeForMatch(e) {
 // Helper Function to Fetch PlayerID in Any Modal
 async function fetchPlayerID(modalType) {
 	const username = document.querySelector(`${modalType} [data-username]`).value;
-
 	const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
 	if (response.ok) {
 		return response.json();
@@ -1051,32 +1172,9 @@ async function fetchPlayerID(modalType) {
 	return null;
 }
 
-// Helper Function to Check Username Availability in Dashboard
-async function isUsernameAvailable(modalType) {
-	const username = document.querySelector(`${modalType} [data-username]`).value;
-	const response = await fetch(`/dashboard/check-input?username=${username}`);
-	return response.ok;
-}
-
-// Helper Function to Check Username Availability in Dashboard
-async function isEmailAvailable(modalType) {
-	const email = document.querySelector(`${modalType} [data-email]`).value;
-	const response = await fetch(`/dashboard/check-input?email=${email}`);
-	return response.ok;
-}
-
 // Helper Function to Fetch Store Item Details
 async function fetchStoreItemDetails(storeID) {
 	const response = await fetch(`/store-items/fetch-store-items-details?storeID=${storeID}`);
-	if (response.ok) {
-		return response.json();
-	}
-	return null;
-}
-
-// Helper Function to Fetch Player Data to Display in Edit Player Modal
-async function fetchPlayerData(playerID) {
-	const response = await fetch(`/dashboard/edit-modal/fetch-data?playerID=${playerID}`);
 	if (response.ok) {
 		return response.json();
 	}
@@ -1092,28 +1190,6 @@ async function fetchItemDiscount(appliedPromotion) {
 	return null;
 }
 
-// Helper Function to Check Item Name Availability in Store-Items
-async function isItemNameAvailable(modalType) {
-	const itemName = document.querySelector(`${modalType} [data-name]`).value;
-	const response = await fetch(`/store-items/check-input?itemName=${itemName}`);
-	return response.ok;
-}
-
-// Helper Function to Check Whether the Item can be Inserted in Insert Item Modal
-async function isItemNotInPlayerStore(itemID, playerID) {
-	const response = await fetch(`/store-items/check-input?itemID=${itemID}&playerID=${playerID}`);
-	return response.ok;
-}
-
-// Helper Function to Fetch Item Data to Display in Edit Items Modal
-async function fetchItemData(itemID) {
-	const response = await fetch(`/store-items/edit-modal/fetch-data?itemID=${itemID}`);
-	if (response.ok) {
-		return response.json();
-	}
-	return null;
-}
-
 // Helper Function to Fetch Privilege Class in Store-Items
 async function fetchPrivilegeClass(privilegeLevel) {
 	const response = await fetch(`/memberships/fetch-privilege-class?privilegeLevel=${privilegeLevel}`);
@@ -1121,38 +1197,6 @@ async function fetchPrivilegeClass(privilegeLevel) {
 		return response.json();
 	}
 	return null;
-}
-
-// Helper Function to Fetch Membership Data to Display in Edit Membership Modal
-async function fetchMembershipData(playerID) {
-	const response = await fetch(`/memberships/edit-modal/fetch-data?playerID=${playerID}`);
-	if (response.ok) {
-		return response.json();
-	}
-	return null;
-}
-
-// Helper Function to Check Whether the Membership can be Created in Create Membership Modal
-async function isUserWithoutMembership(modalType) {
-	const username = document.querySelector(`${modalType} [data-username]`).value;
-	const response = await fetch(`/memberships/create-modal/check-membership?username=${username}`);
-	return response.ok;
-}
-
-// Helper Function to Validate Multiple Usernames in Matches
-async function validateUsernames(usernames) {
-	const invalidUsernames = [];
-
-	await Promise.all(
-		usernames.map(async (username) => {
-			const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
-			if (!response.ok) {
-				invalidUsernames.push(username);
-			}
-		})
-	);
-
-	return invalidUsernames;
 }
 
 // Helper Function to Fetch Match Details in Matches
@@ -1185,160 +1229,95 @@ async function fetchMatchPlayersInfo(matchID) {
 	}
 }
 
-/* =================================================================================================== */
-/* =================================================================================================== */
-/* Perrry Below -------------------------------------------------------------------------------------- */
-/* =================================================================================================== */
-/* =================================================================================================== */
-// --- Update Event Modal --- ;
-document.querySelector("[data-edit-event-modal]")?.addEventListener("submit", async function (e) {
-	e.preventDefault();
-	console.log(e);
-
-	const eventNameEdit = document.querySelector("#eventNameUpdate");
-	const eventStartDateEdit = document.querySelector("#updateStartDate");
-	const eventEndDateEdit = document.querySelector("#updateEndDate");
-	const eventNumOfParticipantsEdit = document.querySelector("#updateNumberOfParticipants");
-	const eventStatusEdit = document.querySelector("#updateEventStatus");
-
-	// validate if all fields are filled
-	switch (true) {
-		case eventNameEdit.value === "":
-			displayModalErrorMessage("[data-edit-event-modal]", "Event's Name cannot be empty.. Please try again!");
-			return;
-		case eventStartDateEdit.value === "":
-			displayModalErrorMessage("[data-edit-event-modal]", "Start Date is required.");
-			return;
-		case eventEndDateEdit.value === "":
-			displayModalErrorMessage("[data-edit-event-modal]", "End Date is required.");
-			return;
-		case eventNumOfParticipantsEdit.value === "":
-			displayModalErrorMessage("[data-edit-event-modal]", "Event's Number of Participants cannot be empty.. Please try again!");
-			return;
-	}
-
-	// validate if the start date is before the end date
-	if (new Date(eventStartDateEdit.value) > new Date(eventEndDateEdit.value)) {
-		displayModalErrorMessage("[data-edit-event-modal]", "Invalid Date Range... Please try again!");
-		return;
-	}
-
-	let eventStatus = "";
-	if (new Date() < new Date(eventStartDateEdit.value)) {
-		eventStatus = "Upcoming";
-	} else if (new Date() > new Date(eventEndDateEdit.value)) {
-		eventStatus = "Completed";
-	} else {
-		eventStatus = "Active";
-	}
-
-	eventStatusEdit.value = eventStatus;
-
-	hideModalErrorMessage("[data-edit-event-modal]");
-
-	e.target.submit();
-});
-
-async function showUpdateEventModal(eventID) {
-	const eventIDInput = document.querySelector("[data-edit-event-modal] [data-event-id]");
-	const eventNameInput = document.querySelector("[data-edit-event-modal] [data-event-name]");
-	const startDateInput = document.querySelector("[data-edit-event-modal] [data-event-start-date]");
-	const endDateInput = document.querySelector("[data-edit-event-modal] [data-event-end-date]");
-	const participantsInput = document.querySelector("[data-edit-event-modal] [data-event-part-no]");
-	const statusInput = document.querySelector("[data-edit-event-modal] [data-event-status]");
-
-	const response = await fetch(`/events/fetch-event?eventID=${eventID}`);
-
+// Helper Fuction to Fetch Player Data to Display in Edit Player Modal
+async function fetchPlayerData(playerID) {
+	const response = await fetch(`/dashboard/edit-modal/fetch-data?playerID=${playerID}`);
 	if (response.ok) {
-		eventData = await response.json(); // JSON returned.
-		console.log(eventData);
-		eventIDInput.value = eventData.event_id;
-		eventNameInput.value = eventData.name;
-		startDateInput.value = eventData.start_date.split("T")[0];
-		endDateInput.value = eventData.end_date.split("T")[0];
-		statusInput.value = eventData.status;
-		// statusInput.value = start < end ? "Active" : "Completed"
-		participantsInput.value = eventData.num_of_participants;
-	} else {
-		console.log("showUpdateEventModal has an error.");
+		return response.json();
 	}
-
-	document.querySelector("#eventID").value = eventID;
-
-	const editEventModal = document.querySelector("[data-edit-event-modal]");
-	editEventModal.classList.add("openedModal");
-
-	showModal();
-	localStorage.setItem("modalState", "updateEventModalOpened");
+	return null;
 }
 
-function hideUpdateEventModal() {
-	const editEventModal = document.querySelector("[data-edit-event-modal]");
-	editEventModal.classList.remove("openedModal");
-
-	hideModalErrorMessage("[data-edit-event-modal]");
-	hideModal();
+// Helper Function to Fetch Item Data to Display in Edit Items Modal
+async function fetchItemData(itemID) {
+	const response = await fetch(`/store-items/edit-modal/fetch-data?itemID=${itemID}`);
+	if (response.ok) {
+		return response.json();
+	}
+	return null;
 }
 
-// --- Create Event Modal---
-
-document.querySelector("[data-create-event-modal]")?.addEventListener("submit", async function (e) {
-	e.preventDefault();
-	console.log(e);
-
-	const eventNameCreate = document.querySelector("#eventNameC");
-	const eventStartDateCreate = document.querySelector("#cStartDate");
-	const eventEndDateCreate = document.querySelector("#cEndDate");
-
-	// validate if the form is complete
-	switch (true) {
-		case eventNameCreate.value === "":
-			displayModalErrorMessage("[data-create-event-modal]", "Event's Name cannot be empty.. Please try again!");
-			return;
-		case eventStartDateCreate.value === "":
-			displayModalErrorMessage("[data-create-event-modal]", "Start Date is required.");
-			return;
-		case eventEndDateCreate.value === "":
-			displayModalErrorMessage("[data-create-event-modal]", "End Date is required.");
-			return;
+// Helper Function to Fetch Membership Data to Display in Edit Membership Modal
+async function fetchMembershipData(playerID) {
+	const response = await fetch(`/memberships/edit-modal/fetch-data?playerID=${playerID}`);
+	if (response.ok) {
+		return response.json();
 	}
-
-	// validate if the start date is before the end date
-	if (new Date(eventStartDateCreate.value) > new Date(eventEndDateCreate.value)) {
-		displayModalErrorMessage("[data-create-event-modal]", "Invalid Date Range... Please try again!");
-		return;
-	}
-
-	// determine the status of the event
-	let eventStatus = "";
-	if (new Date() < new Date(eventStartDateCreate.value)) {
-		eventStatus = "Upcoming";
-	} else if (new Date() > new Date(eventEndDateCreate.value)) {
-		eventStatus = "Completed";
-	} else {
-		eventStatus = "Active";
-	}
-	document.querySelector("#cEventStatus").value = eventStatus;
-
-	const eventStatusCreate = document.querySelector("#cStatus");
-
-	clearFormData();
-	hideModalErrorMessage("[data-create-event-modal]");
-	e.target.submit();
-});
-
-function showCreateEventModal() {
-	const createEventModal = document.querySelector("[data-create-event-modal]");
-	createEventModal.classList.add("openedModal");
-
-	showModal();
-	localStorage.setItem("modalState", "createEventModalOpened");
+	return null;
 }
 
-function hideCreateEventModal() {
-	const createEventModal = document.querySelector("[data-create-event-modal]");
-	createEventModal.classList.remove("openedModal");
+// Helper Function to Fetch Event Data to Display in Edit Event Modal
+async function fetchEventData(eventID) {
+	const response = await fetch(`/events/edit-modal/fetch-data?eventID=${eventID}`);
+	if (response.ok) {
+		return response.json();
+	}
+	return null;
+}
 
-	hideModalErrorMessage("[data-create-event-modal]");
-	hideModal();
+// Helper Function to Check Username Availability in Dashboard
+async function isUsernameAvailable(modalType) {
+	const username = document.querySelector(`${modalType} [data-username]`).value;
+	const response = await fetch(`/dashboard/check-input?username=${username}`);
+	return response.ok;
+}
+
+// Helper Function to Check Username Availability in Dashboard
+async function isEmailAvailable(modalType) {
+	const email = document.querySelector(`${modalType} [data-email]`).value;
+	const response = await fetch(`/dashboard/check-input?email=${email}`);
+	return response.ok;
+}
+
+// Helper Function to Check Item Name Availability in Store-Items
+async function isItemNameAvailable(modalType) {
+	const itemName = document.querySelector(`${modalType} [data-name]`).value;
+	const response = await fetch(`/store-items/check-input?itemName=${itemName}`);
+	return response.ok;
+}
+
+// Helper Function to Check Whether the Item can be Inserted in Insert Item Modal
+async function isItemNotInPlayerStore(itemID, playerID) {
+	const response = await fetch(`/store-items/check-input?itemID=${itemID}&playerID=${playerID}`);
+	return response.ok;
+}
+
+// Helper Function to Check Whether the Membership can be Created in Create Membership Modal
+async function isUserWithoutMembership(modalType) {
+	const username = document.querySelector(`${modalType} [data-username]`).value;
+	const response = await fetch(`/memberships/create-modal/check-membership?username=${username}`);
+	return response.ok;
+}
+
+// Helper Function to Check Event Name Availability in Events
+async function isEventNameAvailable(modalType) {
+	const eventName = document.querySelector(`${modalType} [data-name]`).value;
+	const response = await fetch(`/events/check-input?eventName=${eventName}`);
+	return response.ok;
+}
+
+// Helper Function to Validate Multiple Usernames in Matches
+async function validateUsernames(usernames) {
+	const invalidUsernames = [];
+
+	await Promise.all(
+		usernames.map(async (username) => {
+			const response = await fetch(`/dashboard/fetch-playerID?username=${username}`);
+			if (!response.ok) {
+				invalidUsernames.push(username);
+			}
+		})
+	);
+
+	return invalidUsernames;
 }

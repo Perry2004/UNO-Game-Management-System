@@ -1,5 +1,5 @@
 const db = require("../config/db");
-const { formatInTimeZone } = require("date-fns-tz");
+const { toZonedTime, formatInTimeZone } = require("date-fns-tz");
 const { differenceInDays } = require("date-fns");
 
 const vancouverTimeZone = "America/Vancouver";
@@ -123,25 +123,24 @@ exports.isPlayerMembershipRegistered = async (playerID) => {
 
 exports.updateMembershipByPlayerID = async (playerID, updates) => {
 	try {
-		const columnNames = Object.keys(updates);
-		const columnValues = Object.values(updates);
+		const newUpdates = updates;
 
 		if (updates.expire_date) {
 			const issueDateUTC = new Date();
-			const expireDateUTC = new Date(`${updates.expire_date}T00:00:00-07:00`);
+			const expireDateUTC = toZonedTime(`${updates.expire_date}T00:00:00`, vancouverTimeZone);
 
 			const status = issueDateUTC < expireDateUTC ? "Active" : "Expired";
-			columnNames.push("status");
-			columnValues.push(status);
+			newUpdates.status = status;
 
 			const issueDateVancouver = formatInTimeZone(issueDateUTC, vancouverTimeZone, "yyyy-MM-dd");
-			columnNames.push("issue_date");
-			columnValues.push(issueDateVancouver);
+			newUpdates.issue_date = issueDateVancouver;
 
 			const expireDateVancouver = formatInTimeZone(expireDateUTC, vancouverTimeZone, "yyyy-MM-dd");
-			columnNames.push("expire_date");
-			columnValues.push(expireDateVancouver);
+			newUpdates.expire_date = expireDateVancouver;
 		}
+
+		const columnNames = Object.keys(newUpdates);
+		const columnValues = Object.values(newUpdates);
 
 		const setClause = columnNames.map((element) => `${element} = ?`).join(", ");
 
@@ -158,7 +157,7 @@ exports.updateMembershipByPlayerID = async (playerID, updates) => {
 	}
 };
 
-exports.registerMembership = async (playerID, duration, privilegeLevel) => {
+exports.registerMembershipByPlayerID = async (playerID, duration, privilegeLevel) => {
 	try {
 		const currentDate = new Date();
 		const expireDate = new Date(new Date().getTime() + duration * 24 * 60 * 60 * 1000);
@@ -173,7 +172,7 @@ exports.registerMembership = async (playerID, duration, privilegeLevel) => {
 
 		console.log("OH YES! Membership Registered Successfully!");
 	} catch (error) {
-		console.error(logError("registerMembership"), error);
+		console.error(logError("registerMembershipByPlayerID"), error);
 		throw error;
 	}
 };
@@ -201,7 +200,7 @@ async function updateMembershipStatus() {
 			await db.promise().query("UPDATE Memberships SET status = ? WHERE player_id = ?", [status, element.player_id]);
 		});
 	} catch (error) {
-		console.error(logError("updateMembershipStatus"), error.message);
+		console.error(logError("updateMembershipStatus"), error);
 		throw error;
 	}
 }

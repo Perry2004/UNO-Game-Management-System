@@ -1,123 +1,104 @@
 const eventsModel = require("../models/events");
 
-const logError = (functionName) => `OH NO! Error with ${functionName} in Controllers:`;
-const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Controllers:`;
-
-/**
- * CREATE TABLE IF NOT EXISTS Events (
-    event_id INT AUTO_INCREMENT,
-    name VARCHAR(255),
-    start_date DATE NOT NULL, 
-    end_date DATE NOT NULL, 
-    status VARCHAR(255) NOT NULL, 
-    num_of_participants INT DEFAULT 0, 
-    PRIMARY KEY (event_id)
-); 
- */
+const logError = (functionName) => `OH NO! Error with ${functionName} in Events Controllers:`;
+const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Events Controllers:`;
 
 exports.loadEvents = async (req, res) => {
-	if (req.loginStatus === true) {
-		try {
-			const { order: sortBy } = req.query;
-			const recentEvents = await eventsModel.getRecentEvents(sortBy);
-
-			res.render("events", { recentEvents });
-		} catch (error) {
-			console.error("OH NO! Error Loading Events:", error);
-			res.status(500).send("OH NO! Internal Server Error with Loading Events");
-		}
-	} else {
-		res.redirect("/login");
+	if (!req.loginStatus) {
+		return res.redirect("/login");
 	}
-};
 
-/**
- * Insert an Event.
- */
-exports.insertEvent = async (req, res) => {
-	// const { name, eventStartDate, eventEndDate, numOfParticipants, eventStatus } = req.body;
-	const { eventNameC, cStartDate, cEndDate, cNumberOfParticipants, cEventStatus } = req.body;
-	// removed eventID
-	// console.log(req.eventNameC); // invalid
+	const { order } = req.query;
 
 	try {
-		await eventsModel.insertEvent(eventNameC, cStartDate, cEndDate, cNumberOfParticipants, cEventStatus);
-		res.redirect("/events"); // redirection
+		const recentEvents = await eventsModel.getRecentEvents(order);
+
+		res.render("events", { recentEvents });
 	} catch (error) {
-		console.error(logError("insertEvent"), error);
-		res.status(500).send(resError("insertEvent"));
+		console.error(logError("loadEvents"), error);
+		res.status(500).send(resError("loadEvents"));
 	}
 };
 
-/**
- * Fetch an Event('s info).
- */
-exports.fetchEvent = async (req, res) => {
-	const { eventID } = req.query; // TODO: confirm.
-	console.log(req.query);
-	console.log(eventID);
+exports.fetchEventData = async (req, res) => {
+	const { eventID } = req.query;
 
 	try {
-		const results = await eventsModel.fetchEvent(eventID);
+		const results = await eventsModel.getEventDataByID(eventID);
+
 		res.status(200).json(results);
 	} catch (error) {
-		console.error(logError("fetchEvent"), error);
-		res.status(500).send(resError("fetchEvent"));
+		console.error(logError("fetchEventData"), error);
+		res.status(500).send(resError("fetchEventData"));
 	}
 };
 
-/**
- * Update an Event.
- */
-exports.updateEvent = async (req, res) => {
-	const {
-		eventNameUpdate: name,
-		updateStartDate: eventStartDate,
-		updateEndDate: eventEndDate,
-		updateNumberOfParticipants: numOfParticipants,
-		updateEventStatus: eventStatus,
-		eventID,
-	} = req.body;
-
-	try {
-		await eventsModel.updateEvent(name, eventStartDate, eventEndDate, numOfParticipants, eventStatus, eventID);
-		return res.redirect("/events");
-	} catch (error) {
-		console.error("Error Updating Event:", error);
-		return res.redirect("/events");
-	}
-};
-
-/**
- * Delete an Event.
- */
-exports.deleteEvent = async (req, res) => {
-	const { item: eventID } = req.body;
-	// const eventID = req.body;
-	console.log(req.body + "Request <.");
-
-	try {
-		await eventsModel.deleteEvent(eventID);
-
-		res.status(200).send(`${eventID} Deleted Successfully!`);
-	} catch (error) {
-		console.error(logError("eventID"), error);
-		res.status(500).send(resError("deleteEvent"));
-	}
-};
-
-exports.checkEventExistence = async (req, res) => {
+exports.checkFormInput = async (req, res) => {
 	const { eventName } = req.query;
 
 	try {
-		const results = await eventsModel.checkEventExistence(eventName);
-		if (results) {
-			res.status(200).send("Event Exists!");
-		} else {
-			res.status(409).send("Event Doesn't Exist!");
+		const eventNameAvailable = await eventsModel.isEventNameAvailable(eventName);
+
+		if (!eventNameAvailable) {
+			return res.status(409).send("OH NO! Event Name already taken!");
 		}
+
+		return res.status(200).send("OH YES! No Errors in Form Input!");
 	} catch (error) {
-		console.error(logError("checkEventExistence"), error);
-		res.status(500).send(resError("checkEventExistence"));
+		console.error(logError("checkFormInput"), error);
+		res.status(500).send(resError("checkFormInput"));
+	}
+};
+
+exports.updateEvent = async (req, res) => {
+	const { eventID, name, startDate, endDate } = req.body;
+
+	try {
+		const results = await eventsModel.getEventDataByID(eventID);
+		const updates = {};
+
+		if (name !== results.eventName) {
+			updates.name = name;
+		}
+
+		if (startDate !== results.eventStartDate || endDate !== results.eventEndDate) {
+			updates.start_date = startDate;
+			updates.end_date = endDate;
+		}
+
+		if (Object.keys(updates).length > 0) {
+			await eventsModel.updateEventByID(eventID, updates);
+		}
+
+		res.redirect("/events");
+	} catch (error) {
+		console.error(logError("updateEvent"), error);
+		res.status(500).send(resError("updateEvent"));
+	}
+};
+
+exports.registerEvent = async (req, res) => {
+	const { name, startDate, endDate } = req.body;
+
+	try {
+		await eventsModel.registerEventByID(name, startDate, endDate);
+
+		res.redirect("/events");
+	} catch (error) {
+		console.error(logError("registerEvent"), error);
+		res.status(500).send(resError("registerEvent"));
+	}
+};
+
+exports.deleteEvent = async (req, res) => {
+	const { item: eventID } = req.body;
+
+	try {
+		await eventsModel.deleteEventByID(eventID);
+
+		res.status(200).send("OH YES! Event Deleted Successfully");
+	} catch (error) {
+		console.error(logError("deleteEvent"), error);
+		res.status(500).send(resError("deleteEvent"));
 	}
 };

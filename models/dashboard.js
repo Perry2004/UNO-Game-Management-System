@@ -56,7 +56,10 @@ exports.getRevenue = async () => {
 			JOIN ItemOriginalPrice iop ON i.quality = iop.quality;
   		`);
 
-		return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(results[0].revenue);
+		return new Intl.NumberFormat("en-US", {
+			style: "currency",
+			currency: "USD",
+		}).format(results[0].revenue);
 	} catch (error) {
 		console.error(logError("getRevenue"), error);
 		throw error;
@@ -219,7 +222,10 @@ exports.registerPlayer = async (username, password, email, country) => {
 
 const insertPlayerUsernameAndEmail = async (username, email) => {
 	try {
-		await db.promise().query("INSERT INTO PlayerUsernameAndEmail SET ?", { username: username, email: email });
+		await db.promise().query("INSERT INTO PlayerUsernameAndEmail SET ?", {
+			username: username,
+			email: email,
+		});
 		console.log("OH YES! Insered into insertPlayerUsernameAndEmail Successfully!");
 	} catch (error) {
 		console.error(logError("insertPlayerUsernameAndEmail"), error);
@@ -229,7 +235,9 @@ const insertPlayerUsernameAndEmail = async (username, email) => {
 
 exports.deletePlayerByUsername = async (username) => {
 	try {
-		await db.promise().query("DELETE FROM PlayerUsernameAndEmail WHERE ?", { username: username });
+		await db.promise().query("DELETE FROM PlayerUsernameAndEmail WHERE ?", {
+			username: username,
+		});
 		console.log("OH YES! Player Deleted Successfully!");
 	} catch (error) {
 		console.error(logError("deletePlayerByUsername"), error);

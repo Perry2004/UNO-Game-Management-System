@@ -8,15 +8,15 @@ const logError = (functionName) => `OH NO! Error with ${functionName} in Matches
 exports.getRecentMatches = async () => {
 	try {
 		const [results] = await db.promise().query(`
-      SELECT 
-          match_id AS matchID, 
-          start_time AS matchStartTime, 
-          end_time AS matchEndTime, 
-          winner AS matchWinner, 
-          status AS matchStatus
-      FROM Matches 
-      ORDER BY match_id DESC 
-    `);
+			SELECT 
+				match_id AS matchID, 
+				start_time AS matchStartTime, 
+				end_time AS matchEndTime, 
+				winner AS matchWinner, 
+				status AS matchStatus
+			FROM Matches 
+			ORDER BY match_id DESC 
+        `);
 
 		return results.map((element) => ({
 			matchID: element.matchID,
@@ -26,16 +26,16 @@ exports.getRecentMatches = async () => {
 			matchStatus: element.matchStatus,
 		}));
 	} catch (error) {
-		console.error("OH NO! Error fetching recent matches:", error.message);
+		console.error(logError("getRecentMatches"), error);
 		throw error;
 	}
 };
 
 exports.registerMatches = async (players) => {
 	try {
-		const [match] = await db.promise().query("INSERT INTO Matches (end_time, winner) VALUES (NULL, NULL)");
+		const [results] = await db.promise().query("INSERT INTO Matches (end_time, winner) VALUES (NULL, NULL)");
 
-		const matchID = match.insertId;
+		const matchID = results.insertId;
 
 		players.forEach(async (element) => {
 			await db.promise().query("INSERT INTO PlayerInvolveMatches SET ?", {
@@ -43,14 +43,6 @@ exports.registerMatches = async (players) => {
 				player_id: element,
 			});
 		});
-
-		// const [deck] = await db.promise().query("INSERT INTO Decks (card_amount) VALUES 108)");
-		// const deckID = deck.insertId;
-
-		// await db.promise().query("INSERT INTO MatchHasDeck SET ?", {
-		// 	match_id: matchID,
-		// 	deck_id: deckID,
-		// });
 
 		console.log("OH YES! Match Registered Successfully!");
 	} catch (error) {
@@ -62,12 +54,12 @@ exports.registerMatches = async (players) => {
 exports.getMatchBasicInfo = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        start_time AS matchStartTime, 
-        end_time AS matchEndTime, 
-        winner AS matchWinner
-      FROM Matches
-      WHERE match_id = ? 
+			SELECT 
+				start_time AS matchStartTime, 
+				end_time AS matchEndTime, 
+				winner AS matchWinner
+			FROM Matches
+			WHERE match_id = ? 
 		`;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
@@ -86,19 +78,19 @@ exports.getMatchBasicInfo = async (matchID) => {
 exports.getMatchPlayersInfo = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        p.username AS username,
-        p.country AS country
-      FROM Players p
-      JOIN PlayerInvolveMatches pim ON p.player_id = pim.player_id
-      WHERE pim.match_id = ?; 
+			SELECT 
+				p.username AS username,
+				p.country AS country
+			FROM Players p
+			JOIN PlayerInvolveMatches pim ON p.player_id = pim.player_id
+			WHERE pim.match_id = ?; 
 		`;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
 		return results;
 	} catch (error) {
-		console.error(logError("getMatchBasicInfo"), error);
+		console.error(logError("getMatchPlayersInfo"), error);
 		throw error;
 	}
 };
@@ -163,17 +155,17 @@ exports.getMatchDetails = async (matchID) => {
 const getTurnDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-          t.turn_id AS turnID,
-          t.time_stamp AS timestamp,
-          t.player_id as playerID, 
-          p.username AS username,
-          t.turn_order AS currentDirection
-      FROM TurnBelongsToPlayerAndMatch t
-      JOIN Players p ON t.player_id = p.player_id
-      WHERE t.match_id = ?
-      ORDER BY t.turn_id
-    `;
+            SELECT 
+                t.turn_id AS turnID,
+                t.time_stamp AS timestamp,
+                t.player_id as playerID, 
+                p.username AS username,
+                t.turn_order AS currentDirection
+            FROM TurnBelongsToPlayerAndMatch t
+            JOIN Players p ON t.player_id = p.player_id
+            WHERE t.match_id = ?
+            ORDER BY t.turn_id
+        `;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
@@ -187,14 +179,14 @@ const getTurnDetails = async (matchID) => {
 const getPlayActionDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        pa.turn_id AS turnID,
-        'Play' AS action,
-        cbd.name AS additionalInfo
-      FROM PlayAction pa
-      JOIN CardBelongsToDeck cbd ON pa.card_id = cbd.card_id AND pa.deck_id = cbd.deck_id
-      WHERE pa.match_id = ?;
-    `;
+            SELECT 
+                pa.turn_id AS turnID,
+                'Play' AS action,
+                cbd.name AS additionalInfo
+            FROM PlayAction pa
+            JOIN CardBelongsToDeck cbd ON pa.card_id = cbd.card_id AND pa.deck_id = cbd.deck_id
+            WHERE pa.match_id = ?;
+        `;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
@@ -208,13 +200,13 @@ const getPlayActionDetails = async (matchID) => {
 const getDrawActionsDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        da.turn_id AS turnID,
-        'Draw' AS action,
-        CONCAT(da.draw_amount, ' Cards Drawn') AS additionalInfo
-      FROM DrawAction da
-      WHERE da.match_id = ?; 
-    `;
+            SELECT 
+                da.turn_id AS turnID,
+                'Draw' AS action,
+                CONCAT(da.draw_amount, ' Cards Drawn') AS additionalInfo
+            FROM DrawAction da
+            WHERE da.match_id = ?; 
+        `;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
@@ -228,12 +220,12 @@ const getDrawActionsDetails = async (matchID) => {
 const getTurnLostActionsDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        tla.turn_id AS turnID,
-        'Turn Lost' AS action
-      FROM TurnLostAction tla
-      WHERE tla.match_id = ?; 
-    `;
+            SELECT 
+                tla.turn_id AS turnID,
+                'Turn Lost' AS action
+            FROM TurnLostAction tla
+            WHERE tla.match_id = ?; 
+        `;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
@@ -247,21 +239,21 @@ const getTurnLostActionsDetails = async (matchID) => {
 const getHandAndDeckDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        h.player_id AS playerID,
-        h.card_amount AS cardInHand,
-        d.card_amount AS cardInDeck
-      FROM HandBelongsToPlayerAndMatch h
-      JOIN MatchHasDeck md ON h.match_id = md.match_id
-      JOIN Decks d ON md.deck_id = d.deck_id
-      WHERE h.match_id = ?;
-    `;
+            SELECT 
+                h.player_id AS playerID,
+                h.card_amount AS cardInHand,
+                d.card_amount AS cardInDeck
+            FROM HandBelongsToPlayerAndMatch h
+            JOIN MatchHasDeck md ON h.match_id = md.match_id
+            JOIN Decks d ON md.deck_id = d.deck_id
+            WHERE h.match_id = ?;
+        `;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
 		return results;
 	} catch (error) {
-		console.error(logError("getHandAndDeckInfo"), error);
+		console.error(logError("getHandAndDeckDetails"), error);
 		throw error;
 	}
 };
@@ -269,18 +261,18 @@ const getHandAndDeckDetails = async (matchID) => {
 const getMatchPlayersDetails = async (matchID) => {
 	try {
 		const myQuery = `
-      SELECT 
-        p.username AS username
-      FROM Players p
-      JOIN PlayerInvolveMatches pim ON p.player_id = pim.player_id
-      WHERE pim.match_id = ?; 
+            SELECT 
+                p.username AS username
+            FROM Players p
+            JOIN PlayerInvolveMatches pim ON p.player_id = pim.player_id
+            WHERE pim.match_id = ?; 
 		`;
 
 		const [results] = await db.promise().query(myQuery, [matchID]);
 
 		return results;
 	} catch (error) {
-		console.error(logError("getMatchBasicInfo"), error);
+		console.error(logError("getMatchPlayersDetails"), error);
 		throw error;
 	}
 };

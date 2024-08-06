@@ -58,10 +58,11 @@ router.post("/memberships/register", membershipsController.registerMembership);
 router.delete("/memberships/delete", membershipsController.deleteMembership);
 
 router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
-router.post("/events/create-event", eventsController.insertEvent) // event creation
-router.get("/events/fetch-event", eventsController.fetchEvent) // fetch event information for edit field
-router.post("/events/update-event", eventsController.updateEvent) // update event
-router.get("/events/check-event-name", eventsController.checkEventExistence) // check if event exists
+router.get("/events/edit-modal/fetch-data", eventsController.fetchEventData);
+router.get("/events/check-input", eventsController.checkFormInput);
+
+router.post("/events/update", eventsController.updateEvent);
+router.post("/events/register", eventsController.registerEvent);
 router.delete("/events/delete", eventsController.deleteEvent);
 
 router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
