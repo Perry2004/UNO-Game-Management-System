@@ -58,20 +58,16 @@ router.post("/memberships/register", membershipsController.registerMembership);
 router.delete("/memberships/delete", membershipsController.deleteMembership);
 
 router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
-
-router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
-router.post("/matches/register", matchesController.registerMatches);
-router.get("/matches/fetch-match-basic-info", matchesController.fetchMatchBasicInfo);
-router.get("/matches/fetch-match-players-info", matchesController.fetchMatchPlayersInfo);
-router.get("/matches/fetch-match-details", matchesController.fetchMatchDetails);
-
-/**
- * Events
-*/
-router.get("/events", authController.isLoggedIn, eventsController.loadEvents);
 router.post("/events/create-event", eventsController.insertEvent) // event creation
 router.get("/events/fetch-event", eventsController.fetchEvent) // fetch event information for edit field
 router.post("/events/update-event", eventsController.updateEvent) // update event
 router.get("/events/check-event-name", eventsController.checkEventExistence) // check if event exists
+router.delete("/events/delete", eventsController.deleteEvent);
+
+router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
+router.get("/matches/fetch-match-basic-info", matchesController.fetchMatchBasicInfo);
+router.get("/matches/fetch-match-players-info", matchesController.fetchMatchPlayersInfo);
+router.get("/matches/fetch-match-details", matchesController.fetchMatchDetails);
+router.post("/matches/register", matchesController.registerMatches);
 
 module.exports = router;

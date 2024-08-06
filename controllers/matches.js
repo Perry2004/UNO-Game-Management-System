@@ -5,87 +5,87 @@ const logError = (functionName) => `OH NO! Error with ${functionName} in Matches
 const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Matches Controllers:`;
 
 exports.loadMatches = async (req, res) => {
-  if (!req.loginStatus) {
-    return res.redirect("/login");
-  }
+	if (!req.loginStatus) {
+		return res.redirect("/login");
+	}
 
-  try {
-    const recentMatches = await matchesModel.getRecentMatches();
+	try {
+		const recentMatches = await matchesModel.getRecentMatches();
 
-    res.render("matches", { recentMatches });
-  } catch (error) {
-    console.error(logError("loadMatches"), error);
-    res.status(500).send(resError("loadMatches"));
-  }
+		res.render("matches", { recentMatches });
+	} catch (error) {
+		console.error(logError("loadMatches"), error);
+		res.status(500).send(resError("loadMatches"));
+	}
 };
 
 exports.registerMatches = async (req, res) => {
-  const { username1, username2, username3, username4 } = req.body;
-  const players = [];
+	const { username1, username2, username3, username4 } = req.body;
+	const players = [];
 
-  try {
-    if (username1) {
-      const playerID1 = await dashboardModel.getPlayerIDByUsername(username1);
-      players.push(playerID1);
-    }
+	try {
+		if (username1) {
+			const playerID1 = await dashboardModel.getPlayerIDByUsername(username1);
+			players.push(playerID1);
+		}
 
-    if (username2) {
-      const playerID2 = await dashboardModel.getPlayerIDByUsername(username2);
-      players.push(playerID2);
-    }
+		if (username2) {
+			const playerID2 = await dashboardModel.getPlayerIDByUsername(username2);
+			players.push(playerID2);
+		}
 
-    if (username3) {
-      const playerID3 = await dashboardModel.getPlayerIDByUsername(username3);
-      players.push(playerID3);
-    }
+		if (username3) {
+			const playerID3 = await dashboardModel.getPlayerIDByUsername(username3);
+			players.push(playerID3);
+		}
 
-    if (username4) {
-      const playerID4 = await dashboardModel.getPlayerIDByUsername(username4);
-      players.push(playerID4);
-    }
+		if (username4) {
+			const playerID4 = await dashboardModel.getPlayerIDByUsername(username4);
+			players.push(playerID4);
+		}
 
-    await matchesModel.registerMatches(players);
+		await matchesModel.registerMatches(players);
 
-    res.redirect("/matches");
-  } catch (error) {
-    console.error(logError("registerMembership"), error);
-    res.status(500).send(resError("registerMembership"));
-  }
+		res.redirect("/matches");
+	} catch (error) {
+		console.error(logError("registerMembership"), error);
+		res.status(500).send(resError("registerMembership"));
+	}
 };
 
 exports.fetchMatchBasicInfo = async (req, res) => {
-  const { matchID } = req.query;
+	const { matchID } = req.query;
 
-  try {
-    const results = await matchesModel.getMatchBasicInfo(matchID);
-    res.status(200).json(results);
-  } catch (error) {
-    console.error(logError("fetchMatchBasicInfo"), error);
-    res.status(500).send(resError("fetchMatchBasicInfo"));
-  }
+	try {
+		const results = await matchesModel.getMatchBasicInfo(matchID);
+		res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchMatchBasicInfo"), error);
+		res.status(500).send(resError("fetchMatchBasicInfo"));
+	}
 };
 
 exports.fetchMatchPlayersInfo = async (req, res) => {
-  const { matchID } = req.query;
+	const { matchID } = req.query;
 
-  try {
-    const results = await matchesModel.getMatchPlayersInfo(matchID);
-    res.status(200).json(results);
-  } catch (error) {
-    console.error(logError("fetchMatchPlayerInfo"), error);
-    res.status(500).send(resError("fetchMatchPlayerInfo"));
-  }
+	try {
+		const results = await matchesModel.getMatchPlayersInfo(matchID);
+		res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchMatchPlayerInfo"), error);
+		res.status(500).send(resError("fetchMatchPlayerInfo"));
+	}
 };
 
 exports.fetchMatchDetails = async (req, res) => {
-  const { matchID } = req.query;
+	const { matchID } = req.query;
 
-  try {
-    const results = await matchesModel.getMatchDetails(matchID);
+	try {
+		const results = await matchesModel.getMatchDetails(matchID);
 
-    res.status(200).json(results);
-  } catch (error) {
-    console.error(logError("fetchMatchDetails"), error);
-    res.status(500).send(resError("fetchMatchDetails"));
-  }
+		res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchMatchDetails"), error);
+		res.status(500).send(resError("fetchMatchDetails"));
+	}
 };
