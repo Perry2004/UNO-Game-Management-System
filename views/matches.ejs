@@ -9,7 +9,6 @@
 		<link rel="icon" href="/UNO.icon" type="image/x-icon" />
 		<script defer src="/script.js"></script>
 	</head>
-
 	<body>
 		<div id="grid-container">
 			<!-- Header Section  -->
@@ -24,10 +23,8 @@
 					<div class="table-container-primary">
 						<div class="main-body-header">
 							<h2 class="main-title">RECENT MATCHES</h2>
-							<div class="table-button-list">
-								<button class="table-btn add-btn" onclick="showCreateMatchModal()" data-pointer-not-allowed>
-									<i class="bx bx-plus"></i>Create Match
-								</button>
+							<div class="table-btn-list">
+								<button class="table-btn add-btn" onclick="showCreateMatchModal()" data-pointer-not-allowed><i class="bx bx-plus"></i>Create Match</button>
 							</div>
 						</div>
 
@@ -44,18 +41,14 @@
 									</tr>
 								</thead>
 								<tbody>
-									<% locals.recentMatches.forEach(element=> { %>
+									<% locals.recentMatches.forEach(element => { %>
 									<tr>
 										<td><%= element.matchID %></td>
 										<td><%= element.matchStartTime %></td>
 										<td><%= element.matchEndTime %></td>
 										<td><%= element.matchWinner %></td>
 										<td data-status="<%= element.matchStatus %>"><%= element.matchStatus %></td>
-										<td class="table-btn-td">
-											<button class="table-btn" onclick="showMatchDetailsModal('<%= element.matchID %>')" data-pointer-not-allowed>
-												View Details
-											</button>
-										</td>
+										<td class="table-btn-td"><button class="table-btn" onclick="showMatchDetailsModal('<%= element.matchID %>')" data-pointer-not-allowed>View Details</button></td>
 									</tr>
 									<% }) %>
 								</tbody>
@@ -94,116 +87,49 @@
 					<div class="modal-error-message" data-modal-error-message></div>
 				</form>
 
-				<!-- View Match Details Section -->
 				<div class="match-details" data-match-detials>
 					<div class="match-details-header">
 						<div class="match-details-title">
 							<h2>UNO Match History Log</h2>
 							<button class="close-btn" type="button" onclick="hideMatchDetailsModal()">&times;</button>
 						</div>
+                        <div class="match-details-basic-information" data-match-details-basic-information>
+                            <p data-match-id></p>
+                            <p data-match-start-time></p>
+                            <p data-match-end-time></p>
+                            <p data-match-winner></p>
+                        </div>
+                        <div class="match-details-player-information" data-match-details-player-information>
+                            <h2>Players</h2>
+                            <ul data-match-players-list></ul>
+                        </div>
+					</div>
 
-						<div class="match-details-basic-information">
-							<p>Match ID: 3</p>
-							<p>Start Time: 2024-08-04 16:00:00</p>
-							<p>End Time: 2024-08-04 16:45:00</p>
-							<p>Winner: Dangerous Salesman</p>
-						</div>
-						<div class="match-details-player-information">
-							<h2>Players</h2>
-							<ul>
-								<li>Dangerous Salesman (CANADA)</li>
-								<li>Poor Student (USA)</li>
-								<li>Happy Farmer (JAPAN)</li>
-								<li>Selfish Engineer (CHINA)</li>
-							</ul>
-						</div>
-					</div>
+
 					<div class="match-details-body">
-						<div class="table-container-header">
-							<h2>Match Actions</h2>
-						</div>
-						<div class="scrollable-table">
-							<table class="table">
-								<thead>
-									<tr>
-										<th>Timestamp</th>
-										<th>Player</th>
-										<th>Action</th>
-										<th>Additional Info</th>
-										<th>Cards in Hand</th>
-										<th>Cards in Deck</th>
-										<th>Current Direction</th>
-										<th>Next Turn</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>2024-08-04 16:00:00 PDT</td>
-										<td>System</td>
-										<td>Game Start</td>
-										<td></td>
-										<td></td>
-										<td>Full</td>
-										<td>Clockwise</td>
-										<td>Dangerous Salesman</td>
-									</tr>
-									<tr>
-										<td>2024-08-04 16:01:00 PDT</td>
-										<td>Dangerous Salesman</td>
-										<td>Play Card</td>
-										<td>
-											Red 3 <br />
-											Red 7
-										</td>
-										<td>5 Cards</td>
-										<td>80 Cards</td>
-										<td>Clockwise</td>
-										<td>Poor Student</td>
-									</tr>
-									<tr>
-										<td>2024-08-04 16:02:00 PDT</td>
-										<td>Poor Student</td>
-										<td>Play Card</td>
-										<td>Red 5</td>
-										<td>6 Cards</td>
-										<td>80 Cards</td>
-										<td>Clockwise</td>
-										<td>Happy Farmer</td>
-									</tr>
-									<tr>
-										<td>2024-08-04 16:02:00 PDT</td>
-										<td>Poor Student</td>
-										<td>Play Card</td>
-										<td>Red 5</td>
-										<td>6 Cards</td>
-										<td>80 Cards</td>
-										<td>Clockwise</td>
-										<td>Happy Farmer</td>
-									</tr>
-									<tr>
-										<td>2024-08-04 16:02:00 PDT</td>
-										<td>Poor Student</td>
-										<td>Play Card</td>
-										<td>Red 5</td>
-										<td>6 Cards</td>
-										<td>80 Cards</td>
-										<td>Clockwise</td>
-										<td>Happy Farmer</td>
-									</tr>
-									<tr>
-										<td>2024-08-04 16:02:00 PTT</td>
-										<td>Poor Student</td>
-										<td>Play Card</td>
-										<td>Red 5</td>
-										<td>6 Cards</td>
-										<td>80 Cards</td>
-										<td>Clockwise</td>
-										<td>Happy Farmer</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
+                        <div class="table-container-header">
+                            <h2>Match Actions</h2>
+                        </div>
+                        <div class="scrollable-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Player</th>
+                                        <th>Action</th>
+                                        <th>Additional Info</th>
+                                        <th>Cards in Hand</th>
+                                        <th>Cards in Deck</th>
+                                        <th>Current Direction</th>
+                                        <th>Next Turn</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-match-details-table-body>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 				</div>
 
 				<!-- Search Result Section -->

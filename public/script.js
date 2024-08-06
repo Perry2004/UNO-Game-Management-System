@@ -544,6 +544,13 @@ document.querySelector("[data-create-match-modal]")?.addEventListener("submit", 
   const invalidUsernames = await validateUsernames(usernames);
 
   if (invalidUsernames.length > 0) {
+    const isUsernameEmpty = invalidUsernames.some((element) => element === "");
+
+    if (isUsernameEmpty) {
+      displayModalErrorMessage("[data-create-match-modal]", "Username cannot be empty... Please try again!");
+      return;
+    }
+
     displayModalErrorMessage("[data-create-match-modal]", `The following usernames don't exist: ${invalidUsernames.join(", ")}`);
     return;
   }
@@ -693,6 +700,7 @@ async function showStoreItemsDetails(storeID) {
     storeItemsDetailsTable.innerHTML = `<p>There are no items left in the store.</p>`;
   }
 
+
   showModal();
 }
 
@@ -720,6 +728,154 @@ async function removeItemFromStore(itemID, storeID) {
   } else {
     console.error(`Failed to delete item ${itemID} in store`);
   }
+}
+async function showMatchDetailsModal(matchID) {
+  const matchIDText = document.querySelector("[data-match-id]");
+  const matchStartTimeText = document.querySelector("[data-match-start-time]");
+  const matchEndTimeText = document.querySelector("[data-match-end-time]");
+  const matchWinnerText = document.querySelector("[data-match-winner]");
+
+  const matchBasicInfo = await fetchMatchBasicInfo(matchID);
+  if (matchBasicInfo) {
+    matchIDText.innerHTML = "Match ID: " + matchID;
+    matchStartTimeText.innerHTML = "Start Time: " + matchBasicInfo.matchStartTime;
+    matchEndTimeText.innerHTML = "End Time: " + matchBasicInfo.matchEndTime;
+    matchWinnerText.innerHTML = "Winner: " + matchBasicInfo.matchWinner;
+  }
+
+  const matchPlayersList = document.querySelector("[data-match-players-list]");
+  const matchPlayersInfo = await fetchMatchPlayersInfo(matchID);
+  if (matchPlayersInfo) {
+    matchPlayersInfo.forEach((element) => {
+      const player = document.createElement("li");
+      player.innerHTML = element.username + " (" + element.country.toUpperCase() + ")";
+      matchPlayersList.appendChild(player);
+    });
+  }
+
+  const matchDetailsTableBody = document.querySelector("[data-match-details-table-body]");
+  matchDetailsTableBody.innerHTML = "";
+
+  // Add System Start Row
+  const startRow = document.createElement("tr");
+
+  const startTimeCell = document.createElement("td");
+  startTimeCell.textContent = matchBasicInfo.matchStartTime;
+  startRow.appendChild(startTimeCell);
+
+  const startSystemCell = document.createElement("td");
+  startSystemCell.textContent = "System";
+  startRow.appendChild(startSystemCell);
+
+  const startGameCell = document.createElement("td");
+  startGameCell.textContent = "Game Start";
+  startRow.appendChild(startGameCell);
+
+  const startAdditionalInfoCell = document.createElement("td");
+  startRow.appendChild(startAdditionalInfoCell);
+
+  const startCardsInHandCell = document.createElement("td");
+  startRow.appendChild(startCardsInHandCell);
+
+  const startCardsInDeckCell = document.createElement("td");
+  startCardsInDeckCell.textContent = "Full";
+  startRow.appendChild(startCardsInDeckCell);
+
+  const startDirectionCell = document.createElement("td");
+  startDirectionCell.textContent = "Clockwise";
+  startRow.appendChild(startDirectionCell);
+
+  const startNextTurnCell = document.createElement("td");
+  startNextTurnCell.textContent = matchPlayersInfo[0].username;
+  startRow.appendChild(startNextTurnCell);
+  matchDetailsTableBody.appendChild(startRow);
+
+  const matchDetails = await fetchMatchDetails(matchID);
+
+  if (matchDetails) {
+    matchDetails.forEach((element) => {
+      // Add Match Details Rows
+      const row = document.createElement("tr");
+
+      const timeCell = document.createElement("td");
+      timeCell.textContent = element.timestamp;
+      row.appendChild(timeCell);
+
+      const playerCell = document.createElement("td");
+      playerCell.textContent = element.username;
+      row.appendChild(playerCell);
+
+      const actionCell = document.createElement("td");
+      actionCell.textContent = element.action;
+      row.appendChild(actionCell);
+
+      const additionalInfoCell = document.createElement("td");
+      additionalInfoCell.innerHTML = element.additionalInfo;
+      row.appendChild(additionalInfoCell);
+
+      const cardsInHandCell = document.createElement("td");
+      cardsInHandCell.textContent = element.cardInHand;
+      row.appendChild(cardsInHandCell);
+
+      const cardsInDeckCell = document.createElement("td");
+      cardsInDeckCell.textContent = element.cardInDeck;
+      row.appendChild(cardsInDeckCell);
+
+      const directionCell = document.createElement("td");
+      directionCell.textContent = element.currentDirection;
+      row.appendChild(directionCell);
+
+      const nextTurnCell = document.createElement("td");
+      nextTurnCell.textContent = element.nextTurn;
+      row.appendChild(nextTurnCell);
+
+      matchDetailsTableBody.appendChild(row);
+    });
+
+    // Add System End Row
+    const endRow = document.createElement("tr");
+
+    const endTimeCell = document.createElement("td");
+    endTimeCell.textContent = matchBasicInfo.matchEndTime;
+    endRow.appendChild(endTimeCell);
+
+    const endPlayerCell = document.createElement("td");
+    endPlayerCell.textContent = "System";
+    endRow.appendChild(endPlayerCell);
+
+    const endActionCell = document.createElement("td");
+    endActionCell.textContent = "Game End";
+    endRow.appendChild(endActionCell);
+
+    const endAdditionalInfoCell = document.createElement("td");
+    endRow.appendChild(endAdditionalInfoCell);
+
+    const endCardsInHandCell = document.createElement("td");
+    endRow.appendChild(endCardsInHandCell);
+
+    const endCardsInDeckCell = document.createElement("td");
+    endCardsInDeckCell.textContent = matchDetails[matchDetails.length - 1].cardInDeck;
+    endRow.appendChild(endCardsInDeckCell);
+
+    const endDirectionCell = document.createElement("td");
+    endDirectionCell.textContent = matchDetails[matchDetails.length - 1].currentDirection;
+    endRow.appendChild(endDirectionCell);
+
+    const endNextTurnCell = document.createElement("td");
+    endRow.appendChild(endNextTurnCell);
+
+    matchDetailsTableBody.appendChild(endRow);
+  }
+
+  const matchDetailsModal = document.querySelector("[data-match-detials]");
+  matchDetailsModal.classList.add("openedModal");
+}
+
+function hideMatchDetailsModal() {
+  const matchDetailsModal = document.querySelector("[data-match-detials]");
+  matchDetailsModal.classList.remove("openedModal");
+
+  resetMatchDetails();
 }
 
 /* =================================================================================================== */
@@ -848,6 +1004,11 @@ async function initalizeAppliedPromotionForItem(modalType) {
       discountInput.innerHTML = `${discount}% OFF`;
     }
   });
+}
+
+function resetMatchDetails() {
+  const matchPlayersList = document.querySelector("[data-match-players-list]");
+  matchPlayersList.innerHTML = "";
 }
 
 function initializeDefaultTemplatesForMatch() {
@@ -993,6 +1154,36 @@ async function validateUsernames(usernames) {
   );
 
   return invalidUsernames;
+}
+
+// Helper Function to Fetch Match Details in Matches
+async function fetchMatchDetails(matchID) {
+  const response = await fetch(`/matches/fetch-match-details?matchID=${matchID}`);
+  if (response.ok) {
+    return response.json();
+  } else {
+    return null;
+  }
+}
+
+// Helper Function to Fetch Basic Match Information in Matches
+async function fetchMatchBasicInfo(matchID) {
+  const response = await fetch(`/matches/fetch-match-basic-info?matchID=${matchID}`);
+  if (response.ok) {
+    return response.json();
+  } else {
+    return null;
+  }
+}
+
+// Helper Function to Fetch Player Information in Matches
+async function fetchMatchPlayersInfo(matchID) {
+  const response = await fetch(`/matches/fetch-match-players-info?matchID=${matchID}`);
+  if (response.ok) {
+    return response.json();
+  } else {
+    return null;
+  }
 }
 
 /* =================================================================================================== */
