@@ -27,9 +27,9 @@ For the frontend, we divide the tasks in a similar manner so all members have eq
 
 To be more specific each contributor gets an appropirate amount of work. If this is not reflected herein, then it would be represented
 inside below. The **main** idea is that all participants contribute equally. A decomposition into tasks was not required as each
-page was assigned to a unique participant (one to many), and therefore the User Storu assigned indicate the tasks assigned, as well.
+page was assigned to a unique participant (one to many), and therefore the User Stories assigned indicate the tasks assigned, as well.
 
-We divided the front-end (the React components) equally (in the manner above; one to many). Sifficine ttime was expended to determine viable table, which may be inquired by our TA mentor.
+We divided the front-end (the React components) equally (in the manner above; one to many). Sufficient time was expended to determine viable table, which may be inquired by our TA mentor.
 
 Yuchen, Muhammad, and Perry have an quivalent number of tables to design. This is intentionally left somewhat vague as we must confer with our mentor to reduce the amount of tables. But at present, the division is such that equity of particiaption is maintained.
 We also divided the front-end (the React components) equally (in the manner above; one to many).
@@ -117,7 +117,7 @@ We also divided the front-end (the React components) equally (in the manner abov
 ### Local Setup:
 1. Requirements: 
    1. `Node.js` and `npm` must be installed on your local machine. Please navigate to the relevant (downloaded) directory and use npm install (while inside the directory) to install all the relevant dependencies.
-   2. `MySQL` must be installed on your local machine. Here is a brief guide on how to set it up: https://youtu.be/u96rVINbAUI?si=LSaZQrlvmomSGvhW (please be sure to set up the environment as well.) Thereafter, you will be able to run queries using our SQL script on our repository.b
+   2. `MySQL` must be installed on your local machine. Here is a brief guide on how to set it up: https://youtu.be/u96rVINbAUI?si=LSaZQrlvmomSGvhW (please be sure to set up the environment as well.) Thereafter, you will be able to run queries using our SQL script on our repository.
 
 2. `.env` file:
 
@@ -140,7 +140,7 @@ Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL 
 
 2. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
 
-3. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default. (You may use `npm run start`, as well.
+3. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default. (You may use `npm run start`, as well.)
 
 4. There is no need to create db and load sql scripts manually as the application will automatically create the database and load the sql scripts from the specified file `./uno.sql`. 
 
