@@ -2,4 +2,4 @@ Please ignore the average row length and the row length as they are inaccurate. 
 
 The repository also includes the Milestone 2 ER diagram, as well as the one used for implementing M4.
 
-We still satisfy the M2 and M4 requirements, and yes there is an aggregation present. 
+We still satisfy the initial requirements for the ER diagram, and yes there is an aggregation present. 
