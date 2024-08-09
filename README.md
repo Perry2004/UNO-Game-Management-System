@@ -142,7 +142,7 @@ Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL 
 
 3. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default. (You may use `npm run start`, as well.)
 
-4. There is no need to create db and load sql scripts manually as the application will automatically create the database and load the sql scripts from the specified file `./uno.sql`. 
+`Please refer to the uno.sql file, for information about the Database.`
 
 ---
 # Deliverables for Milestone 4: 
