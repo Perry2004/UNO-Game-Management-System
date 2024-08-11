@@ -107,15 +107,18 @@ We also divided the front-end (the React components) equally (in the manner abov
 
 ---
 
-# Tech Stack Changes: 
+# Tech Stack Changes:
+
 - We switched from `Oracle DB` (the department DB) to `MSQL` as it supports more features and is more user-friendly.
-- We get rid of the `React` front-end framework to reduce the complexity of the project. 
+- We get rid of the `React` front-end framework to reduce the complexity of the project.
 - Because of the need to use `npm`, we finished our development on the local machine.
 
-# Setup: 
+# Setup:
 
 ### Local Setup:
-1. Requirements: 
+
+1. Requirements:
+
    1. `Node.js` and `npm` must be installed on your local machine. Please navigate to the relevant (downloaded) directory and use npm install (while inside the directory) to install all the relevant dependencies.
    2. `MySQL` must be installed on your local machine. Here is a brief guide on how to set it up: https://youtu.be/u96rVINbAUI?si=LSaZQrlvmomSGvhW (please be sure to set up the environment as well.) Thereafter, you will be able to run queries using our SQL script on our repository.
 
@@ -145,6 +148,8 @@ Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL 
 `Please refer to the uno.sql file, for information about the Database.`
 
 ---
-# Deliverables for Milestone 4: 
-- [Milestone 4 PDF document](./CPSC304Milestone4.pdf)
+
+# Deliverables for Milestone 4:
+
+- Please find the Milestone document inside the repository.
 - [.sql script to setup the database](./uno.sql)

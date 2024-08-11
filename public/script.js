@@ -1358,16 +1358,27 @@ document.querySelector("[data-get-events-selection-modal]")?.addEventListener("s
 	let buttonStatus = document.querySelector("[data-selection-and-status]").value;
 	let checkStatus = document.querySelector("[data-selection-and]").checked; // checked here is boolean but for HTTP its "on".
 	
+	// nothing is specified.
 	if (textChecker === "" && (buttonStatus === "not applicable" || buttonStatus === "n/a")) {
 		displayModalErrorMessage("[data-get-events-selection-modal]", "You have specified no search criteria.");
 		return;
 	}
+
+	// at least one thing is specified.
 	
+	// is illegal
 	if (checkStatus && (buttonStatus === "not applicable" || buttonStatus === "n/a")) {
-		displayModalErrorMessage("[data-get-events-selection-modal]", "You have specified an INVALID search criteria.");
+		displayModalErrorMessage("[data-get-events-selection-modal]", "You have specified an INVALID search criteria: you can't have n/a AND text with BOTH.");
 		return;
 	}
-	
+	if (checkStatus && textChecker == "") {
+		displayModalErrorMessage("[data-get-events-selection-modal]", "You have specified an INVALID search criteria: you can't have a Status AND \"\" (empty string) with BOTH.");
+		document.querySelector("[data-select-event-name]").value = "";
+		return;
+	}
+
+	// can choose to just specify the Status too
+
 
 	clearFormData();
 	hideModalErrorMessage("[data-get-events-selection-modal]");

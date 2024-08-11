@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Results</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section  -->
+    <%- include("../partials/header") %>
+
+    <!-- Sidebar Section  -->
+    <%- include("../partials/sidebar") %>
+    <h1>Project Results</h1>
+    
+    <% if (results && results.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <% selectedFields.forEach(column => { %>
+                        <th><%= column %></th>
+                    <% }) %>
+                </tr>
+            </thead>
+            <tbody>
+                <% results.forEach(item => { %>
+                    <tr>
+                        <% selectedFields.forEach(column => { %>
+                            <td><%= item[column] %></td>
+                        <% }) %>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>Nothing matched your search criteria.</p>
+    <% } %>
+</body>
+</html>
