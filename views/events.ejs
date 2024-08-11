@@ -35,9 +35,17 @@
                                     <option value="status">Status</option>
                                 </select>
                             </div>
-                            <!----> This is for projection.    <!---->
+                            
+                            <!--This is for selection-->
                             <div> 
-                                <button class="table-btn add-btn" onclick="showProjectionModal()"><i class="bx bx-plus"></i>Choose what you want to see</button>
+                                <label for="select-event">This is for Selection (criteria).</label>
+                                <button id = "select-event" class="table-btn add-btn" onclick="showSelectionModal()"><i class="bx bx-plus"></i></button>
+                            </div>
+
+                            <!-- This is for projection-->
+                            <div> 
+                                <label for="project-event">This is for Projection (attributes).</label>
+                                <button id = "project-event" class="table-btn add-btn" onclick="showProjectionModal()"><i class="bx bx-plus"></i></button>
                             </div>
                             <!---->
                             <button class="table-btn add-btn" onclick="showCreateEventModal()"><i class="bx bx-plus"></i>Create Event</button>
@@ -184,6 +192,40 @@
             </form>
 
 
+            <!--The selection section -->
+            <!--Uses like, does not do direct comparison-->
+            <form class="modal create-item-modal" action="/events/select" method="GET" data-get-events-selection-modal>
+                <div class="modal-header">
+                    <h2>Choose a selection criteria. Inside the textbox, you may enter an Event name that will be matched to. For the dropdown you select the event status. Finally you indicate if you want both criteria satisfied or just one.</h2>
+                    <button class="close-btn" type="button" onclick="hideSelectionModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-fields">
+                        <label for="selection-event-text">Enter a name that you want to <b>match</b> to.</label> 
+                        <input id="selection-event-text" type = "text" data-select-event-name data-save-input>                    
+                    </div>
+                    <div class="dropdown-container">
+                        <p class="dropdown-title"></p>
+                        <label for="selector-selection">Choose Status.</label>
+                        <select name="selector" id="selector-selection" class="dropdown" data-selection-and-status data-save-input>
+                            <option value="not applicable" selected>n/a</option>
+                            <option value="Upcoming" selected>Upcoming</option>
+                            <option value="Active" selected>Active</option>
+                            <option value="Completed" selected>Completed</option>
+                        </select>
+                    </div>
+                    <div class="modal-fields">
+                    <label for="selection-and">Satisfy both? </label>
+                    <input type="checkbox" id="selection-and" name="selection-and" autocomplete="off" data-selection-and data-save-input >
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn modal-btn-confirm" type="submit">Select</button>
+                    <button class="btn modal-btn-cancel" type="button" onclick="hideSelectionModal()">Cancel</button>
+                </div>
+                <div class="modal-error-message" data-modal-error-message></div>
+            </form>
             <!-- -->
 
             <!-- Search Result Section -->

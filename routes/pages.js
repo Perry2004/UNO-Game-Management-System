@@ -65,7 +65,8 @@ router.post("/events/update", eventsController.updateEvent);
 router.post("/events/register", eventsController.registerEvent);
 router.delete("/events/delete", eventsController.deleteEvent);
 
-router.get("/events/project", eventsController.projectEvent); 
+router.get("/events/project", eventsController.projectEvent);
+router.get("/events/select", eventsController.selectEvent); 
 
 
 router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
