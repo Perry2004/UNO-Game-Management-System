@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Results</title>
     <style>
-        /* Add some basic styling for the table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -29,6 +28,11 @@
     </style>
 </head>
 <body>
+    <!-- Header Section  -->
+    <%- include("../partials/header") %>
+
+    <!-- Sidebar Section  -->
+    <%- include("../partials/sidebar") %>
     <h1>Project Results</h1>
     
     <% if (results && results.length > 0) { %>
