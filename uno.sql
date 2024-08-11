@@ -756,41 +756,6 @@ VALUES
         '2025-01-01',
         'Active',
         5
-    ),
-    (
-        'Stack Attack',
-        '2024-09-30',
-        '2024-10-02',
-        'Upcoming',
-        0
-    ),
-    (
-        'Wild Draw War',
-        '2024-11-29',
-        '2024-12-01',
-        'Upcoming',
-        0
-    ),
-    (
-        'Zero Swap Spectacle',
-        '2024-10-25',
-        '2024-10-27',
-        'Upcoming',
-        0
-    ),
-    (
-        'Color Blast',
-        '2024-11-15',
-        '2024-11-17',
-        'Upcoming',
-        0
-    ),
-    (
-        'UNO Championship Series',
-        '2024-12-01',
-        '2024-12-26',
-        'Upcoming',
-        0
     );
 
 INSERT IGNORE INTO PlayerParticipateEvents (player_id, event_id)
