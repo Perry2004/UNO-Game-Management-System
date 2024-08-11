@@ -3,6 +3,18 @@ const eventsModel = require("../models/events");
 const logError = (functionName) => `OH NO! Error with ${functionName} in Events Controllers:`;
 const resError = (functionName) => `OH NO! Internal Server Error with ${functionName} in Events Controllers:`;
 
+/**
+ * CREATE TABLE IF NOT EXISTS Events (
+    event_id INT AUTO_INCREMENT,
+    name VARCHAR(255) UNIQUE,
+    start_date DATE NOT NULL, 
+    end_date DATE NOT NULL, 
+    status VARCHAR(255) NOT NULL, 
+    num_of_participants INT DEFAULT 0, 
+    PRIMARY KEY (event_id)
+);  
+*/
+
 exports.loadEvents = async (req, res) => {
 	if (!req.loginStatus) {
 		return res.redirect("/login");
@@ -27,6 +39,37 @@ exports.fetchEventData = async (req, res) => {
 		const results = await eventsModel.getEventDataByID(eventID);
 
 		res.status(200).json(results);
+	} catch (error) {
+		console.error(logError("fetchEventData"), error);
+		res.status(500).send(resError("fetchEventData"));
+	}
+};
+
+exports.projectEvent = async (req, res) => {
+	const { projectName, projectStart, projectEnd, projectNoParticipants, projectStatus } = req.query;
+	let name = projectName;
+	let start_date = projectStart;
+	let end_date = projectEnd;
+	let status = projectStatus;
+	let num_of_participants = projectNoParticipants;
+
+	let selectedFields = [];
+	if (name === 'on') selectedFields.push('name');
+	if (start_date === 'on') selectedFields.push('start_date');
+	if (end_date === 'on') selectedFields.push('end_date');
+	if (status === 'on') selectedFields.push('status');
+	if (num_of_participants === 'on') selectedFields.push('num_of_participants');
+
+	if (selectedFields.length === 0) {
+		selectedFields.push("name");
+	}
+
+	try {
+		const results = await eventsModel.projectEvents({name, start_date, end_date, num_of_participants, status});
+		// res.status(200).json(results); // This redirects me to a page.
+		res.render("events/project", { results, selectedFields }); // render a page. 
+		// that was a page
+
 	} catch (error) {
 		console.error(logError("fetchEventData"), error);
 		res.status(500).send(resError("fetchEventData"));

@@ -6,6 +6,18 @@ const vancouverTimeZone = "America/Vancouver";
 
 const logError = (functionName) => `OH NO! Error with ${functionName} in Events Models:`;
 
+/**
+ * CREATE TABLE IF NOT EXISTS Events (
+    event_id INT AUTO_INCREMENT,
+    name VARCHAR(255) UNIQUE,
+    start_date DATE NOT NULL, 
+    end_date DATE NOT NULL, 
+    status VARCHAR(255) NOT NULL, 
+    num_of_participants INT DEFAULT 0, 
+    PRIMARY KEY (event_id)
+);  
+*/
+
 exports.getRecentEvents = async (order) => {
 	let orderByClause;
 
@@ -89,6 +101,38 @@ exports.getEventDataByID = async (eventID) => {
 		throw error;
 	}
 };
+
+
+exports.projectEvents = async ({name, start_date, end_date, num_of_participants, status}) => {
+	
+	try {
+		const selectedFields = [];
+
+        if (name === 'on') selectedFields.push('name');
+        if (start_date === 'on') selectedFields.push('start_date');
+        if (end_date === 'on') selectedFields.push('end_date');
+        if (status === 'on') selectedFields.push('status');
+        if (num_of_participants === 'on') selectedFields.push('num_of_participants');
+
+        if (selectedFields.length === 0) {
+            selectedFields.push("name");
+        }
+
+        const fieldsToSelect = selectedFields.join(', ');
+
+        const myQuery = `
+            SELECT ${fieldsToSelect}
+            FROM Events e
+        `;
+
+		const results = await db.promise().query(myQuery);
+		return results[0];
+	} catch (error) {
+		console.error(logError("projectEvents"), error);
+		throw error;
+	}
+};
+
 
 exports.isEventNameAvailable = async (eventName) => {
 	try {

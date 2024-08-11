@@ -1321,3 +1321,31 @@ async function validateUsernames(usernames) {
 
 	return invalidUsernames;
 }
+
+
+// --------------------- for projection modal ------------- 
+// DO ALL. 
+document.querySelector("[data-get-events-modal]")?.addEventListener("submit", async function (e) {
+	e.preventDefault();
+
+	clearFormData();
+	hideModalErrorMessage("[data-get-events-modal]");
+	e.target.submit();
+});
+
+// names and matching
+function showProjectionModal() {
+	const createPlayerModal = document.querySelector("[data-get-events-modal]");
+	createPlayerModal.classList.add("openedModal");
+
+	showModal();
+}
+
+function hideProjectionModal() {
+	const createPlayerModal = document.querySelector("[data-get-events-modal]");
+	createPlayerModal.classList.remove("openedModal");
+
+	// clearPasswordFields("[data-get-events-modal]");
+	hideModalErrorMessage("[data-get-events-modal]");
+	hideModal();
+}
