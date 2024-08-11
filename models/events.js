@@ -102,6 +102,55 @@ exports.getEventDataByID = async (eventID) => {
 	}
 };
 
+exports.selectEvents = async (nameS, statusS, bothS) => {
+	try {
+		let myQuery = ``;
+		// console.log(nameS)
+
+		if (statusS != "n/a" && nameS === "") {
+			myQuery = `
+            SELECT *
+            FROM Events e
+            WHERE status = '${statusS}'
+		`;}
+
+		if (bothS == "on" && statusS != "n/a" && nameS != "") { // check both using AND
+			myQuery = `
+            SELECT *
+            FROM Events e
+            WHERE name LIKE '%${nameS}%' 
+    		AND status = '${statusS}'
+		`;
+		} else if (statusS != "n/a" && nameS != "") { // check both using OR [both not passed]
+			myQuery = `
+            SELECT *
+            FROM Events e
+            WHERE name LIKE '%${nameS}%' 
+    		OR status = '${statusS}'
+		`;
+		} else if (statusS != "n/a" && nameS == "") { // Will check for just the status.
+			myQuery = `
+            SELECT *
+            FROM Events e
+            WHERE status = '${statusS}'
+		`;} else if (nameS != "" && statusS == "n/a") { // logically only the name is left.
+			myQuery = `
+			SELECT *
+			FROM Events e
+			WHERE name LIKE '%${nameS}%'
+			`;
+		}
+
+		const results = await db.promise().query(myQuery, [nameS, statusS]);
+
+		return results[0];
+	} catch (error) {
+		console.error(logError("getEventDataByID"), error);
+		throw error;
+	}
+};
+
+
 
 exports.projectEvents = async ({name, start_date, end_date, num_of_participants, status}) => {
 	

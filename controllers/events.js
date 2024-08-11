@@ -76,6 +76,26 @@ exports.projectEvent = async (req, res) => {
 	}
 };
 
+exports.selectEvent = async (req, res) => {
+	const { selectname, selector, selection} = req.query;
+	let name = selectname;
+	let status = selector;
+	let both = selection; 
+
+	selectedFields = ["name", "start_date", "end_date", "status", "num_of_participants"];
+
+	try {
+		const results = await eventsModel.selectEvents(name, status, both);
+		res.render("events/select", { results, selectedFields }); // render a page. 
+
+	} catch (error) {
+		console.error(logError("fetchEventData"), error);
+		res.status(500).send(resError("fetchEventData"));
+	}
+
+}
+// in order to actually access the elements insde the URL use their NAMES.
+
 exports.checkFormInput = async (req, res) => {
 	const { eventName } = req.query;
 
