@@ -600,23 +600,27 @@ VALUES
 
 INSERT IGNORE INTO Matches(start_time, end_time, winner, status) 
 VALUES 
-('2024-08-05 10:49:00', '2024-08-05 11:01:00', 'Reliable Developer', 'Completed');
+('2024-08-05 10:49:00', '2024-08-05 11:01:00', 'Reliable Developer', 'Completed'),
+('2024-08-05 9:49:00', '2024-08-05 12:01:00', 'Reliable Developer', 'Completed'),
+('2024-08-05 8:49:00', '2024-08-05 11:01:00', 'Reliable Developer', 'Completed'),
+('2024-08-05 7:49:00', '2024-08-05 11:01:00', 'Reliable Developer', 'Completed'),
+('2024-08-05 6:49:00', '2024-08-05 11:01:00', 'Reliable Developer', 'Completed');
 
 INSERT IGNORE INTO PlayerInvolveMatches(player_id, match_id) 
 VALUES 
-(1, 1), (2, 1);
+(1, 1), (2, 1), (3,1), (4,1), (5,1);
 
 INSERT IGNORE INTO HandBelongsToPlayerAndMatch(player_id, match_id) 
 VALUES 
-(1, 1), (2, 1);
+(1, 1), (2, 1), (3,1), (4, 1), (5, 1);
 
 INSERT IGNORE INTO Decks(card_amount) 
 VALUES 
-(108);
+(108), (107), (106), (105), (104);
 
 INSERT IGNORE INTO MatchHasDeck(match_id, deck_id) 
 VALUES 
-(1, 1);
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
 INSERT IGNORE INTO CardBelongsToDeck(card_id, deck_id, name) 
 VALUES
@@ -725,11 +729,11 @@ VALUES
 
 INSERT IGNORE INTO WildCard(card_id, deck_id) 
 VALUES 
-(101, 1), (102, 1), (103, 1), (104, 1); 
+(101, 1), (102, 1), (103, 1), (104, 1), (105, 1); 
 
 INSERT IGNORE INTO WildDraw4Card(card_id, deck_id) 
 VALUES 
-(105, 1), (106, 1), (107, 1), (108, 1);
+(106, 1), (107, 1), (108, 1), (109, 1), (110, 1);
 
 INSERT IGNORE INTO CardHeldByHand(card_id, deck_id, hand_id, player_id, match_id) 
 VALUES 
@@ -779,7 +783,12 @@ VALUES
 INSERT IGNORE INTO DrawAction(turn_id, player_id, match_id, draw_amount)
 VALUES 
 (6, 2, 1, 2), 
-(10, 2, 1, 4);
+(100, 2, 1, 4),
+(110, 2, 1, 7),
+(121, 7, 1, 9),
+(131, 2, 3, 10),
+(NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL);
 
 INSERT IGNORE INTO CardsDrawnInTurn(turn_id, player_id, match_id, card_id, deck_id)
 VALUES 
@@ -789,4 +798,7 @@ VALUES
 INSERT IGNORE INTO TurnLostAction(turn_id, player_id, match_id)
 VALUES 
 (2, 2, 1),
-(12, 2, 1); 
+(12, 2, 1),
+(2, 3, 1),
+(2, 4, 1),
+(2, 4, 2); 
