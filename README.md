@@ -1,4 +1,4 @@
-# UNO GAME SYSTEM MANAGER AND USER
+# UNO GAME USERS AND GAME MANAGER
 
 > For information on <b>local</b> machine setup please refer to the bottom of this file.
 
