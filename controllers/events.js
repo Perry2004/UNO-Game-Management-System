@@ -165,3 +165,13 @@ exports.deleteEvent = async (req, res) => {
 		res.status(500).send(resError("deleteEvent"));
 	}
 };
+
+exports.dropAllEvents = async (req, res) => {
+  try {
+    await eventsModel.dropAllEvents();
+    return res.status(200).send("OH YES! All Events Dropped Successfully");
+  } catch (error) {
+    console.error(logError("dropAllEvents"), error);
+    return res.status(500).send(resError("dropAllEvents"));
+  }
+};

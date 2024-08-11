@@ -67,6 +67,7 @@ router.delete("/events/delete", eventsController.deleteEvent);
 
 router.get("/events/project", eventsController.projectEvent);
 router.get("/events/select", eventsController.selectEvent); 
+router.delete("/events/drop-all-events", eventsController.dropAllEvents);
 
 
 router.get("/matches", authController.isLoggedIn, matchesController.loadMatches);
