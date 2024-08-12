@@ -2,6 +2,8 @@
 
 > For information on <b>local</b> machine setup please refer to the bottom of this file.
 
+> Much of the information about the project contained herein (in particular, the timeline, and description) is not up to date. Please refer to the Milestone 4 document for the actual description. The timeline can be considered redundant.
+
 The Game State Management encompasses the entire game state of an
 Uno Game. For example, the cards held by each player, the type of cards
 held by each player, the cards remaining in the deck. and whose turn it is.
