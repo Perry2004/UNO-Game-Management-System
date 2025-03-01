@@ -20,25 +20,29 @@ A well-designed front-end interface is provided to interact with the backend MyS
    1. The `.env` file is used to store the environment variables for initializing the database connection.
    2. Please create a `.env` file in the root directory of the project with the following content with appropriate values:
       ```
-      LOGIN_USERNAME = ???
-      LOGIN_PASSWORD = ???
-      DATABSE_HOST = localhost (otherwise, the IP address of the MySQL server)
-      DATABASE_USER = ???
-      DATABASE_PASSWORD = ?
-      DATABASE = UNOGameSystem
-      SESSION_SECRET = uno
-      JWT_SECRET = uno
-      JWT_EXPIRES_IN = 90d
-      JWT_COOKIE_EXPIRES = 90
+      LOGIN_USERNAME=admin
+      LOGIN_PASSWORD=admin123
+      DATABASE_HOST=db
+      DATABASE_USER=root
+      DATABASE_PASSWORD=password
+      DATABASE=UNOGameSystem
+      SESSION_SECRET=uno
+      JWT_SECRET=uno
+      JWT_EXPIRES_IN=90d
+      JWT_COOKIE_EXPIRES=90
       ```
 
 Note: for `DATABASE_PASSWORD` use the same password you set up during the MySQL installation or Configuration process on your computer.
 
-2. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
+1. Run `npm install` inside the terminal when you have navigated to this directory to install the `node_modules` directory which is required to run the application locally.
 
-3. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default. (You may use `npm run start`, as well.)
+2. Use the command `npm run devStart` to start a local session of the application (which uses `localhost` and port 3001 as specified in the `server.js` file). The session will run inside the browser set as default. (You may use `npm run start`, as well.)
 
 `Please refer to the uno.sql file, for information about the Database.`
+
+## Setup with Docker:
+The `Dockerfile` and `compose.yaml` files are provided to run the application in a Docker container. 
+After you've set up the `.env` file, run `docker compose up` to start the application in a Docker container. The application will be available at `localhost:3000`.
 
 ## Database Schema:
 A ER diagram of the database schema is available [here](./ER_Diagram.jpg).

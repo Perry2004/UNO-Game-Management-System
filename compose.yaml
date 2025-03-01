@@ -1,0 +1,30 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:${PORT:-3001}"
+    env_file:
+      - .env
+    command: [ "npm", "run", "start" ]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME:-app}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DATABASE_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - uno_mysql_data:/var/lib/mysql
+
+volumes:
+  uno_mysql_data:
