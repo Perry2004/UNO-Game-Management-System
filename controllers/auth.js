@@ -10,23 +10,28 @@ exports.login = async (req, res) => {
       });
     }
 
-    // if (username !== process.env.LOGIN_USERNAME || password !== process.env.LOGIN_PASSWORD) {
-    // 	return res.status(401).render("login", {
-    // 		message: "Your username or password is incorrect.",
-    // 	});
-    // } else {
-    // 	const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET, {
-    // 		expiresIn: process.env.JWT_EXPIRES_IN,
-    // 	});
+    if (
+      username !== process.env.LOGIN_USERNAME ||
+      password !== process.env.LOGIN_PASSWORD
+    ) {
+      return res.status(401).render("login", {
+        message: "Your username or password is incorrect.",
+      });
+    } else {
+      const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
 
-    // 	const cookieOptions = {
-    // 		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
-    // 		httpOnly: true,
-    // 	};
+      const cookieOptions = {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+      };
 
-    // 	res.cookie("myCookie", token, cookieOptions);
-    // 	res.status(200).redirect("/dashboard");
-    // }
+      res.cookie("myCookie", token, cookieOptions);
+      res.status(200).redirect("/dashboard");
+    }
     const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
