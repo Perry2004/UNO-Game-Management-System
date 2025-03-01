@@ -1,6 +1,7 @@
 const db = require("../config/db");
 
-const logError = (functionName) => `OH NO! Error with ${functionName} in Search-Results Models:`;
+const logError = (functionName) =>
+  `OH NO! Error with ${functionName} in Search-Results Models:`;
 
 const queryMap = {
   "event-participants-count-by-number": (number) => `
@@ -48,14 +49,16 @@ const queryMap = {
                 AND ppe.player_id = p.player_id
             )
         );
-  `
+  `,
 };
 
 exports.getSearchResultData = async (queryType, number = 10) => {
   const queryFunction = queryMap[queryType];
 
   if (!queryFunction) {
-    throw new Error(`This ${queryType} did not match anything in our database...`);
+    throw new Error(
+      `This ${queryType} did not match anything in our database...`
+    );
   }
 
   const myQuery = queryFunction(number);

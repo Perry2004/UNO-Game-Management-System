@@ -1,282 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNO Game System Admin</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <link rel="icon" href="/UNO.icon" type="image/x-icon">
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    />
+    <link rel="icon" href="/UNO.icon" type="image/x-icon" />
     <script defer src="/script.js"></script>
   </head>
 
   <body>
     <div id="grid-container">
-
       <!-- Header Section  -->
       <%- include("partials/header") %>
 
-        <!-- Sidebar Section  -->
-        <%- include("partials/sidebar") %>
+      <!-- Sidebar Section  -->
+      <%- include("partials/sidebar") %>
 
-          <!-- Main Section -->
-          <main class="grid-main">
-            <div class="main-body" data-main-body>
-              <div class="table-container-primary">
-                <div class="main-body-header">
-                  <h2 class="main-title">RECENT EVENTS</h2>
-                  <div class="table-btn-list">
-                    <div class="dropdown-container">
-                      <p class="dropdown-title">Sort By:</p>
-                      <select name="selector" id="selector" class="dropdown" data-dropdown-sort
-                        data-pointer-not-allowed>
-                        <option value="recent" selected>Recent</option>
-                        <option value="startDate">Start Date</option>
-                        <option value="endDate">End Date </option>
-                        <option value="numOfParticipants">Number of Participants</option>
-                        <option value="status">Status</option>
-                      </select>
-                    </div>
-
-                    <!--This is for selection-->
-                    <div>
-                      <label for="select-event">This is for Selection (criteria).</label>
-                      <button id="select-event" class="table-btn add-btn" onclick="showSelectionModal()"><i
-                          class="bx bx-plus"></i></button>
-                    </div>
-
-                    <!-- This is for projection-->
-                    <div>
-                      <label for="project-event">This is for Projection (attributes).</label>
-                      <button id="project-event" class="table-btn add-btn" onclick="showProjectionModal()"><i
-                          class="bx bx-plus"></i></button>
-                    </div>
-                    <!---->
-
-                    <button class="table-btn add-btn" onclick="dropAllEvents()"><i
-                        class="bx bx-plus"></i>Drop All Events</button>
-
-                    <button class="table-btn add-btn" onclick="showCreateEventModal()"><i class="bx bx-plus"></i>Create
-                      Event</button>
-                  </div>
+      <!-- Main Section -->
+      <main class="grid-main">
+        <div class="main-body" data-main-body>
+          <div class="table-container-primary">
+            <div class="main-body-header">
+              <h2 class="main-title">RECENT EVENTS</h2>
+              <div class="table-btn-list">
+                <div class="dropdown-container">
+                  <p class="dropdown-title">Sort By:</p>
+                  <select
+                    name="selector"
+                    id="selector"
+                    class="dropdown"
+                    data-dropdown-sort
+                    data-pointer-not-allowed
+                  >
+                    <option value="recent" selected>Recent</option>
+                    <option value="startDate">Start Date</option>
+                    <option value="endDate">End Date</option>
+                    <option value="numOfParticipants">
+                      Number of Participants
+                    </option>
+                    <option value="status">Status</option>
+                  </select>
                 </div>
-                <div class="scrollable-table full-page">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Number of Participants</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <% locals.recentEvents.forEach(element=> { %>
-                        <tr>
-                          <td>
-                            <%= element.eventName %>
-                          </td>
-                          <td>
-                            <%= element.eventStartDate %>
-                          </td>
-                          <td>
-                            <%= element.eventEndDate %>
-                          </td>
-                          <td>
-                            <%= element.numOfParticipants %>
-                          </td>
-                          <td data-status="<%= element.eventStatus %>">
-                            <%= element.eventStatus %>
-                          </td>
-                          <td>
-                            <i class='bx bxs-edit edit' aria-label="Edit"
-                              onclick="showEditEventModal('<%= element.eventID %>')" data-edit
-                              data-pointer-not-allowed></i>
-                            <i class='bx bx-trash delete' aria-label="Delete"
-                              onclick="showDeleteItemModal('<%= element.eventID %>')" data-delete
-                              data-pointer-not-allowed></i>
-                          </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                  </table>
+
+                <!--This is for selection-->
+                <div>
+                  <label for="select-event"
+                    >This is for Selection (criteria).</label
+                  >
+                  <button
+                    id="select-event"
+                    class="table-btn add-btn"
+                    onclick="showSelectionModal()"
+                  >
+                    <i class="bx bx-plus"></i>
+                  </button>
                 </div>
+
+                <!-- This is for projection-->
+                <div>
+                  <label for="project-event"
+                    >This is for Projection (attributes).</label
+                  >
+                  <button
+                    id="project-event"
+                    class="table-btn add-btn"
+                    onclick="showProjectionModal()"
+                  >
+                    <i class="bx bx-plus"></i>
+                  </button>
+                </div>
+                <!---->
+
+                <button class="table-btn add-btn" onclick="dropAllEvents()">
+                  <i class="bx bx-plus"></i>Drop All Events
+                </button>
+
+                <button
+                  class="table-btn add-btn"
+                  onclick="showCreateEventModal()"
+                >
+                  <i class="bx bx-plus"></i>Create Event
+                </button>
               </div>
             </div>
-
-            <div class="modal delete-item-modal" data-delete-item-modal>
-              <h1>&#9888;</h1>
-              <h2>Are you sure?</h2>
-              <p>This action cannot be undone. All values <br>associated with this field will be lost.</p>
-              <button class="btn modal-btn-delete" type="button" data-conform-delete>Delete Event</button>
-              <button class="btn modal-btn-cancel" type="button" onclick="hideDeleteItemModal()">Cancel</button>
+            <div class="scrollable-table full-page">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Number of Participants</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% locals.recentEvents.forEach(element=> { %>
+                  <tr>
+                    <td><%= element.eventName %></td>
+                    <td><%= element.eventStartDate %></td>
+                    <td><%= element.eventEndDate %></td>
+                    <td><%= element.numOfParticipants %></td>
+                    <td data-status="<%= element.eventStatus %>">
+                      <%= element.eventStatus %>
+                    </td>
+                    <td>
+                      <i
+                        class="bx bxs-edit edit"
+                        aria-label="Edit"
+                        onclick="showEditEventModal('<%= element.eventID %>')"
+                        data-edit
+                        data-pointer-not-allowed
+                      ></i>
+                      <i
+                        class="bx bx-trash delete"
+                        aria-label="Delete"
+                        onclick="showDeleteItemModal('<%= element.eventID %>')"
+                        data-delete
+                        data-pointer-not-allowed
+                      ></i>
+                    </td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
             </div>
+          </div>
+        </div>
 
-            <form class="modal edit-item-modal" action="/events/update" method="POST" data-edit-event-modal>
-              <div class="modal-header">
-                <h2>Edit Event</h2>
-                <button class="close-btn" type="button" onclick="hideEditEventModal()">&times;</button>
-              </div>
-              <div class="modal-body">
-                <div class="modal-fields">
-                  <input type="hidden" name="eventID" data-event-id>
-                  <input type="hidden" name="originalName" data-original-name>
-                  <label for="nameEditEvent">Name: </label>
-                  <input type="text" id="nameEditEvent" name="name" autocomplete="off" aria-label="Event Name"
-                    data-name>
-                </div>
-                <div class="modal-fields">
-                  <label for="startDateEditEvent">Start Date: </label>
-                  <input type="date" id="startDateEditEvent" name="startDate" autocomplete="off" aria-label="Start Date"
-                    data-start-date>
-                </div>
-                <div class="modal-fields">
-                  <label for="endDateEditEvent">End Date: </label>
-                  <input type="date" id="endDateEditEvent" name="endDate" autocomplete="off" aria-label="End Date"
-                    data-end-date>
-                </div>
-                <div class="modal-fields">
-                  <label for="participantsEditEvent">Number of Participants: </label>
-                  <input type="number" id="participantsEditEvent" name="participants"
-                    aria-label="Number of Participants" data-participants disabled>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button class="btn modal-btn-confirm" type="submit">Update</button>
-                <button class="btn modal-btn-cancel" type="button" onclick="hideEditEventModal()">Cancel</button>
-              </div>
-              <div class="modal-error-message" data-modal-error-message></div>
-            </form>
+        <div class="modal delete-item-modal" data-delete-item-modal>
+          <h1>&#9888;</h1>
+          <h2>Are you sure?</h2>
+          <p>
+            This action cannot be undone. All values <br />associated with this
+            field will be lost.
+          </p>
+          <button
+            class="btn modal-btn-delete"
+            type="button"
+            data-conform-delete
+          >
+            Delete Event
+          </button>
+          <button
+            class="btn modal-btn-cancel"
+            type="button"
+            onclick="hideDeleteItemModal()"
+          >
+            Cancel
+          </button>
+        </div>
 
-            <form class="modal create-item-modal" action="/events/register" method="POST" data-create-event-modal>
-              <div class="modal-header">
-                <h2>Create New Event</h2>
-                <button class="close-btn" type="button" onclick="hideCreateEventModal()">&times;</button>
-              </div>
-              <div class="modal-body">
-                <div class="modal-fields">
-                  <label for="nameCreateEvent">Name: </label>
-                  <input type="text" id="nameCreateEvent" name="name" autocomplete="off" aria-label="Event Name"
-                    data-name data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="startDateCreateEvent">Start Date: </label>
-                  <input type="date" id="startDateCreateEvent" name="startDate" autocomplete="off"
-                    aria-label="Start Date" data-start-date data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="endDateCreateEvent">End Date: </label>
-                  <input type="date" id="endDateCreateEvent" name="endDate" autocomplete="off" aria-label="End Date"
-                    data-end-date data-save-input>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button class="btn modal-btn-confirm" type="submit">Register</button>
-                <button class="btn modal-btn-cancel" type="button" onclick="hideCreateEventModal()">Cancel</button>
-              </div>
-              <div class="modal-error-message" data-modal-error-message></div>
-            </form>
+        <form
+          class="modal edit-item-modal"
+          action="/events/update"
+          method="POST"
+          data-edit-event-modal
+        >
+          <div class="modal-header">
+            <h2>Edit Event</h2>
+            <button
+              class="close-btn"
+              type="button"
+              onclick="hideEditEventModal()"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-fields">
+              <input type="hidden" name="eventID" data-event-id />
+              <input type="hidden" name="originalName" data-original-name />
+              <label for="nameEditEvent">Name: </label>
+              <input
+                type="text"
+                id="nameEditEvent"
+                name="name"
+                autocomplete="off"
+                aria-label="Event Name"
+                data-name
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="startDateEditEvent">Start Date: </label>
+              <input
+                type="date"
+                id="startDateEditEvent"
+                name="startDate"
+                autocomplete="off"
+                aria-label="Start Date"
+                data-start-date
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="endDateEditEvent">End Date: </label>
+              <input
+                type="date"
+                id="endDateEditEvent"
+                name="endDate"
+                autocomplete="off"
+                aria-label="End Date"
+                data-end-date
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="participantsEditEvent"
+                >Number of Participants:
+              </label>
+              <input
+                type="number"
+                id="participantsEditEvent"
+                name="participants"
+                aria-label="Number of Participants"
+                data-participants
+                disabled
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn modal-btn-confirm" type="submit">Update</button>
+            <button
+              class="btn modal-btn-cancel"
+              type="button"
+              onclick="hideEditEventModal()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="modal-error-message" data-modal-error-message></div>
+        </form>
 
-            <!-- The projection section -->
+        <form
+          class="modal create-item-modal"
+          action="/events/register"
+          method="POST"
+          data-create-event-modal
+        >
+          <div class="modal-header">
+            <h2>Create New Event</h2>
+            <button
+              class="close-btn"
+              type="button"
+              onclick="hideCreateEventModal()"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-fields">
+              <label for="nameCreateEvent">Name: </label>
+              <input
+                type="text"
+                id="nameCreateEvent"
+                name="name"
+                autocomplete="off"
+                aria-label="Event Name"
+                data-name
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="startDateCreateEvent">Start Date: </label>
+              <input
+                type="date"
+                id="startDateCreateEvent"
+                name="startDate"
+                autocomplete="off"
+                aria-label="Start Date"
+                data-start-date
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="endDateCreateEvent">End Date: </label>
+              <input
+                type="date"
+                id="endDateCreateEvent"
+                name="endDate"
+                autocomplete="off"
+                aria-label="End Date"
+                data-end-date
+                data-save-input
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn modal-btn-confirm" type="submit">
+              Register
+            </button>
+            <button
+              class="btn modal-btn-cancel"
+              type="button"
+              onclick="hideCreateEventModal()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="modal-error-message" data-modal-error-message></div>
+        </form>
 
-            <form class="modal create-item-modal" action="/events/project" method="GET" data-get-events-modal>
-              <div class="modal-header">
-                <h2>Choose the attributes you wish to see. None selected defaults to Name.</h2>
-                <button class="close-btn" type="button" onclick="hideProjectionModal()">&times;</button>
-              </div>
+        <!-- The projection section -->
 
-              <div class="modal-body">
-                <div class="modal-fields">
-                  <label for="projectName">Name: </label>
-                  <input type="checkbox" id="projectName" name="projectName" autocomplete="off" data-name
-                    data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="projectStart">Start Date: </label>
-                  <input type="checkbox" id="projecStart" name="projectStart" autocomplete="off" data-start-date
-                    data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="projectEnd">End Date: </label>
-                  <input type="checkbox" id="projectEnd" name="projectEnd" autocomplete="off" data-end-date
-                    data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="projectNoParticipants">Number of Participants: </label>
-                  <input type="checkbox" id="projectNoParticipants" name="projectNoParticipants" autocomplete="off"
-                    data-no-part data-save-input>
-                </div>
-                <div class="modal-fields">
-                  <label for="projectStatus">Status: </label>
-                  <input type="checkbox" id="projectStatus" name="projectStatus" autocomplete="off" data-status
-                    data-save-input>
-                </div>
-                <!-- <div class="modal-fields">
+        <form
+          class="modal create-item-modal"
+          action="/events/project"
+          method="GET"
+          data-get-events-modal
+        >
+          <div class="modal-header">
+            <h2>
+              Choose the attributes you wish to see. None selected defaults to
+              Name.
+            </h2>
+            <button
+              class="close-btn"
+              type="button"
+              onclick="hideProjectionModal()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-fields">
+              <label for="projectName">Name: </label>
+              <input
+                type="checkbox"
+                id="projectName"
+                name="projectName"
+                autocomplete="off"
+                data-name
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="projectStart">Start Date: </label>
+              <input
+                type="checkbox"
+                id="projecStart"
+                name="projectStart"
+                autocomplete="off"
+                data-start-date
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="projectEnd">End Date: </label>
+              <input
+                type="checkbox"
+                id="projectEnd"
+                name="projectEnd"
+                autocomplete="off"
+                data-end-date
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="projectNoParticipants"
+                >Number of Participants:
+              </label>
+              <input
+                type="checkbox"
+                id="projectNoParticipants"
+                name="projectNoParticipants"
+                autocomplete="off"
+                data-no-part
+                data-save-input
+              />
+            </div>
+            <div class="modal-fields">
+              <label for="projectStatus">Status: </label>
+              <input
+                type="checkbox"
+                id="projectStatus"
+                name="projectStatus"
+                autocomplete="off"
+                data-status
+                data-save-input
+              />
+            </div>
+            <!-- <div class="modal-fields">
                         <label for="endDateCreateEvent">End Date: </label>
                         <input type="checkbox" id="endDateCreateEvent" name="endDate" autocomplete="off" data-end-date data-save-input>
                     </div> -->
-              </div>
+          </div>
 
-              <div class="modal-footer">
-                <button class="btn modal-btn-confirm" type="submit">Project</button>
-                <button class="btn modal-btn-cancel" type="button" onclick="hideProjectionModal()">Cancel</button>
-              </div>
-              <div class="modal-error-message" data-modal-error-message></div>
-            </form>
+          <div class="modal-footer">
+            <button class="btn modal-btn-confirm" type="submit">Project</button>
+            <button
+              class="btn modal-btn-cancel"
+              type="button"
+              onclick="hideProjectionModal()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="modal-error-message" data-modal-error-message></div>
+        </form>
 
+        <!--The selection section -->
+        <!--Uses like, does not do direct comparison-->
+        <form
+          class="modal create-item-modal"
+          action="/events/select"
+          method="GET"
+          data-get-events-selection-modal
+        >
+          <div class="modal-header">
+            <h2>
+              Choose a selection criteria. Inside the textbox, you may enter an
+              Event name that will be matched to. For the dropdown you select
+              the event status. Finally you indicate if you want both criteria
+              satisfied or just one (if you don't click the checkbox, either is
+              fine). You can choose to have just one satisfied as well: Empty
+              strings are allowed (which indicates you're looking for just the
+              status), and so are n/a but not together.
+            </h2>
+            <button
+              class="close-btn"
+              type="button"
+              onclick="hideSelectionModal()"
+            >
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-fields">
+              <label for="selection-event-text"
+                >Enter a name that you want to <b>match</b> to.</label
+              >
+              <input
+                name="selectname"
+                id="selection-event-text"
+                type="text"
+                data-select-event-name
+                data-save-input
+              />
+            </div>
+            <div class="dropdown-container">
+              <p class="dropdown-title"></p>
+              <label for="selector-selection">Choose Status.</label>
+              <select
+                name="selector"
+                id="selector-selection"
+                class="dropdown"
+                data-selection-and-status
+                data-save-input
+              >
+                <option value="not applicable" selected>n/a</option>
+                <option value="Upcoming" selected>Upcoming</option>
+                <option value="Active" selected>Active</option>
+                <option value="Completed" selected>Completed</option>
+              </select>
+            </div>
+            <div class="modal-fields">
+              <label for="selection-and">Satisfy both? </label>
+              <input
+                type="checkbox"
+                id="selection-and"
+                name="selection"
+                autocomplete="off"
+                data-selection-and
+                data-save-input
+              />
+            </div>
+          </div>
 
-            <!--The selection section -->
-            <!--Uses like, does not do direct comparison-->
-            <form class="modal create-item-modal" action="/events/select" method="GET" data-get-events-selection-modal>
-              <div class="modal-header">
-                <h2>Choose a selection criteria. Inside the textbox, you may enter an Event name that will be matched
-                  to. For the dropdown you select the event status. Finally you indicate if you want both criteria
-                  satisfied or just one (if you don't click the checkbox, either is fine). You can choose to have just
-                  one satisfied as well: Empty strings are allowed (which indicates you're looking for just the status),
-                  and so are n/a but not together.</h2>
-                <button class="close-btn" type="button" onclick="hideSelectionModal()">&times;</button>
-              </div>
-              <div class="modal-body">
-                <div class="modal-fields">
-                  <label for="selection-event-text">Enter a name that you want to <b>match</b> to.</label>
-                  <input name="selectname" id="selection-event-text" type="text" data-select-event-name data-save-input>
-                </div>
-                <div class="dropdown-container">
-                  <p class="dropdown-title"></p>
-                  <label for="selector-selection">Choose Status.</label>
-                  <select name="selector" id="selector-selection" class="dropdown" data-selection-and-status
-                    data-save-input>
-                    <option value="not applicable" selected>n/a</option>
-                    <option value="Upcoming" selected>Upcoming</option>
-                    <option value="Active" selected>Active</option>
-                    <option value="Completed" selected>Completed</option>
-                  </select>
-                </div>
-                <div class="modal-fields">
-                  <label for="selection-and">Satisfy both? </label>
-                  <input type="checkbox" id="selection-and" name="selection" autocomplete="off" data-selection-and
-                    data-save-input>
-                </div>
-              </div>
+          <div class="modal-footer">
+            <button class="btn modal-btn-confirm" type="submit">Select</button>
+            <button
+              class="btn modal-btn-cancel"
+              type="button"
+              onclick="hideSelectionModal()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="modal-error-message" data-modal-error-message></div>
+        </form>
+        <!-- -->
 
-              <div class="modal-footer">
-                <button class="btn modal-btn-confirm" type="submit">Select</button>
-                <button class="btn modal-btn-cancel" type="button" onclick="hideSelectionModal()">Cancel</button>
-              </div>
-              <div class="modal-error-message" data-modal-error-message></div>
-            </form>
-            <!-- -->
+        <!-- Search Result Section -->
+        <div class="search-result" data-search-result></div>
+      </main>
 
-            <!-- Search Result Section -->
-            <div class="search-result" data-search-result></div>
-          </main>
-
-          <!-- Footer Section -->
-          <%- include("partials/footer") %>
+      <!-- Footer Section -->
+      <%- include("partials/footer") %>
     </div>
   </body>
-
 </html>

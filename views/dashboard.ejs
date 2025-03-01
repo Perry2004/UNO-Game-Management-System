@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Game System Admin</title>
@@ -8,203 +9,240 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="icon" href="/UNO.icon" type="image/x-icon">
     <script defer src="/script.js"></script>
-</head>
-<body>
+  </head>
+
+  <body>
     <div id="grid-container">
 
-        <!-- Header Section  -->
-        <%- include("partials/header") %>
+      <!-- Header Section  -->
+      <%- include("partials/header") %>
 
         <!-- Sidebar Section  -->
         <%- include("partials/sidebar") %>
 
-        <!-- Main Section -->
-        <main class="grid-main">
+          <!-- Main Section -->
+          <main class="grid-main">
             <div class="main-header" data-main-header>
-                <h2 class="main-header-title" data-main-header-title>DASHBOARD</h2>
-                <div class="main-cards">
-                    <div class="card">
-                        <div class="card-inner">
-                            <p>Active Players</p>
-                            <i class="bx bx-user-pin" aria-label="Active Players"></i>
-                        </div>
-                        <span><%= locals.activePlayers %></span>
-                    </div>
-                    <div class="card">
-                        <div class="card-inner">
-                            <p>Active Events</p>
-                            <i class="bx bx-calendar-event" aria-label="Active Events"></i>
-                        </div>
-                        <span><%= locals.activeEvents %></span>
-                    </div>
-                    <div class="card">
-                        <div class="card-inner">
-                            <p>Active Matches</p>
-                            <i class="bx bx-joystick" aria-label="Active Matches"></i>
-                        </div>
-                        <span><%= locals.activeMatches %></span>
-                    </div>
-                    <div class="card">
-                        <div class="card-inner">
-                            <p>Revenue</p>
-                            <i class="bx bx-money" aria-label="Revenue"></i>
-                        </div>
-                        <span><%= locals.revenue %></span>
-                    </div>
+              <h2 class="main-header-title" data-main-header-title>DASHBOARD</h2>
+              <div class="main-cards">
+                <div class="card">
+                  <div class="card-inner">
+                    <p>Active Players</p>
+                    <i class="bx bx-user-pin" aria-label="Active Players"></i>
+                  </div>
+                  <span>
+                    <%= locals.activePlayers %>
+                  </span>
                 </div>
+                <div class="card">
+                  <div class="card-inner">
+                    <p>Active Events</p>
+                    <i class="bx bx-calendar-event" aria-label="Active Events"></i>
+                  </div>
+                  <span>
+                    <%= locals.activeEvents %>
+                  </span>
+                </div>
+                <div class="card">
+                  <div class="card-inner">
+                    <p>Active Matches</p>
+                    <i class="bx bx-joystick" aria-label="Active Matches"></i>
+                  </div>
+                  <span>
+                    <%= locals.activeMatches %>
+                  </span>
+                </div>
+                <div class="card">
+                  <div class="card-inner">
+                    <p>Revenue</p>
+                    <i class="bx bx-money" aria-label="Revenue"></i>
+                  </div>
+                  <span>
+                    <%= locals.revenue %>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div class="main-body" data-main-body>
-                <div class="table-container-primary">
-                    <div class="main-body-header">
-                        <h2 class="main-title">Recent Players</h2>
-                        <div class="table-btn-list">
-                            <div class="dropdown-container">
-                                <p class="dropdown-title">Sort By:</p> 
-                                <select name="dropdown" class="dropdown" data-dropdown-sort data-pointer-not-allowed>
-                                    <option value="recent" selected>Recent</option>
-                                    <option value="totalWins">Total Wins</option>
-                                    <option value="totalGameCount">Total Game Count</option>
-                                    <option value="winRate">Win Rate</option>
-                                    <option value="experiencePoint">Experience Point</option>
-                                    <option value="country">Country</option>
-                                </select>
-                            </div>
-                            <button class="table-btn add-btn" onclick="showCreatePlayerModal()" data-pointer-not-allowed><i class="bx bx-plus"></i>Add Player</button>
-                        </div>
+              <div class="table-container-primary">
+                <div class="main-body-header">
+                  <h2 class="main-title">Recent Players</h2>
+                  <div class="table-btn-list">
+                    <div class="dropdown-container">
+                      <p class="dropdown-title">Sort By:</p>
+                      <select name="dropdown" class="dropdown" data-dropdown-sort data-pointer-not-allowed>
+                        <option value="recent" selected>Recent</option>
+                        <option value="totalWins">Total Wins</option>
+                        <option value="totalGameCount">Total Game Count</option>
+                        <option value="winRate">Win Rate</option>
+                        <option value="experiencePoint">Experience Point</option>
+                        <option value="country">Country</option>
+                      </select>
                     </div>
-
-                    <div class="scrollable-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Total Wins</th>
-                                    <th>Total Game Count</th>
-                                    <th>Win Rate</th>
-                                    <th>Experience Points</th>
-                                    <th>Country</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% locals.recentPlayers.forEach(element => { %>
-                                    <tr>
-                                        <td><%= element.username %></td>
-                                        <td><%= element.totalWin %></td>
-                                        <td><%= element.totalGameCount %></td>
-                                        <td><%= element.winRate %></td>
-                                        <td><%= element.experiencePoint %></td>
-                                        <td><%= element.country %></td>
-                                        <td>
-                                            <i class="bx bxs-edit edit" aria-label="Edit" onclick="showEditPlayerModal('<%= element.playerID %>')" data-edit data-pointer-not-allowed></i>
-                                            <i class="bx bx-trash delete" aria-label="Delete" onclick="showDeleteItemModal('<%= element.username %>')" data-delete data-pointer-not-allowed></i>
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
+                    <button class="table-btn add-btn" onclick="showCreatePlayerModal()" data-pointer-not-allowed><i
+                        class="bx bx-plus"></i>Add Player</button>
+                  </div>
                 </div>
+
+                <div class="scrollable-table">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Total Wins</th>
+                        <th>Total Game Count</th>
+                        <th>Win Rate</th>
+                        <th>Experience Points</th>
+                        <th>Country</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% locals.recentPlayers.forEach(element=> { %>
+                        <tr>
+                          <td>
+                            <%= element.username %>
+                          </td>
+                          <td>
+                            <%= element.totalWin %>
+                          </td>
+                          <td>
+                            <%= element.totalGameCount %>
+                          </td>
+                          <td>
+                            <%= element.winRate %>
+                          </td>
+                          <td>
+                            <%= element.experiencePoint %>
+                          </td>
+                          <td>
+                            <%= element.country %>
+                          </td>
+                          <td>
+                            <i class="bx bxs-edit edit" aria-label="Edit"
+                              onclick="showEditPlayerModal('<%= element.playerID %>')" data-edit
+                              data-pointer-not-allowed></i>
+                            <i class="bx bx-trash delete" aria-label="Delete"
+                              onclick="showDeleteItemModal('<%= element.username %>')" data-delete
+                              data-pointer-not-allowed></i>
+                          </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
             <div class="modal delete-item-modal" data-delete-item-modal>
-                <h1>&#9888;</h1>
-                <h2>Are you sure?</h2>
-                <p>This action cannot be undone. All values <br> associated with this field will be lost.</p>
-                <button class="btn modal-btn-delete" type="button" data-conform-delete>Delete Player</button>
-                <button class="btn modal-btn-cancel" type="button" onclick="hideDeleteItemModal()">Cancel</button>
+              <h1>&#9888;</h1>
+              <h2>Are you sure?</h2>
+              <p>This action cannot be undone. All values <br> associated with this field will be lost.</p>
+              <button class="btn modal-btn-delete" type="button" data-conform-delete>Delete Player</button>
+              <button class="btn modal-btn-cancel" type="button" onclick="hideDeleteItemModal()">Cancel</button>
             </div>
 
             <form class="modal edit-item-modal" action="/dashboard/update" method="POST" data-edit-player-modal>
-                <div class="modal-header">
-                    <h2>Edit Player</h2>
-                    <button class="close-btn" type="button" onclick="hideEditPlayerModal()">&times;</button>
+              <div class="modal-header">
+                <h2>Edit Player</h2>
+                <button class="close-btn" type="button" onclick="hideEditPlayerModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="modal-fields">
+                  <input type="hidden" name="playerID" data-player-id>
+                  <input type="hidden" name="originalUsername" data-original-username>
+                  <label for="usernameEditDashboard">Username: </label>
+                  <input type="text" id="usernameEditDashboard" name="username" autocomplete="username"
+                    aria-label="Username" data-username>
                 </div>
-                <div class="modal-body">
-                    <div class="modal-fields">
-                        <input type="hidden" name="playerID" data-player-id>
-                        <input type="hidden" name="originalUsername" data-original-username>
-                        <label for="usernameEditDashboard">Username: </label>
-                        <input type="text" id="usernameEditDashboard" name="username" autocomplete="username" aria-label="Username" data-username>
-                    </div>
-                    <div class="modal-fields">
-                        <input type="hidden" name="originalEmail" data-original-email>
-                        <label for="emailEditDashboard">Email: </label>
-                        <input type="email" id="emailEditDashboard" name="email" autocomplete="email" aria-label="Email" data-email>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="newPasswordEditDashboard">New Password: </label>
-                        <input type="password" id="newPasswordEditDashboard" name="newPassword" autocomplete="new-password" placeholder="(Unchanged if empty)" aria-label="New Password" data-password>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="confirmPasswordEditDashboard">Confirm Password: </label>
-                        <input type="password" id="confirmPasswordEditDashboard" name="confirmPassword" autocomplete="new-password" placeholder="(Re-enter new password)" aria-label="Confirm Password" data-confirm-password>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="countryEditDashboard">Country: </label>
-                        <select id="countryEditDashboard" name="country" class="dropdown" data-country>
-                            <option value="Canada">Canada</option>
-                            <option value="USA">USA</option>
-                            <option value="China">China</option>
-                            <option value="Japan">Japan</option>
-                            <option value="India">India</option>
-                        </select>
-                    </div>
+                <div class="modal-fields">
+                  <input type="hidden" name="originalEmail" data-original-email>
+                  <label for="emailEditDashboard">Email: </label>
+                  <input type="email" id="emailEditDashboard" name="email" autocomplete="email" aria-label="Email"
+                    data-email>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn modal-btn-confirm" type="submit">Update</button>
-                    <button class="btn modal-btn-cancel" type="button" onclick="hideEditPlayerModal()">Cancel</button>
+                <div class="modal-fields">
+                  <label for="newPasswordEditDashboard">New Password: </label>
+                  <input type="password" id="newPasswordEditDashboard" name="newPassword" autocomplete="new-password"
+                    placeholder="(Unchanged if empty)" aria-label="New Password" data-password>
                 </div>
-                <div class="modal-error-message" data-modal-error-message></div>
+                <div class="modal-fields">
+                  <label for="confirmPasswordEditDashboard">Confirm Password: </label>
+                  <input type="password" id="confirmPasswordEditDashboard" name="confirmPassword"
+                    autocomplete="new-password" placeholder="(Re-enter new password)" aria-label="Confirm Password"
+                    data-confirm-password>
+                </div>
+                <div class="modal-fields">
+                  <label for="countryEditDashboard">Country: </label>
+                  <select id="countryEditDashboard" name="country" class="dropdown" data-country>
+                    <option value="Canada">Canada</option>
+                    <option value="USA">USA</option>
+                    <option value="China">China</option>
+                    <option value="Japan">Japan</option>
+                    <option value="India">India</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn modal-btn-confirm" type="submit">Update</button>
+                <button class="btn modal-btn-cancel" type="button" onclick="hideEditPlayerModal()">Cancel</button>
+              </div>
+              <div class="modal-error-message" data-modal-error-message></div>
             </form>
-                    
+
             <form class="modal create-item-modal" action="/dashboard/register" method="POST" data-create-player-modal>
-                <div class="modal-header">
-                    <h2>Create New Player</h2>
-                    <button class="close-btn" type="button" onclick="hideCreatePlayerModal()">&times;</button>
+              <div class="modal-header">
+                <h2>Create New Player</h2>
+                <button class="close-btn" type="button" onclick="hideCreatePlayerModal()">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="modal-fields">
+                  <label for="usernameCreatePlayer">Username: </label>
+                  <input type="text" id="usernameCreatePlayer" name="username" autocomplete="username"
+                    placeholder="e.g. Amazing Designer" aria-label="Username" data-username data-save-input>
                 </div>
-                <div class="modal-body">
-                    <div class="modal-fields">
-                        <label for="usernameCreatePlayer">Username: </label>
-                        <input type="text" id="usernameCreatePlayer" name="username" autocomplete="username" placeholder="e.g. Amazing Designer" aria-label="Username" data-username data-save-input>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="passwordCreatePlayer">Password: </label>
-                        <input type="password" id="passwordCreatePlayer" name="password" autocomplete="new-password" placeholder="e.g. Coding Everyday &#129323" aria-label="Password" data-password>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="confirmPasswordCreatePlayer">Confirm Password: </label>
-                        <input type="password" id="confirmPasswordCreatePlayer" name="confirmPassword" autocomplete="new-password" placeholder="(Re-enter password)" aria-label="Confirm Password" data-confirm-password>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="emailCreatePlayer">Email: </label>
-                        <input type="email" id="emailCreatePlayer" name="email" autocomplete="email" placeholder="e.g. xxx@student.ubc.ca" aria-label="Email" data-email data-save-input>
-                    </div>
-                    <div class="modal-fields">
-                        <label for="countryCreatePlayer">Country: </label>
-                        <select id="countryCreatePlayer" name="country" class="dropdown" data-country>
-                            <option value="Canada" selected>Canada</option>
-                            <option value="USA">USA</option>
-                            <option value="China">China</option>
-                            <option value="Japan">Japan</option>
-                            <option value="India">India</option>
-                        </select>
-                    </div>
+                <div class="modal-fields">
+                  <label for="passwordCreatePlayer">Password: </label>
+                  <input type="password" id="passwordCreatePlayer" name="password" autocomplete="new-password"
+                    placeholder="e.g. Coding Everyday &#129323" aria-label="Password" data-password>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn modal-btn-confirm" type="submit">Register</button>
-                    <button class="btn modal-btn-cancel" type="button" onclick="hideCreatePlayerModal()">Cancel</button>
+                <div class="modal-fields">
+                  <label for="confirmPasswordCreatePlayer">Confirm Password: </label>
+                  <input type="password" id="confirmPasswordCreatePlayer" name="confirmPassword"
+                    autocomplete="new-password" placeholder="(Re-enter password)" aria-label="Confirm Password"
+                    data-confirm-password>
                 </div>
-                <div class="modal-error-message" data-modal-error-message></div>
+                <div class="modal-fields">
+                  <label for="emailCreatePlayer">Email: </label>
+                  <input type="email" id="emailCreatePlayer" name="email" autocomplete="email"
+                    placeholder="e.g. xxx@student.ubc.ca" aria-label="Email" data-email data-save-input>
+                </div>
+                <div class="modal-fields">
+                  <label for="countryCreatePlayer">Country: </label>
+                  <select id="countryCreatePlayer" name="country" class="dropdown" data-country>
+                    <option value="Canada" selected>Canada</option>
+                    <option value="USA">USA</option>
+                    <option value="China">China</option>
+                    <option value="Japan">Japan</option>
+                    <option value="India">India</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn modal-btn-confirm" type="submit">Register</button>
+                <button class="btn modal-btn-cancel" type="button" onclick="hideCreatePlayerModal()">Cancel</button>
+              </div>
+              <div class="modal-error-message" data-modal-error-message></div>
             </form>
 
             <!-- Search Result Section -->
             <div class="search-result" data-search-result></div>
-        </main>
+          </main>
 
-        <!-- Footer Section -->
-        <%- include("partials/footer") %>
+          <!-- Footer Section -->
+          <%- include("partials/footer") %>
     </div>
-</body>
+  </body>
+
 </html>
